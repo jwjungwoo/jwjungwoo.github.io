@@ -108,7 +108,7 @@ author:
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "It does not matter how slowly you go as long as you do not stop."
   location         : "SEOUL-KR"
-  email            : "jw.jungwoo@gmail.com"
+ # email            : "jw.jungwoo@gmail.com"
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
