@@ -13,7 +13,7 @@ main:
         - title: "Category"
           url: /categories/
         - title: "Tag"
-          url: /tags/
+          url: /tags/ 
 
     - title: "대목차2"
       children:
