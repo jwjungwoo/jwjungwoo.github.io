@@ -1,0 +1,12 @@
+---
+layout: single
+title:  "객체 지향 설계와 스프링"
+categories: developing
+tag: spring
+author_profile: false #true면 글 안에서 내 프로필 보여줌
+sidebar:
+    nav: "counts"
+#search: false
+---
+
+# 스프링이란
