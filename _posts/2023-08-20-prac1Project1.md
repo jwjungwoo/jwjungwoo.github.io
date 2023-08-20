@@ -18,7 +18,7 @@ https://start.spring.io/ 를 가서 아래 사진과 같이 세팅을 완료하�
 ![스크린샷 2023-08-19 235131](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/3a3728b6-7ddc-45d1-a8e9-d28ca04eecc4)   
 
 ## lombok
-귀여운 코끼리 모양의 build.gradle 파일에 들어가보면 lombok이 들어와있는걸 확인할 수 있는데 lombok 덕분에 Hello의 Getter Setter를 쉽게 만들 수 있다.
+귀여운 코끼리 모양의 build.gradle 파일에 들어가보면 lombok이 들어와있는걸 확인할 수 있는데 lombok 덕분에 Hello의 Getter Setter를 쉽게 만들 수 있다.   
 ![스크린샷 2023-08-20 hello](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/1dd1e876-0b81-469a-94eb-def8ea677f09)
 
 ```java
@@ -33,14 +33,59 @@ public class Hello {
 }
 ```
 
+## 실행
+
+JpashopApplication에 들어가 다음 코드로 실행하면 실행화면의 커다란 spring 글씨 위에 data = hello 라는 문구가 잘 뜸을 볼 수 있다. 
+(Getter, Setter가 잘 작동함을 확인)   
+![스크린샷 2023-08-20 jpashopApplicationRUN](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/f796556b-611d-4770-a09b-f8776af52931)   
 
 ## devtools
 
 귀여운 코끼리 모양의 build.gradle 파일로 들어가 아래 사진과 같이   
 implementation &#39;org.springframework.boot:spring-boot-devtools&#39; 를 넣어준다.   
-![스크린샷 2023-08-20 170801](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/d784ada3-4d5c-4f5c-81f8-451cc565e7b7)
+![스크린샷 2023-08-20 170801](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/d784ada3-4d5c-4f5c-81f8-451cc565e7b7)   
 
 # View 환경 설정
 
+## hello.html
+resources에 templates에 hello.html 파일을 만듦.   
+![스크린샷 2023-08-20 hello html](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/236d8c73-c80f-4299-af5d-972e3d78eeec)   
+
+```java
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Hello</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="'안녕하세요. ' + ${data}" >안녕하세요. 손님</p> //build.gradle에 devtools 넣음으로써 빌드에 recompile만 누르면 화면창 바뀜.
+</body>
+</html>
+```
+
+## HelloController
+HelloController를 하나 만든다.
+![스크린샷 2023-08-20 helloController](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/f37334ef-f7aa-42fd-8bdb-08fcb651fd23)
+
+```java
+package jpabook.jpashop;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@Controller
+public class HelloController {
+    @GetMapping("hello")//hello라는 url로 오면 이 컨트롤러가 호출되겠다는 의미
+    public String hello(Model model) { //Model은 스프링이 지원하는 기능으로써, key와 value로 이루어져있는 HashMap이다.
+        // Controller가 model에 데이터를 실어 veiw에 넘길 수 있음.
+        model.addAttribute("data","hello!!!");
+        return "hello.html"; //return은 화면 이름이다.
+    }
+}
+```
+
+# H2 데이터베이스 설치
 
 
