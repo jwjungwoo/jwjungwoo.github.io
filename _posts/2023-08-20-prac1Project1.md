@@ -39,15 +39,10 @@ JpashopApplication에 들어가 다음 코드로 실행하면 실행화면의 �
 (Getter, Setter가 잘 작동함을 확인)   
 ![스크린샷 2023-08-20 jpashopApplicationRUN](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/f796556b-611d-4770-a09b-f8776af52931)   
 
-## devtools
-
-귀여운 코끼리 모양의 build.gradle 파일로 들어가 아래 사진과 같이   
-implementation &#39;org.springframework.boot:spring-boot-devtools&#39; 를 넣어준다.   
-![스크린샷 2023-08-20 170801](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/d784ada3-4d5c-4f5c-81f8-451cc565e7b7)   
-
 # View 환경 설정
 
 ## hello.html
+
 resources에 templates에 hello.html 파일을 만듦.   
 ![스크린샷 2023-08-20 hello html](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/236d8c73-c80f-4299-af5d-972e3d78eeec)   
 
@@ -63,9 +58,17 @@ resources에 templates에 hello.html 파일을 만듦.
 </body>
 </html>
 ```
+## devtools
+
+귀여운 코끼리 모양의 build.gradle 파일로 들어가 아래 사진과 같이   
+implementation &#39;org.springframework.boot:spring-boot-devtools&#39; 를 넣어준다.   
+![스크린샷 2023-08-20 170801](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/d784ada3-4d5c-4f5c-81f8-451cc565e7b7)   
+
+devtools가 reloading을 만들어줌.
 
 ## HelloController
-HelloController를 하나 만든다.
+
+HelloController를 하나 만든다.   
 ![스크린샷 2023-08-20 helloController](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/f37334ef-f7aa-42fd-8bdb-08fcb651fd23)
 
 ```java
