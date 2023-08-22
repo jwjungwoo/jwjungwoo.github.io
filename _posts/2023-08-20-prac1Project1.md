@@ -14,7 +14,7 @@ sidebar:
 ## start.spring.io
 
 https://start.spring.io/ 를 가서 아래 사진과 같이 세팅을 완료하고 &#39;GENERATE&#39; 버튼을 누른다.   
-(저는 IntelliJ에서 다운된 build.gradle 파일을 열었습니다.)   
+(저는 다운된 build.gradle 파일을 Intellij에서 열었습니다.)   
 ![스크린샷 2023-08-19 235131](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/3a3728b6-7ddc-45d1-a8e9-d28ca04eecc4)   
 
 ## lombok
@@ -39,15 +39,10 @@ JpashopApplication에 들어가 다음 코드로 실행하면 실행화면의 �
 (Getter, Setter가 잘 작동함을 확인)   
 ![스크린샷 2023-08-20 jpashopApplicationRUN](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/f796556b-611d-4770-a09b-f8776af52931)   
 
-## devtools
-
-귀여운 코끼리 모양의 build.gradle 파일로 들어가 아래 사진과 같이   
-implementation &#39;org.springframework.boot:spring-boot-devtools&#39; 를 넣어준다.   
-![스크린샷 2023-08-20 170801](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/d784ada3-4d5c-4f5c-81f8-451cc565e7b7)   
-
 # View 환경 설정
 
 ## hello.html
+
 resources에 templates에 hello.html 파일을 만듦.   
 ![스크린샷 2023-08-20 hello html](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/236d8c73-c80f-4299-af5d-972e3d78eeec)   
 
@@ -65,7 +60,8 @@ resources에 templates에 hello.html 파일을 만듦.
 ```
 
 ## HelloController
-HelloController를 하나 만든다.
+
+HelloController를 하나 만든다.   
 ![스크린샷 2023-08-20 helloController](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/f37334ef-f7aa-42fd-8bdb-08fcb651fd23)
 
 ```java
@@ -86,6 +82,18 @@ public class HelloController {
 }
 ```
 
+## devtools
+
+귀여운 코끼리 모양의 build.gradle 파일로 들어가 아래 사진과 같이   
+implementation &#39;org.springframework.boot:spring-boot-devtools&#39; 를 넣어준다.   
+![스크린샷 2023-08-20 170801](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/d784ada3-4d5c-4f5c-81f8-451cc565e7b7)   
+   
+devtools가 reloading을 만들어줌.   
+   
+빌드에 다시 컴파일을 누르고 http://localhost:8080/hello 를 들어가면 잘 컴파일 된다.   
+![스크린샷 2023-08-20 compileEZ](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/a138a7d7-d608-4a80-9dcf-dbf3be503b89)   
+
 # H2 데이터베이스 설치
+
 
 
