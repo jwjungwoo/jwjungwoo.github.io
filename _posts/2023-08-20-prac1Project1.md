@@ -13,7 +13,7 @@ sidebar:
 
 ## start.spring.io
 
-https://start.spring.io/ 를 가서 아래 사진과 같이 세팅을 완료하고 &#39;GENERATE&#39; 버튼을 누른다.   
+https://start.spring.io 를 가서 아래 사진과 같이 세팅을 완료하고 &#39;GENERATE&#39; 버튼을 누른다.   
 (저는 다운된 build.gradle 파일을 Intellij에서 열었습니다.)   
 ![스크린샷 2023-08-19 235131](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/3a3728b6-7ddc-45d1-a8e9-d28ca04eecc4)   
 
