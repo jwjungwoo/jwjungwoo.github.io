@@ -94,6 +94,21 @@ devtools가 reloading을 만들어줌.
 ![스크린샷 2023-08-20 compileEZ](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/a138a7d7-d608-4a80-9dcf-dbf3be503b89)   
 
 # H2 데이터베이스 설치
+https://h2database.com 에 들어가 나의 spring과 맞는 버전을 다운받는다. 다운받은 후 아래 사진의 오른쪽하단 위치에서 노란색 사파이어를 클릭해 실행한다.   
+![스크린샷 2023-08-23 here](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/3aa78ec6-13da-44ef-9f1a-3ced160c58ac)   
 
+실행하면 이렇게 뜨는데   
+![스크린샷 2023-08-23 h2before](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/54ab84f2-8355-4d67-ad18-e6221d306ce1)   
+
+여기서 key 값을 유지시키고 앞에 localhost:8082/?key= 를 붙여준다.   
+![스크린샷 2023-08-23 h2after](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/3685df64-d46e-4f9d-a915-a8f4480b86b7)   
+
+그리고 실행하면 아래 사진과 같이 jpashop.mv.db가 잘 생성됨을 확인할 수 있다.   
+![스크린샷 2023-08-23 jpashop mv db](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/4c04668e-6e21-46bc-9a62-539f046a40ab)   
+
+생성 이후론 tcpmode로 접근하면 된다.   
+![스크린샷 2023-08-23 tcpmode](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/319757f9-6458-4bda-85c5-a5f3786e016b)
+
+즉, 처음에 db파일 생성할 땐 파일오더로 접근하고 이후로는 tcp 네트워크모드로 접근하면 된다.   
 
 
