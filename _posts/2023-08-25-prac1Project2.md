@@ -82,5 +82,6 @@ member에서도 order값을 바꿀 수 있고 order에서 member 값을 바꿀 �
 1. 엔티티에는 가급적 Setter를 사용하지 말자. Setter가 모두 열려있으면 변경 포인트가 너무 많아서, 유지보수가 어렵다. 나중에 리펙토링으로 Setter 제거   
 2. *ToOne(OneToOne, ManyToOne) 관계는 기본이 즉시로딩(EAGER)이므로 직접 지연로딩으로 설정해야 한다.   
 ```java
- @ManyToOne(fetch = FetchType.LAZY)
+@ManyToOne(fetch = FetchType.LAZY)
+@OneToOne(fetch = FetchType.LAZY)
 ```
