@@ -16,6 +16,7 @@ sidebar:
 ![스크린샷 2023-08-26 131024](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/a87a4377-1e8b-4185-8bfc-e5da25e31009)   
 
 ## 기능 목록
+
 -회원 기능   
   -회원 등록   
   -회원 조회   
