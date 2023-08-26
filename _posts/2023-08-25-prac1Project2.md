@@ -65,9 +65,22 @@ sidebar:
 
 ## 회원 테이블 분석
 
-![스크린샷 2023-08-26 memberTable](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/2cd3724b-8eac-4b17-ae6b-b8d4bd8a1ff3)
-
+![스크린샷 2023-08-26 memberTable](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/2cd3724b-8eac-4b17-ae6b-b8d4bd8a1ff3)   
+일대다 관계에선 다에 외래키가 존재하게된다. (FK)   
 
 # 엔티티 클래스 개발
 
-# 엔티티 설계시 주의점
+## 구조
+
+![스크린샷 2023-08-26 struc](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/8ab7c5d2-5a9b-492d-9b3f-eb0df95ed43f)
+
+member에서도 order값을 바꿀 수 있고 order에서 member 값을 바꿀 수도 있어서 jpa는 둘 중에 뭘보고 바꿔야할지 혼란스러움.
+이럴때! FK가 있는곳을 연관관계의 주인으로 매핑하면 된다.   
+
+## 엔티티 설계시 주의점
+
+1. 엔티티에는 가급적 Setter를 사용하지 말자. Setter가 모두 열려있으면 변경 포인트가 너무 많아서, 유지보수가 어렵다. 나중에 리펙토링으로 Setter 제거   
+2. *ToOne(OneToOne, ManyToOne) 관계는 기본이 즉시로딩(EAGER)이므로 직접 지연로딩으로 설정해야 한다.   
+```java
+ @ManyToOne(fetch = FetchType.LAZY)
+```
