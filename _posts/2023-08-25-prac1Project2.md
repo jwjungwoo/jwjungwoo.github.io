@@ -84,4 +84,4 @@ member에서도 order값을 바꿀 수 있고 order에서 member 값을 바꿀 �
 ```java
 @ManyToOne(fetch = FetchType.LAZY)
 @OneToOne(fetch = FetchType.LAZY)
-```   
+```
