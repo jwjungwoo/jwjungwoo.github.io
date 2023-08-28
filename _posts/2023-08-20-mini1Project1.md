@@ -1,7 +1,7 @@
 ---
 layout: single
 title:  "프로젝트 환경설정"
-categories: pracProject1
+categories: miniProject1
 tag: [spring boot, jpa, java, H2 db]
 author_profile: false #true면 글 안에서 내 프로필 보여줌
 sidebar:
