@@ -67,6 +67,7 @@ sidebar:
 
 ![스크린샷 2023-08-26 memberTable](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/2cd3724b-8eac-4b17-ae6b-b8d4bd8a1ff3)   
 일대다 관계에선 다에 외래키가 존재하게된다. (FK)   
+Member와 Orders에서 FK가 Orders에 가깝기에 Orders가 연관관계의 주인이 된다. 따라서 Orders에서 MEMBER_ID 수정해야함.
 
 # 엔티티 클래스 개발
 
