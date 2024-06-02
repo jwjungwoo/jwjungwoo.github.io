@@ -95,7 +95,11 @@ $ sudo cat /var/lib/jenkins/secrets/initialAdminPassword로 비밀번호를 확�
 자동으로 compile타임에서 붙여줌.빌드도구엔 java에선 intellij, 코딩 시 VSCode등이 있다.   
    
 jenkin는 모든 언어의 프로젝트를 컨드롤해주는건아니고 자바 프로젝트를 컨트롤해줌. 근데 지금은 툴 추가하면 된다곤함.   
-
+   
+Gradle: 빌드 파일(build.xml)은 XML 형식으로 작성되며, 태스크와 타깃(target)을 정의한다.   
+Ant: Ant와 Maven의 장점을 결합한 빌드 도구로, Groovy 또는 Kotlin DSL(Domain-Specific Language)을 사용하여 빌드 스크립트를 작성한다.   
+Maven, Gradle, Ant는 모두 Java 기반 프로젝트의 빌드를 자동화하는 데 유용한 도구이다.   
+   
 Maven: java를 사용한 다양한 프레임워크에서 필요한 dependency들을 자동적으로 찾아서 제공해줌.   
 Set up an agent(아래 그림): 또다른 이스트기계던, mac이던, window 기계건 지금 현재 jenkins control이 돌고있는 이스트기계말고 다른 것들을 설치할 수 있음.   
 ![08](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/efcb229c-8306-48d3-a308-5eb2b4e6c280)   
