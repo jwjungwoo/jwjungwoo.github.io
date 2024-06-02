@@ -66,14 +66,13 @@ $ sudo apt install fontconfig openjdk-17-jre
 
 다 다운받고 clear   
 $ java -version과 $  jenkins --version 으로 제대로 설치 됐는지 확인   
-![02](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/54bfd6eb-9deb-48cd-99ab-7a7ab2c1ba0a)   
-제3자의 서비스를 설치한 다음에는 그러한 데몬프로세스가 돌고있는지 (status)를 체크   
-   
+
+제3자의 서비스를 설치한 다음에는 그러한 데몬프로세스가 돌고있는지 (status)를 체크하기위해 
 $ sudo systemctl status jenkins 를 침. 그런데 failed to start라는 문구가 써있다.   
-![03](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/793ebb10-ed57-42ff-979b-03174b7c7acb)   
-
+![02](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/54bfd6eb-9deb-48cd-99ab-7a7ab2c1ba0a)   
+   
 따라서 $ sudo systemctl start jenkins를 치고 다시 status를 확인하면 정상적으로 실행됨을 볼 수 있다.   
-
+![03](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/793ebb10-ed57-42ff-979b-03174b7c7acb)   
 젠킨스를 jetty web server에 연동되어 jenkins 서비스 제공. jenkins는 우리가 만든 ubuntu기계에서 동작하는 것이 아니라 실제에서는 웹을 통해 ubuntu기계에 제공해줌.   
 ![04](https://github.com/jwjungwoo/jwjungwoo.github.io/assets/140131247/2ee34452-35f8-47c0-89fa-f41cb8ef50af)   
 인스턴드의 퍼블릭 IPv4주소:8080을 브라우저 창에 치면 이런 화면이 뜸. (그전에 보안설정에 가서 사용자지정 TCP,UDP의 접근 포트번호를 0-65535, IPv4는 0.0.0.0로 저장해놔야 뜸)   
@@ -179,8 +178,8 @@ apach-maven-3.9.7에 maven이 장착돼있음
    
 maven에선 xml파일로 object가 만들어지는데 gradle은 복잡함. jenkins는 maven도구를 아주 밀접하게 사용해서 jenkins를 가지고 아주 다양한 실행을 할 수 있으며 java프로그램에 특화돼있다.   
    
-jenkins시스템에서 소위 jenkins controller가 돌고있는 우분투기계에 maven이 장착돼있고 maven시스템이 장착돼있는 디렉토리를 maven홈으로 우리가 
-등록해주면 추후에 jenkins가 maven프로젝트를 실행할때 자동화해줌.   
+jenkins시스템에서 소위 jenkins controller가 돌고있는 우분투기계에 maven시스템이 장착돼있는 디렉토리를 maven홈으로 우리가 
+등록해주면 추후에 jenkins가 maven프로젝트를 실행할 때 자동화해줌.   
    
 /opt$ cd apache-maven-3.9.7   
 $ pwd   
