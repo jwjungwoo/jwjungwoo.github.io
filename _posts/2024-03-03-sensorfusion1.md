@@ -1,7 +1,7 @@
 ---
 layout: single
 title:  "센서 퓨전 기반 3차원 객체 검출 기술 개요"
-categories: autonomous vehicle
+categories: sensorFusion
 tag: sensor fusion
 author_profile: false #true면 글 안에서 내 프로필 보여줌
 sidebar:
