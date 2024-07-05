@@ -17,11 +17,10 @@ sidebar:
 3. 비전 인식이 잘 되면 early fusion 중 camera만 객체를 판단하며 camera에 LiDAR정보를 입히고, 잘 안 되면 late fusion을 통해 camera와 LiDAR 둘다 객체를 판단   
    
 우리팀은 early fusion을 목표로 하고 있으며 extrinsic calibration은 사용하지 않고 LiDAR 포인트들을 직접 pixel 값에 매핑할 것이다.   
-따라서   
+따라서 순서는 다음과 같다.   
 1. intrinsic calibration   
 2. mapping   
 3. early fusion   
-순으로 할 것이다.   
    
 국토부 대회에 라바콘으로 이루어진 주차구역에 주차하는 미션이 있는데 이건 LiDAR로 봐야할 것 같아서 late fusion을 써야할수도 있다.   
 
