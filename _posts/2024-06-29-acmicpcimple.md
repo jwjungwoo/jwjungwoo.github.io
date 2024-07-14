@@ -9,6 +9,47 @@ sidebar:
 #search: false
 ---
 
+# 실버1
+
+## 1992
+```c++
+#include <iostream>
+#include <string>
+using namespace std;
+
+string ret, s;
+int n, flag, dis;
+int arr[68][68];
+
+string go(int y, int x, int n) {
+	dis = arr[y][x];
+	for (int i = y; i < y + n; i++) {
+		for (int j = x; j < x + n; j++) {
+			if (arr[i][j] != dis) {
+				return "(" + go(y, x, n / 2) + go(y, x + n / 2, n / 2) + go(y + n / 2, x, n / 2) + go(y + n / 2, x + n / 2, n / 2) + ")";
+			}
+		}
+	}
+	return to_string(dis);
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+	cin >> n;
+	for (int i = 0; i < n; i++) {
+		cin >> s;
+		for (int j = 0; j < n; j++) {
+			arr[i][j] = s[j] - '0';
+		}
+	}
+
+	cout << go(0,0,n) << "\n";
+
+	return 0;
+}
+```
+
 # 실버4
 
 ## 1620
