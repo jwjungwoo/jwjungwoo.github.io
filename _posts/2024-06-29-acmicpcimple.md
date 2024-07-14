@@ -243,3 +243,42 @@ int main() {
 	return 0;
 }
 ```
+
+# 실버5
+
+## 2828
+```c++
+//사과 담기 게임
+#include <iostream>
+using namespace std;
+
+int n, m, j, a, ret, pos, temp;
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+	cin >> n >> m; cin >> j;
+	pos = 1;
+	for (int i = 0; i < j; i++) {
+		cin >> a;
+		if ((pos <= a) && (a <= (pos + m - 1)))
+			continue;
+		else {
+			if (a > pos) {
+				temp = (a - (pos + m - 1));
+				pos += temp;
+				ret += temp;
+			}
+			else {
+				temp = (pos - a);
+				pos -= temp;
+				ret += temp;
+			}
+		}
+	}
+
+	cout << ret << "\n";
+
+	return 0;
+}
+```
