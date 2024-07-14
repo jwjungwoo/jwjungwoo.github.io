@@ -50,6 +50,56 @@ int main() {
 }
 ```
 
+# 실버3
+
+## 2910
+
+```c++
+//빈도 정렬
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+using namespace std;
+
+int n, c, a;
+vector<pair<int, int>> v1; //빈도
+
+map<int, int> mp1; // 빈도
+map<int, int> mp2; // 순서
+
+bool oper(pair<int, int> p1, pair<int, int> p2) {
+	if(mp1[p1.first] != mp1[p2.first])
+		return p1.second > p2.second;
+	else {
+		return mp2[p1.first] < mp2[p2.first];
+	}
+}
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+	cin >> n >> c;
+	for (int i = 0; i < n; i++) {
+		cin >> a;
+		mp1[a]++;
+		if (!mp2[a])
+			mp2[a] = i + 1;
+	}
+
+	for (auto it : mp1)
+		v1.push_back({ it.first,it.second });
+
+	sort(v1.begin(), v1.end(), oper);
+
+	for (auto it : v1) {
+		for (int i = 0; i < mp1[it.first]; i++)
+			cout << it.first << " ";
+	}
+
+	return 0;
+}
+```
+
 # 실버4
 
 ## 1620
