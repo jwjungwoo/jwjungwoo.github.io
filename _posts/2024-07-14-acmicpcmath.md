@@ -41,3 +41,37 @@ int main() {
 	return 0;
 }
 ```
+
+# 실버3
+
+## 4375
+```c++
+//1
+#include <iostream>
+#include <cmath>
+#include <stdio.h>
+using namespace std;
+
+int a, b, ret;
+
+int main() {
+
+
+	while (scanf("%d", &a) != EOF) {
+		b = 1; ret = 1;
+		while (1) {
+			if (b % a == 0) {
+				cout << ret << "\n";
+				break;
+			}
+			else {
+				b = (b * 10) + 1;
+				b %= a;
+				ret++;
+			}
+		}
+	}
+
+	return 0;
+}
+```
