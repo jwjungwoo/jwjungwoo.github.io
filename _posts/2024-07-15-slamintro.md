@@ -18,7 +18,7 @@ SLAM (Simultaneous Localization And Mapping)
 
 # 슬램에 사용되는 하드웨어
 
-<내부>   
+\<내부\>   
 wheel encoder: 이동량을 측정하는 센서   
 <img width="190" alt="002" src="https://github.com/user-attachments/assets/fd10748b-6634-4cc2-8995-5cd128a88e62">   
 사진에서 보여지는 것처럼 LED가 있고 바퀴가 돌면서 센서가 LED를 감지한다.   
@@ -35,7 +35,7 @@ IMU: 차량의 속도, 가속도, 회전 각속도 등을 측정
    
 따라서 slam에선 카메라나 라이다로 오차 줄이는 방법을 이용함.   
 
-<외부>
+\<외부\>
 GNSS   
 <img width="255" alt="004" src="https://github.com/user-attachments/assets/fe53ed50-0a3c-4a76-a417-7db7cc66e9a5">   
 나라마다 시스템이 다르다. GPS(USA), GLONASS(Russia), ...   
