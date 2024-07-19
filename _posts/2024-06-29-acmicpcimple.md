@@ -332,3 +332,44 @@ int main() {
 	return 0;
 }
 ```
+
+## 4659
+```c++
+#include <iostream>
+using namespace std;
+
+int f1, f2, f3, f4;
+char c, temp;
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+	string s;
+
+	while (1) {
+		cin >> s;
+		f1 = f2 = f3 = f4 = 0;
+		if (s == "end") break;
+		for (int i = 0; i < s.length();i++) {
+			if (i != 0) {
+				temp = s[i - 1]; c = s[i];
+				if (temp == c && temp != 'e' && temp != 'o')
+					f4 = 1;
+			}
+			if (s[i] == 'a' || s[i] == 'e' || s[i] == 'i' || s[i] == 'o' || s[i] == 'u') {
+				f3 = 1; f1++; f2 = 0;
+			}
+			else {
+				f2++; f1 = 0;
+			}
+			if (f1 == 3 || f2 == 3)
+				f4 = 1;
+		}
+		if (f3 == 1 && f4 == 0)
+			cout << "<" << s << "> is acceptable.\n";
+		else
+			cout << "<" << s << "> is not acceptable.\n";
+	}
+	return 0;
+}
+```
