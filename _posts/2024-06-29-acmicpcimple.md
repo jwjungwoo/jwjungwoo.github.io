@@ -373,3 +373,50 @@ int main() {
 	return 0;
 }
 ```
+
+## 10709
+```c++
+#include <iostream>
+using namespace std;
+
+string s;
+int v[104][104];
+int h, w, cnt;
+bool flag;
+
+int main() {
+	ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+	cin >> h >> w;
+
+	for (int i = 0; i < h;i++) {
+		cin >> s;
+		cnt = 0;
+		flag = 0;
+		for (int j = 0; j < w;j++) {
+			if (s[j] == '.' && flag == 0) {
+				v[i][j] = -1;
+			}
+			else if (s[j] == 'c') {
+				flag = 1;
+				v[i][j] = 0; 
+				cnt = 0;
+				cnt++;
+			}
+			else {
+				v[i][j] = cnt;
+				cnt++;
+			}
+		}
+	}
+
+	for (int i = 0; i < h;i++) {
+		for (int j = 0; j < w;j++) {
+			cout << v[i][j] << " ";
+		}
+		cout << "\n";
+	}
+
+	return 0;
+}
+```
