@@ -231,3 +231,10 @@ kn.score(test_input, test_target)
    
 <img width="531" alt="잘섞임" src="https://github.com/user-attachments/assets/87b546b6-fc8e-428e-983d-15cbd56a41be">   
 다시 score점수가 100점이 되었다.   
+
+# 4. 정교한 도출을 위한 데이터 전처리
+
+## x축과 y축의 스케일 차이
+25, 150의 샘플을 추측하면 우리는 도미라고 예측할 것이다. 하지만 컴퓨터는 그렇지 않다.   
+<img width="477" alt="잘못된예측" src="https://github.com/user-attachments/assets/ae5ff38b-8c6d-44d8-86db-f73085b50081">   
+
