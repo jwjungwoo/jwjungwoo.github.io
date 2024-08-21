@@ -237,4 +237,12 @@ kn.score(test_input, test_target)
 ## x축과 y축의 스케일 차이
 25, 150의 샘플을 추측하면 우리는 도미라고 예측할 것이다. 하지만 컴퓨터는 그렇지 않다.   
 <img width="477" alt="잘못된예측" src="https://github.com/user-attachments/assets/ae5ff38b-8c6d-44d8-86db-f73085b50081">   
+   
+넘파이로 만들면 편하게 만들 수 있다.   
+<img width="781" alt="넘파이로데이터처리" src="https://github.com/user-attachments/assets/d0787045-981f-4d9c-a26f-6317f063a3c8">   
 
+## 사이킷런으로 데이터 나누기
+
+<img width="466" alt="사이킷런으로데이터나누기" src="https://github.com/user-attachments/assets/8320de88-96c9-4f8b-80cc-33fcf3090486">   
+2개의 배열을 넣으면 4개의 배열이 나오고, 3개의 배열을 넣으면 6개의 배열이 나옴.   
+randon_state는 랜덤씨드인데 중요하진 않다. 넣고싶은 숫자 넣으면 됨.   
