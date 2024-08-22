@@ -1,7 +1,7 @@
 ---
 layout: single
 title:  "LiDAR-camera calibration(실전편)"
-categories: sensorfusion
+categories: sensorFusion
 tag: 
 author_profile: false #true면 글 안에서 내 프로필 보여줌
 sidebar:
