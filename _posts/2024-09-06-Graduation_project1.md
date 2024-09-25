@@ -123,7 +123,7 @@ Label expansion 이상치 감지를 위한 증강 기법이다.시계열 데이�
 
 ## 사용할 증강기법
 
-이미지 증강 중 tensorflow에서 제공하는 기법 중 tf.image메서드를 사용할 것이다.   
+이미지 증강 중 imgaug 라이브러리를 이용해서 (원본1+flip1)Xcutout3X(grayscale2+huesast3)으로 30배 늘릴 것이다.
 
 ## rotation의 문제점
 
