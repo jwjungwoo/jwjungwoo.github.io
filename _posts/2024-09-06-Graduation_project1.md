@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "졸업 프로젝트"
+title:  "졸업 프로젝트(개요)"
 categories: project
 tag: 
 author_profile: false #true면 글 안에서 내 프로필 보여줌
@@ -218,7 +218,7 @@ FLOPs (B): 모델이 연산할 때 요구되는 부동소수점 연산 수(Float
 ## 사용할 버전
 
 자동차가 시속 30km/h로 달린다고 가정했을 때 이는 8.3m/s이며 0.1초당 대략 1m를 이동하는 셈이다.   
-즉, 불법주정차 단속구간에서 적절한 속도로 달렸을 때 0.1초당 1m를 넘게 갈 case가 많을 것으로 판단되어 yolo 모델의 speed가 빠른 모델 즉, 비교적 light한 모델을 사용해야할 것으로 판단해 우선 적당히 똑똑해보이는 YOLOv8s를 사용하기로 결정했다.   
+즉, 불법주정차 단속구간에서 적절한 속도로 달렸을 때 0.1초당 1m를 넘게 갈 case가 많을 것으로 판단되어 yolo 모델의 speed가 빠른 모델 즉, 비교적 light한 모델을 사용해야할 것으로 판단해 우선 적당히 똑똑해보이는 YOLOv8s를 사용하기로 결정했다. 다만 데이터량에 자신이 없는 관계로 overfitting될 수 있기에 yolov5도 학습시켜볼 생각이다.   
 <img width="294" alt="스크린샷 2024-09-13 054710" src="https://github.com/user-attachments/assets/d21abcae-0894-4e8e-90df-3fed7d7fc32a">   
 
 
