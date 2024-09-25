@@ -126,7 +126,19 @@ Label expansion 이상치 감지를 위한 증강 기법이다.시계열 데이�
 이미지 증강 중 tensorflow에서 제공하는 기법 중 tf.image메서드를 사용할 것이다.   
 
 ## rotation의 문제점
-https://developeryoung.tistory.com/6
+데이터 증강과 관련해서 좋은 블로그를 찾아서 여기서 코드를 공부했다. rgb값을 바꾸기 전 rotation과 flip 기술을 이용하려했다. 먼저 colob에서 rotation을 이용해 image와 label 파일을 새롭게 만드는 과정에서 rotation된 라벨이 제대로 된 라벨인지 확인했는데 자동차 크기에 제대로 맞지 않았다.   
+before_rotation   
+![output (1)](https://github.com/user-attachments/assets/a8252dac-2716-42b2-9d07-1c71358d9d87)   
+after_rotation   
+![output](https://github.com/user-attachments/assets/8a767639-d015-4caf-85f1-ced18c98eb66)   
+
+그 원인을 그림 그려 찾으려했는데 아인슈타인처럼 전두엽 주름을 깊게 만들고자 머리속에서 생각해봤는데 그 이유는 다음 그림과 같다.   
+![Screenshot_20240925_170215_Flexcil](https://github.com/user-attachments/assets/50cfa395-7609-49cf-8e48-2b3e60dfe326)   
+rotation된 BB는 기존의 BB를 핏하게 담지만 차량을 핏하게 담는 건 아니다. 따라서 노이즈 이슈로 rotation은 안 쓰기로 했다.
+
+<https://developeryoung.tistory.com/6>
+
+
 # paddle OCR
 설치 명령어
 ```java
@@ -213,7 +225,7 @@ Speed CPU ONNX (ms): CPU에서 ONNX(개방형 신경망 교환 형식) 형식을
 Speed A100 TensorRT (ms): NVIDIA A100 GPU에서 TensorRT(엔비디아의 고성능 추론 라이브러리)를 사용할 때의 추론 속도를 나타낸다. 마찬가지로 밀리초(ms) 단위로 측정되며, 값이 작을수록 속도가 빠르다.   
 Params (M): 모델의 파라미터 수를 백만(M) 단위로 나타낸다. 파라미터 수가 많을수록 모델이 더 복잡하고 메모리를 많이 사용한다.   
 FLOPs (B): 모델이 연산할 때 요구되는 부동소수점 연산 수(Floating Point Operations)를 10억 단위로 나타낸다. 연산량이 많을수록 성능이 강력하지만 속도와 메모리 사용량이 증가할 수 있다.   
-[Ultralytics]: https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes
+<https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes>
 
 ## 사용할 버전
 
