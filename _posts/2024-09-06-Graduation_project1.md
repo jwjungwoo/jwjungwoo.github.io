@@ -126,7 +126,9 @@ Label expansion 이상치 감지를 위한 증강 기법이다.시계열 데이�
 이미지 증강 중 tensorflow에서 제공하는 기법 중 tf.image메서드를 사용할 것이다.   
 
 ## rotation의 문제점
-데이터 증강과 관련해서 좋은 블로그를 찾아서 여기서 코드를 공부했다. rgb값을 바꾸기 전 rotation과 flip 기술을 이용하려했다. 먼저 colob에서 rotation을 이용해 image와 label 파일을 새롭게 만드는 과정에서 rotation된 라벨이 제대로 된 라벨인지 확인했는데 자동차 크기에 제대로 맞지 않았다.   
+데이터 증강과 관련해서 좋은 블로그를 찾아서 여기서 코드를 공부했다.   
+<https://developeryoung.tistory.com/6>   
+rgb값을 바꾸기 전 rotation과 flip 기술을 이용하려했다. 먼저 colob에서 rotation을 이용해 image와 label 파일을 새롭게 만드는 과정에서 rotation된 라벨이 제대로 된 라벨인지 확인했는데 자동차 크기에 제대로 맞지 않았다.   
 before_rotation   
 ![output (1)](https://github.com/user-attachments/assets/a8252dac-2716-42b2-9d07-1c71358d9d87)   
 after_rotation   
@@ -136,9 +138,8 @@ after_rotation
 ![Screenshot_20240925_170215_Flexcil](https://github.com/user-attachments/assets/50cfa395-7609-49cf-8e48-2b3e60dfe326)   
 rotation된 BB는 기존의 BB를 핏하게 담지만 차량을 핏하게 담는 건 아니다. 따라서 노이즈 이슈로 rotation은 안 쓰기로 했다.
 
-<https://developeryoung.tistory.com/6>   
-코드는 적어두겠다.   
 
+코드는 적어두겠다.   
 ```python
 import imgaug as ia # 이미지 증강 library
 import imgaug.augmenters as iaa # 다양한 증강기
@@ -248,6 +249,16 @@ for file in files: # 해당 경로에 있는 모든 파일에 대해
   print(a)
 ```
 
+## horizontal flip
+rotation코드에서 
+```python
+seq = iaa.Sequential([iaa.Affine(rotate = 20)]) # 이미지에 20도 회전을 적용하는 Affine 변환을 정의한 시퀀스(증강 파이프라인)를 생성
+```
+부분을
+```python
+  seq = iaa.Sequential([iaa.Fliplr(1.0)]) # 좌우 반전을 적용하는 Affine 변환을 정의한 시퀀스(증강 파이프라인)를 생성
+```
+로 바꾸면 끝이다( + 파일명만 바꾸기).
 
 # paddle OCR
 설치 명령어
