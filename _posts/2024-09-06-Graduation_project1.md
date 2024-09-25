@@ -125,8 +125,8 @@ Label expansion 이상치 감지를 위한 증강 기법이다.시계열 데이�
 
 이미지 증강 중 tensorflow에서 제공하는 기법 중 tf.image메서드를 사용할 것이다.   
 
-
-
+## rotation의 문제점
+https://developeryoung.tistory.com/6
 # paddle OCR
 설치 명령어
 ```java
@@ -213,7 +213,7 @@ Speed CPU ONNX (ms): CPU에서 ONNX(개방형 신경망 교환 형식) 형식을
 Speed A100 TensorRT (ms): NVIDIA A100 GPU에서 TensorRT(엔비디아의 고성능 추론 라이브러리)를 사용할 때의 추론 속도를 나타낸다. 마찬가지로 밀리초(ms) 단위로 측정되며, 값이 작을수록 속도가 빠르다.   
 Params (M): 모델의 파라미터 수를 백만(M) 단위로 나타낸다. 파라미터 수가 많을수록 모델이 더 복잡하고 메모리를 많이 사용한다.   
 FLOPs (B): 모델이 연산할 때 요구되는 부동소수점 연산 수(Floating Point Operations)를 10억 단위로 나타낸다. 연산량이 많을수록 성능이 강력하지만 속도와 메모리 사용량이 증가할 수 있다.   
-\[Ultralytics]: https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes
+[Ultralytics]: https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes
 
 ## 사용할 버전
 
