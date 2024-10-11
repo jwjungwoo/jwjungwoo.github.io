@@ -802,14 +802,15 @@ cv2.destroyAllWindows()
 ## 평가표
 <img width="536" alt="스크린샷 2024-09-13 053027" src="https://github.com/user-attachments/assets/06794d89-be95-4b90-93a2-5b10e58b6528">   
 Model: 'n'은 Nano, 's'는 Small, 'm'은 Medium, 'l'은 Large, 'x'는 Extra-Large를 의미하며, 각 모델은 크기와 성능에서 차이가 있다.   
-Size (pixels): 입력 이미지의 해상도를 나타낸다. 여기서는 모든 모델에서 640 픽셀 크기의 이미지를 사용합니다.   
+Size (pixels): 입력 이미지의 해상도를 나타낸다. 여기서는 모든 모델에서 640 픽셀 크기의 이미지를 사용다.   
 mAPᵥₐₗ 50-95: "mean Average Precision"의 줄임말로, 모델의 정확도를 평가하는 지표이다. 0.5에서 0.95까지의 IoU(Intersection over Union) 임계값을 기반으로 평균 정확도를 나타낸다. 값이 클수록 모델이 더 정확하게 객체를 탐지한다.   
 Speed CPU ONNX (ms): CPU에서 ONNX(개방형 신경망 교환 형식) 형식을 사용하여 모델이 추론하는 속도를 나타낸다. 밀리초(ms) 단위로 측정되며, 값이 작을수록 속도가 빠르다.   
 Speed A100 TensorRT (ms): NVIDIA A100 GPU에서 TensorRT(엔비디아의 고성능 추론 라이브러리)를 사용할 때의 추론 속도를 나타낸다. 마찬가지로 밀리초(ms) 단위로 측정되며, 값이 작을수록 속도가 빠르다.   
 Params (M): 모델의 파라미터 수를 백만(M) 단위로 나타낸다. 파라미터 수가 많을수록 모델이 더 복잡하고 메모리를 많이 사용한다.   
 FLOPs (B): 모델이 연산할 때 요구되는 부동소수점 연산 수(Floating Point Operations)를 10억 단위로 나타낸다. 연산량이 많을수록 성능이 강력하지만 속도와 메모리 사용량이 증가할 수 있다.   
-<https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes>
-
+<https://docs.ultralytics.com/models/yolov8/#supported-tasks-and-modes>   
+속도와 정확도를 고려했을 때 우린 yolo5su.pt 모델을 사용하기로 했다.   
+  
 ## 사용할 버전
 
 자동차가 시속 30km/h로 달린다고 가정했을 때 이는 8.3m/s이며 0.1초당 대략 1m를 이동하는 셈이다.   
