@@ -608,7 +608,7 @@ for file in files: # 해당 경로에 있는 모든 파일에 대해
   f.close()
 ```
 
-## hum_sat
+## hue_sat
 색조(hue)와 채도(saturation)가 매 사진마다 랜덤으로 바뀐다.  
 
 ```python
