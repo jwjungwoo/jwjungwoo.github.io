@@ -177,9 +177,9 @@ for file in files: # 해당 경로에 있는 모든 파일에 대해
       if boundingboxif[j] == '0': # 자동차
         boundingboxif[j] = 0
       elif boundingboxif[j] == '1': # 오토바이
-        boundingboxif[j] == 1
+        boundingboxif[j] = 1
       elif boundingboxif[j] == '2': # LP
-        boundingboxif[j] == 2
+        boundingboxif[j] = 2
       else:
         x = float(boundingboxif[j])
         boundingboxif[j] = x
@@ -299,9 +299,9 @@ for file in files: # 해당 경로에 있는 모든 파일에 대해
       if boundingboxif[j] == '0': # 자동차
         boundingboxif[j] = 0
       elif boundingboxif[j] == '1': # 오토바이
-        boundingboxif[j] == 1
+        boundingboxif[j] = 1
       elif boundingboxif[j] == '2': # LP
-        boundingboxif[j] == 2
+        boundingboxif[j] = 2
       else:
         x = float(boundingboxif[j])
         boundingboxif[j] = x
@@ -423,9 +423,9 @@ for cnt in range(1,3):
         if boundingboxif[j] == '0': # 자동차
           boundingboxif[j] = 0
         elif boundingboxif[j] == '1': # 오토바이
-          boundingboxif[j] == 1
+          boundingboxif[j] = 1
         elif boundingboxif[j] == '2': # LP
-          boundingboxif[j] == 2
+          boundingboxif[j] = 2
         else:
           x = float(boundingboxif[j])
           boundingboxif[j] = x
@@ -536,9 +536,9 @@ for file in files: # 해당 경로에 있는 모든 파일에 대해
       if boundingboxif[j] == '0': # 자동차
         boundingboxif[j] = 0
       elif boundingboxif[j] == '1': # 오토바이
-        boundingboxif[j] == 1
+        boundingboxif[j] = 1
       elif boundingboxif[j] == '2': # LP
-        boundingboxif[j] == 2
+        boundingboxif[j] = 2
       else:
         x = float(boundingboxif[j])
         boundingboxif[j] = x
@@ -649,9 +649,9 @@ for a in range(1,3):
         if boundingboxif[j] == '0': # 자동차
           boundingboxif[j] = 0
         elif boundingboxif[j] == '1': # 오토바이
-          boundingboxif[j] == 1
+          boundingboxif[j] = 1
         elif boundingboxif[j] == '2': # LP
-          boundingboxif[j] == 2
+          boundingboxif[j] = 2
         else:
           x = float(boundingboxif[j])
           boundingboxif[j] = x
