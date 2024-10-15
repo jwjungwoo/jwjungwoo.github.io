@@ -723,6 +723,9 @@ for a in range(1,3):
 ```
 
 # paddle OCR
+
+## ubuntu 환경
+
 설치 명령어
 ```java
 pip install paddlepaddle
@@ -797,6 +800,29 @@ cap.release()
 cv2.destroyAllWindows()
 ```
 
+## window 환경
+ros를 활용하면서 자연스럽게 ubuntu에서 작업을 했는데 paddleocr를 window에서도 사용하고싶었다.   
+```python
+pip install opencv-python
+
+python -c "import cv2; print(cv2.__version__)"
+
+pip install paddlepaddle
+
+pip install paddleocr
+```
+Python 패키지들이 설치되었지만, 일부 스크립트 파일이 PATH 환경 변수에 추가되지 않았다는 경고가 떴다.   
+   
+제어판 -> 시스템 및 보안 -> 시스템 -> 고급 시스템 설정 -> 환경 변수 -> 시스템 변수 목록에서 path 변수를 선택하고 새로 만들기를 클릭하고 다음 경로를 추가해야했다.   
+<img width="1279" alt="스크린샷 2024-10-09 130957" src="https://github.com/user-attachments/assets/e80118b8-0632-45c0-add1-344384d46c46">   
+   
+```python
+C:\Users\HPUser\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\Scripts
+```
+   
+paddleocr --help 명령어가 제대로 작동하는 것을 보면 설치가 성공적으로 완료된 것이다. 그리고 cuda를 설치한다.   
+<img width="1007" alt="스크린샷 2024-10-09 130545" src="https://github.com/user-attachments/assets/f1df9552-6e30-4426-93d0-9f22ca65c0f6">   
+
 # YOLO
 
 ## 평가표
@@ -817,7 +843,9 @@ FLOPs (B): 모델이 연산할 때 요구되는 부동소수점 연산 수(Float
 즉, 불법주정차 단속구간에서 적절한 속도로 달렸을 때 0.1초당 1m를 넘게 갈 case가 많을 것으로 판단되어 yolo 모델의 speed가 빠른 모델 즉, 비교적 light한 모델을 사용해야할 것으로 판단해 우선 적당히 똑똑해보이는 YOLOv8s를 사용하기로 결정했다. 다만 데이터량에 자신이 없는 관계로 overfitting될 수 있기에 yolov5도 학습시켜볼 생각이다.   
 <img width="294" alt="스크린샷 2024-09-13 054710" src="https://github.com/user-attachments/assets/d21abcae-0894-4e8e-90df-3fed7d7fc32a">   
 
+# 가상환경
 
+## conda
 
 
 
