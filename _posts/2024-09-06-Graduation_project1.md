@@ -11,11 +11,17 @@ sidebar:
 
 # AI 용어
 
+## 기본
+
+pytorch: Python 기반 딥러닝 프레임워크. 동적 그래프를 지원하여 코드 디버깅과 모델 설계가 유연함.   
+cuda: NVIDIA GPU를 이용해 연산 속도를 높이는 병렬 컴퓨팅 플랫폼. 딥러닝 프레임워크들이 GPU 가속을 위해 주로 사용.   
+tensorflow: Google에서 만든 딥러닝 프레임워크로, 딥러닝 모델 학습과 배포를 위한 고성능 계산 그래프 기반 시스템.   
+
 ## 데이터 형식
 
-bounding box : 좌상단부터 시계 방향으로 객체를 박스침   
-segmentation : 객체를 픽셀로 표현함. 선으로 그어놨다고 보면됨. bounding box보다 더 정확함   
-keypoint : 객체 내의 중요한 지점(특징점)을 표현함. segmentation의 축소 버전이라 보면 됨   
+bounding box : 좌상단부터 시계 방향으로 객체를 박스침.   
+segmentation : 객체를 픽셀로 표현함. 선으로 그어놨다고 보면됨. bounding box보다 더 정확함.   
+keypoint : 객체 내의 중요한 지점(특징점)을 표현함. segmentation의 축소 버전이라 보면 됨.   
 
 # 데이터 증강
 
@@ -840,12 +846,110 @@ FLOPs (B): 모델이 연산할 때 요구되는 부동소수점 연산 수(Float
 ## 사용할 버전
 
 자동차가 시속 30km/h로 달린다고 가정했을 때 이는 8.3m/s이며 0.1초당 대략 1m를 이동하는 셈이다.   
-즉, 불법주정차 단속구간에서 적절한 속도로 달렸을 때 0.1초당 1m를 넘게 갈 case가 많을 것으로 판단되어 yolo 모델의 speed가 빠른 모델 즉, 비교적 light한 모델을 사용해야할 것으로 판단해 우선 적당히 똑똑해보이는 YOLOv8s를 사용하기로 결정했다. 다만 데이터량에 자신이 없는 관계로 overfitting될 수 있기에 yolov5도 학습시켜볼 생각이다.   
+즉, 불법주정차 단속구간에서 적절한 속도로 달렸을 때 0.1초당 1m를 넘게 갈 case가 많을 것으로 판단되어 yolo 모델의 speed가 빠른 모델 즉, 비교적 light한 모델을 사용해야할 것으로 판단해 우선 적당히 똑똑해보이는 YOLOv8s를 사용하기로 결정했다. 다만 데이터량에 자신이 없는 관계로 overfitting될 수 있기에 yolov5도 학습시켜볼 생각이다. 결론부터말하면 overfitting이 될 것 같아 yolov5를 썼는데 생각보다 너무 잘됐다.   
 <img width="294" alt="스크린샷 2024-09-13 054710" src="https://github.com/user-attachments/assets/d21abcae-0894-4e8e-90df-3fed7d7fc32a">   
+<img width="1278" alt="record2" src="https://github.com/user-attachments/assets/539436a2-8825-4f48-8346-7c86af854203">   
+테스트 영상은 유투브 블랙박스 광고 영상에서 다운받았다.   
 
-# 가상환경
+# 학교 서버
 
-## conda
+## yolov5 학습 명령어
+0. 실행   
+```java
+$ssh C011092@203.249.75.21 -p 20401
+$ 비밀번호
+$sudo docker start C011092
+$sudo docker exec -it C011092 /bin/bash
+$ cd
 
+//현재 진행 상황 보고싶으면
+$ tail -f /home/C011092/sign/nohup.out
+```
+   
+1. conda 가상환경 만듦   
+```java
+$ conda create -n yolov5 python=3.8
+$ conda activate yolov5
+// 하면 Conda를 초기화해주지 않았다는 에러뜸
+// 따라서 conda init치고 cmd창 끄고 다시 접속해야함.
+// 그리고 conda activate yolov5 치면 정상적으로 작동됨.
+```
+   
+2. cuda 버전 확인   
+```java
+$ nvcc --version
 
+// cuda_11.8이라뜸
+```
+   
+3. 파이토치 설치   
+```java
+// pip을 root 사용자로 실행할 때 발생하는 경고가 뜸
+// 그래도
+$ python
+>>> import torch
+>>> print(torch.__version__)   // 친 결과
+// 2.4.1+cu118라고 잘 떴다.
+// >>>는 exit()명령어를 치면 나갈 수 있다.
+```
+   
+4. yolov5 설치   
+'''java
+$ git clone https://github.com/ultralytics/yolov5
+$ cd yolov5
+$ pip install -r requirements.txt
+
+5. 기타 오류   
+(yolov5) root@TeamC011092:~/yolov5# python3 치니까 yolov8부턴 python 3.10 이상을 요구하지만 내 환경에선 python 3.8.20이 설치됐다는 오류가 떴다. 
+하지만 나는 yolov5를 쓸 거기에 3.8도 사용 가능했다.
+   
+yolov5이름의 conda 가상환경에 
+'''java
+nohup python train.py --img 640 --batch 8 --epochs 30 --data /shareHost/car_bike_lp/data.yaml --weights yolov5s.pt --cache --name vehicles_yolov5s_results > /home/C011092/sign/nohup.out 2>&1 &
+'''
+치면   
+'''java
+(yolov5) root@TeamC011092:~/yolov5# nohup python train.py --img 640 --batch 8 --epochs 30 --data /shareHost/car_bike_lp/data.yaml --weights yolov5s.pt --cache --name vehicles_yolov5s_results > /home/C011092/sign/nohup.out 2>&1 &
+[2] 249
+(yolov5) root@TeamC011092:~/yolov5# 
+'''
+가 뜨는데   
+[2]는 백그라운드 작업 번호를 의미한다. 이는 두 번째 백그라운드 작업임을 나타낸다.   
+249는 해당 프로세스의 **PID(프로세스 ID)**이며 이 번호를 사용하여 프로세스를 모니터링하거나 종료할 수 있다.   
+   
+여기서 나는 데이터 경로 오류가 떠서 상대 경로를 절대 경로로 바꿔주고 학습 명령어를 다시 쳐서 작업번호가 5로 바뀌고 PID도 바꼈다.   
+train: ../train/images   
+val: ../valid/images   
+test: ../test/images   
+   
+nc: 3   
+names: ['LP','bike','car']에서   
+   
+train: /shareHost/car_bike_lp/train/images   
+val: /shareHost/car_bike_lp/valid/images   
+test: /shareHost/car_bike_lp/test/images   
+   
+nc: 3   
+names: ['LP','bike','car']로   
+
+6. 옮기기   
+root내에 파일이 저장됐는데 FileZilla에서 root 접근 권한이 안돼서 shareHost 옮기고 다운로드함.
+'''java
+$ cp /root/yolov5/runs/train/vehicles_yolov5s_results2.tar.gz /shareHost
+'''
+8. 테스트 영상   
+영상 데이터를 shareHost 에 올림.
+'''java
+$ conda activate yolov5  //한 뒤 
+$ cd yolov5
+$ python detect.py --source /shareHost/record1.mp4 --weights /shareHost/vehicles_yolov5s_results2/weights/best.pt //명령어 침
+'''
+
+YOLOv5의 탐지 결과는 기본적으로 runs/detect/exp/ 디렉토리에 저장됨.   
+root내에 파일이 저장됐는데 FileZilla에서 root 접근 권한이 안돼서 shareHost 옮기고 다운로드함.   
+우선 conda환경에서 나가고
+'''java
+$ cp /root/yolov5/runs/detect/exp/test_3.mp4 /shareHost
+'''
+그다음 filezilla에서 다운받으면 끝!   
 
