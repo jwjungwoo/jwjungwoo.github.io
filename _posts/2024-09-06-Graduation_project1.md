@@ -851,7 +851,9 @@ FLOPs (B): 모델이 연산할 때 요구되는 부동소수점 연산 수(Float
 <img width="1278" alt="record2" src="https://github.com/user-attachments/assets/539436a2-8825-4f48-8346-7c86af854203">   
 테스트 영상은 유투브 블랙박스 광고 영상에서 다운받았다.   
 
-# 학교 서버
+# 학교 서버에서 yolov5
+
+필자는 cuda 11.8 version을 미리 설치해뒀다.   
 
 ## yolov5 학습 명령어
 0. 실행
@@ -952,3 +954,30 @@ root내에 파일이 저장됐는데 FileZilla에서 root 접근 권한이 안�
 $ cp /root/yolov5/runs/detect/exp/test_3.mp4 /shareHost
 ```
 그다음 filezilla에서 다운받으면 끝!   
+
+# 노트북에서 yolov5
+
+## 각종 설치
+
+1. 깃설치
+깃을 설치하고 PortableGit파일로 들어가서 git cmd 실행
+```java
+C:\Users\HPUser\Downloads\PortableGit>git clone https://github.com/ultralytics/yolov5
+C:\Users\HPUser\Downloads\PortableGit>cd yolov5
+C:\Users\HPUser\Downloads\PortableGit\yolov5>pip install -r requirements.txt
+```
+
+이때 test영상을 칠 때 git cmd에서 쳐야함.   
+   
+파이썬이 3.8~3.10.x 버전을 요구해서 3.10.7 버전을 다운받았다. 근데 아직 3.11.x 버전을 사용중이긴하다..   
+```java
+$ pip uninstall torch torchvision ultralytics
+$ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+$ pip install ultralytics
+```
+
+```java
+$ where python //으로 파이썬이 어딨는지 확인하는 등 작업을 했다.
+```
+이것저것 헤맸다.. 3.10.7을 지우고 환경변수에서 path 설정에서 python311부분을 지우고 다시 3.10.7을 다운 받았다.   
+
