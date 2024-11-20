@@ -892,26 +892,26 @@ $ python
 ```
    
 4. yolov5 설치
-'''java
+```java
 $ git clone https://github.com/ultralytics/yolov5
 $ cd yolov5
 $ pip install -r requirements.txt
-'''
+```
    
 4. 기타 오류
 (yolov5) root@TeamC011092:~/yolov5# python3 치니까 yolov8부턴 python 3.10 이상을 요구하지만 내 환경에선 python 3.8.20이 설치됐다는 오류가 떴다. 
 하지만 나는 yolov5를 쓸 거기에 3.8도 사용 가능했다.
    
 yolov5이름의 conda 가상환경에 
-'''java
+```java
 nohup python train.py --img 640 --batch 8 --epochs 30 --data /shareHost/car_bike_lp/data.yaml --weights yolov5s.pt --cache --name vehicles_yolov5s_results > /home/C011092/sign/nohup.out 2>&1 &
-'''
+```
 치면   
-'''java
+```java
 (yolov5) root@TeamC011092:~/yolov5# nohup python train.py --img 640 --batch 8 --epochs 30 --data /shareHost/car_bike_lp/data.yaml --weights yolov5s.pt --cache --name vehicles_yolov5s_results > /home/C011092/sign/nohup.out 2>&1 &
 [2] 249
 (yolov5) root@TeamC011092:~/yolov5# 
-'''
+```
 가 뜨는데   
 [2]는 백그라운드 작업 번호를 의미한다. 이는 두 번째 백그라운드 작업임을 나타낸다.   
 249는 해당 프로세스의 **PID(프로세스 ID)**이며 이 번호를 사용하여 프로세스를 모니터링하거나 종료할 수 있다.   
@@ -939,16 +939,16 @@ $ cp /root/yolov5/runs/train/vehicles_yolov5s_results2.tar.gz /shareHost
    
 8. 테스트 영상
 영상 데이터를 shareHost 에 올림.
-'''java
+```java
 $ conda activate yolov5  //한 뒤 
 $ cd yolov5
 $ python detect.py --source /shareHost/record1.mp4 --weights /shareHost/vehicles_yolov5s_results2/weights/best.pt //명령어 침
-'''
+```
    
 YOLOv5의 탐지 결과는 기본적으로 runs/detect/exp/ 디렉토리에 저장됨.   
 root내에 파일이 저장됐는데 FileZilla에서 root 접근 권한이 안돼서 shareHost 옮기고 다운로드함.   
 우선 conda환경에서 나가고
-'''java
+```java
 $ cp /root/yolov5/runs/detect/exp/test_3.mp4 /shareHost
-'''
+```
 그다음 filezilla에서 다운받으면 끝!   
