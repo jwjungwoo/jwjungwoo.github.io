@@ -874,14 +874,14 @@ $ conda activate yolov5
 // 그리고 conda activate yolov5 치면 정상적으로 작동됨.
 ```
    
-2. cuda 버전 확인   
+2. cuda 버전 확인
 ```java
 $ nvcc --version
 
 // cuda_11.8이라뜸
 ```
    
-3. 파이토치 설치   
+3. 파이토치 설치 
 ```java
 // pip을 root 사용자로 실행할 때 발생하는 경고가 뜸
 // 그래도
@@ -892,13 +892,14 @@ $ python
 // >>>는 exit()명령어를 치면 나갈 수 있다.
 ```
    
-4. yolov5 설치   
+4. yolov5 설치
 '''java
 $ git clone https://github.com/ultralytics/yolov5
 $ cd yolov5
 $ pip install -r requirements.txt
-
-5. 기타 오류   
+'''
+   
+4. 기타 오류
 (yolov5) root@TeamC011092:~/yolov5# python3 치니까 yolov8부턴 python 3.10 이상을 요구하지만 내 환경에선 python 3.8.20이 설치됐다는 오류가 떴다. 
 하지만 나는 yolov5를 쓸 거기에 3.8도 사용 가능했다.
    
@@ -929,21 +930,22 @@ val: /shareHost/car_bike_lp/valid/images
 test: /shareHost/car_bike_lp/test/images   
    
 nc: 3   
-names: ['LP','bike','car']로   
+names: ['LP','bike','car']로 설정   
 
-6. 옮기기   
+6. 옮기기
 root내에 파일이 저장됐는데 FileZilla에서 root 접근 권한이 안돼서 shareHost 옮기고 다운로드함.
 '''java
 $ cp /root/yolov5/runs/train/vehicles_yolov5s_results2.tar.gz /shareHost
 '''
-8. 테스트 영상   
+   
+8. 테스트 영상
 영상 데이터를 shareHost 에 올림.
 '''java
 $ conda activate yolov5  //한 뒤 
 $ cd yolov5
 $ python detect.py --source /shareHost/record1.mp4 --weights /shareHost/vehicles_yolov5s_results2/weights/best.pt //명령어 침
 '''
-
+   
 YOLOv5의 탐지 결과는 기본적으로 runs/detect/exp/ 디렉토리에 저장됨.   
 root내에 파일이 저장됐는데 FileZilla에서 root 접근 권한이 안돼서 shareHost 옮기고 다운로드함.   
 우선 conda환경에서 나가고
@@ -951,4 +953,3 @@ root내에 파일이 저장됐는데 FileZilla에서 root 접근 권한이 안�
 $ cp /root/yolov5/runs/detect/exp/test_3.mp4 /shareHost
 '''
 그다음 filezilla에서 다운받으면 끝!   
-
