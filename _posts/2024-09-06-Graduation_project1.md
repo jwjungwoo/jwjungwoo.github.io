@@ -854,19 +854,18 @@ FLOPs (B): 모델이 연산할 때 요구되는 부동소수점 연산 수(Float
 # 학교 서버
 
 ## yolov5 학습 명령어
-0. 실행   
+0. 실행
 ```java
 $ssh C011092@203.249.75.21 -p 20401
 $ 비밀번호
 $sudo docker start C011092
 $sudo docker exec -it C011092 /bin/bash
 $ cd
-
 //현재 진행 상황 보고싶으면
 $ tail -f /home/C011092/sign/nohup.out
 ```
    
-1. conda 가상환경 만듦   
+1. conda 가상환경 만듦
 ```java
 $ conda create -n yolov5 python=3.8
 $ conda activate yolov5
