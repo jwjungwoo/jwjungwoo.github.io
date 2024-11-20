@@ -877,11 +877,10 @@ $ conda activate yolov5
 2. cuda 버전 확인
 ```java
 $ nvcc --version
-
 // cuda_11.8이라뜸
 ```
    
-3. 파이토치 설치 
+3. 파이토치 설치
 ```java
 // pip을 root 사용자로 실행할 때 발생하는 경고가 뜸
 // 그래도
