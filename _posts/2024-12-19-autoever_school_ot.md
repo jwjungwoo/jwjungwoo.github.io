@@ -1,4 +1,4 @@
-![KakaoTalk_20241220_085934912_02](https://github.com/user-attachments/assets/c5ef213b-839f-44d1-a231-27767dbc2167)---
+---
 layout: single
 title:  "현대오토에버 임베디드 sw 스쿨"
 categories: autoever
