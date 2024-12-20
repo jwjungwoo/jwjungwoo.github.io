@@ -11,7 +11,7 @@ sidebar:
 
 # 알게된 계기
 
-![KakaoTalk_20241220_085934912_02](https://github.com/user-attachments/assets/8f498d59-95d5-473a-9426-3456448cb355)   
+<img src="https://github.com/user-attachments/assets/8f498d59-95d5-473a-9426-3456448cb355" width="200" height="200">
 우리학교 학과 건물 구름다리를 지나가면 늘 현수막들이 보인다. 삼성도 보이고, SK도 보인다. 그날은 오토에버 임베디드 sw 스쿨 현수막이 있었다. 현대오토에버를 가고싶었던 나였기에 바로 구글링하여 찾아보았다. 싸피 같은 부트캠프였다. 바로 서류 준비에 들어갔다.
 
 # 왜 오토에버?
