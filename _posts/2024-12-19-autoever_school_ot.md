@@ -10,22 +10,6 @@ sidebar:
 ---
 
 # 알게된 계기
-![KakaoTalk_20241220_085934912_02](https://github.com/user-attachments/assets/8f498d59-95d5-473a-9426-3456448cb355)   
-우리학교 학과 건물 구름다리를 지나가면 늘 현수막들이 보인다. 삼성도 보이고, SK도 보인다. 그날은 오토에버 임베디드 sw 스쿨 현수막이 있었다. 현대오토에버를 가고싶었던 나였기에 바로 구글링하여 찾아보았다. 싸피 같은 부트캠프였다. 바로 서류 준비에 들어갔다.
-
-# 왜 오토에버?
-현대오토에버는 삼성, SK만큼 인지도가 높은 회사는 아니다. 결론부터 말하면 삼성, SK 다 제끼고 우리나라 최고 대기업이다. 오토에버는 현대자동차 그룹의 si(외주)기업으로 현대, 기아의 요청을 받[KakaoTalk_20241220_085934912_02](https://github.com/user-attachments/assets/c5ef213b-839f-44d1-a231-27767dbc2167)---
-layout: single
-title:  "현대오토에버 임베디드 sw 스쿨"
-categories: autoever
-tag: 
-author_profile: false #true면 글 안에서 내 프로필 보여줌
-sidebar:
-    nav: "counts"
-#search: false
----
-
-# 알게된 계기
 
 ![KakaoTalk_20241220_085934912_02](https://github.com/user-attachments/assets/8f498d59-95d5-473a-9426-3456448cb355)   
 우리학교 학과 건물 구름다리를 지나가면 늘 현수막들이 보인다. 삼성도 보이고, SK도 보인다. 그날은 오토에버 임베디드 sw 스쿨 현수막이 있었다. 현대오토에버를 가고싶었던 나였기에 바로 구글링하여 찾아보았다. 싸피 같은 부트캠프였다. 바로 서류 준비에 들어갔다.
