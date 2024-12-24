@@ -55,6 +55,29 @@ int main()
  }
 ```
 
+## 십진법 이진법 전환 코드
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void print_bin(unsigned char reg) {
+	unsigned char tmp = 0x80;
+	for (int i = 0; i < 8;i++) {
+		((reg & (tmp >> i)) == (tmp >> i)) ? putchar('1') : putchar('0');
+	}
+	printf("\r\n");
+}
+
+int main () {
+	unsigned char a = 0b10000101; // 10000101
+	unsigned char b = 92; // 01011100
+	print_bin(a);
+	print_bin(b);
+	return 0;
+}
+```
+
 ## max, min
 
 ```c
@@ -77,7 +100,7 @@ int main() {
 	printf("MIN=%d", min_n);
 }
 ```
-
+   
 # C언어 소개
 
 ## 하드웨어에 적합
@@ -103,7 +126,7 @@ visual stdio는 표준이 아닌걸 추천해줄 때가 있음. scanf는 보안�
 #pragma
 //blah
 ```
-
+   
 # I/O functions
 
 ## fgets
@@ -132,7 +155,7 @@ int main() {
 	}
 }
 ```
-
+   
 # 자료형
 
 ## 무슨 자료형
@@ -157,7 +180,7 @@ visual stdio는 표준이 아닌걸 추천해줄 때가 있음. scanf는 보안�
 #pragma
 //blah
 ```
-
+   
 # I/O functions
 
 ## fgets
