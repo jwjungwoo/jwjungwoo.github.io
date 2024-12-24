@@ -303,6 +303,31 @@ int main()
 ## 파생자료형
 
 예를들면 구조체 같은 것. 기본형을 바탕으로 새로운 것을 만듦.   
+   
+# 비트 연산자
+
+<img src="https://github.com/user-attachments/assets/9f55bfb8-fda4-4fbe-be36-f227bf5a9df8" width="600" height="400">   
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main() {
+	unsigned int a = 0b1001; // = 9
+	unsigned int b = 0b1011; // = 11
+
+	printf("(1) a & b  = %3d\r\n", a & b);
+	printf("(2) a | b  = %3d\r\n", a | b);
+	printf("(3) ~a     = %3d\r\n", ~a); // a = 0000 0000 0000 0000 0000 0000 0000 1001가 1111 1111 ~ 1111 0110 이 되기 때문
+	printf("(4) a ^ b  = %3d\r\n", a ^ b);
+	printf("(5) a << 1 = %3d\r\n", a << 1);
+	printf("(6) a >> 1 = %3d\r\n", a >> 1);
+
+	return 0;
+}
+```
+
+## 종류
 
 # 각종 지식
 
@@ -428,10 +453,11 @@ int main() {
 
 ```c
 typedef struct _TT {
-char 5개
-int 1개
-double 1개
-} TT;인데 이때 사이즈는 24임. 가장 큰놈 기준으로 두고 다른애들 채우는데 이때 미처 채워지지 못한 애들도 사이즈 가장 큰 거 사용해야해서 8 + (4+1+1+1+1) + 1
+char // 5개
+int // 1개
+double // 1개
+} TT; // 인데 이때 사이즈는 24임.
+// 가장 큰놈 기준으로 두고 다른애들 채우는데 이때 미처 채워지지 못한 애들도 사이즈 가장 큰 거 사용해야해서 8 + (4+1+1+1+1) + 1
 ```
 
 ## 비트 최대값
