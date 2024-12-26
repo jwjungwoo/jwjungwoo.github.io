@@ -777,7 +777,7 @@ int main(const int argc, const char* const argv[]) {
     return 0;
 }
 ```
-<img src="https://github.com/user-attachments/assets/08797083-d9a4-4dc8-abd0-f30ee4bb3fa1" width="700" height="700">   
+<img src="https://github.com/user-attachments/assets/f688f0ec-5cc9-460f-8fad-4ea15d37b142" width="700" height="700">   
    
 ✅파일 열어보기
 ```c
