@@ -646,7 +646,7 @@ int main() {
 }
 ```   
    
-✅ 구조체 포인터 (그나마 가장 좋은듯)
+✅ 구조체 포인터 (그나마 좋은듯)   
 ```c
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
@@ -671,7 +671,7 @@ int main() {
 }
 ```   
    
-✅ 참조를 리턴하자 (이 방법은 위험함)   
+✅ 참조를 리턴하자 (이 방법은 매우 위험함)   
 ```c
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
@@ -683,9 +683,9 @@ typedef struct _point_t {
 
 point_t* get_xy() {
 	point_t tmp_pt;
-  //stack에서 저장돼서 tmp가 지워질 수 있는데 
-	//point_t* tmp = (point_t*)malloc(sizeof(point_t)); 이렇게 한다면
-  //heap에 저장돼서 지워지진 않음
+  //stack에서 저장돼서 tmp가 지워질 수 있음
+	//하지만 point_t* tmp = (point_t*)malloc(sizeof(point_t)); 이렇게 한다면
+  //heap에 저장돼서 지워지진 않음. 다만 관리하기 까다로움
 	tmp_pt.x = 33; // (*point).x = 33;
 	tmp_pt.y = 44; // (*point).y = 44;
 	return (&tmp_pt);
