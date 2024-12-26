@@ -850,3 +850,25 @@ pause
 <img src="https://github.com/user-attachments/assets/02ea5807-e237-4023-b22b-f47c13dc7b7c" width="700" height="700">   
 6) 뜬 cmd 창에서 start 누르면 새로 또 뜸. 거기서 명령어 입력하면됨   
 <img src="https://github.com/user-attachments/assets/5a7f9e33-e119-4026-af7f-5be7da640720" width="700" height="700">   
+   
+✅정리
+```c
+// 인자를 받을 필요가 없으면 
+
+int main () {
+	return 0;
+}//하면 되지만
+
+// 받는다면
+int main (int argc, const char* argv[]) { 
+	int exit_code = -1;
+	return 0;
+	
+	if (파일열기가 실패하면) {
+		return exit_code;
+	}
+	else {
+		작동
+	}
+}
+```
