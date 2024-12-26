@@ -752,3 +752,101 @@ int main() {
 ```   
 그럼 보기 화면처럼 aaa, bbb가 111 222로 들어간 것을 볼 수 있다.   
 <img src="https://github.com/user-attachments/assets/485c4a55-9e07-4d83-a540-f5a6946ac098" width="600" height="100">   
+
+## main
+main함수엔 여러 종류가 있다. 많이 본 형태는 요러할 것이다.
+```c
+int main () {
+}
+```   
+   
+✅그럼 아래와 같은 형태는 무엇일까?   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main(const int argc, const char* const argv[]) {  
+    // main함수에 어떤 인자를 받고싶음.
+    // 예를들면 ip주소를 받고싶음.
+    // argc: 인자로 받는 문자 갯수:  192 168 0 1 
+    // test 파일: test argv[0] 192 argv[1] 168 argv[2] 0 argv[3] argv[4]
+    int i = 0;
+    for (i = 0; i < argc; i++) {
+        printf("[%d] argv[%d]: %s\n", (i + 1), i, argv[i]);
+    }
+    return 0;
+}
+```
+<img src="https://github.com/user-attachments/assets/08797083-d9a4-4dc8-abd0-f30ee4bb3fa1" width="700" height="700">   
+   
+✅파일 열어보기
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+
+#define NO_ERR (0)
+#define ERR_NO_FILE_NAME (-1)
+#define ERR_FILE_NOT_FOUND (-2)
+
+int main(int argc, char* argv[]) {
+    //printf("argc: %d\r\n", argc);
+    //for (int i = 0; i < argc; i++) {
+    //    printf("argv[%d]: %s\r\n", i, argv[i]);
+    //}
+
+    FILE* fp = NULL;
+    char file_name[32] = { 0, };
+    int exit_code = 0;
+
+    //if ((file_name==NULL)||(strlen(file_name)==0)) { // 이렇게 할 필요가 없잖아! ㅋㅋ
+    if (argc <= 1) { // 파일 이름을 입력하지 않은 경우... "니가 파일이름 입력 안 한 거야"
+        exit_code = ERR_NO_FILE_NAME;
+        printf("exit_code= %d: 파일 이름을 입력하지 않았네요.\r\n", exit_code);
+    }
+    else { // 파일 이름은 입력했으나 파일이 없는 경우
+        //if (argv[1] != NULL) { strcpy(file_name, argv[1]); }
+        //strcpy(file_name, "test.txt");
+        strcpy(file_name, argv[1]);
+
+        fp = fopen(file_name, "r");
+        if (fp == NULL) { // 파일 이름 입력은 했지만, 해당 파일이 없음
+            exit_code = ERR_FILE_NOT_FOUND;
+            printf("exit_code= %d: %s 파일을 찾을수 없어요.\r\n", exit_code, file_name);
+        }
+        else { // 파일 이름도 입력했고, 파일도 찾아서 정상적으로 open 한 경우
+            exit_code = NO_ERR;
+            printf("exit_code= %d: %s 파일을 열었습니다.\r\n", exit_code, file_name);
+#define BUF_SIZE (128)
+            char buf[BUF_SIZE] = { 0, };
+            fread(buf, sizeof(char), BUF_SIZE - 1, fp);
+            printf("%s\r\n", buf);
+        }
+    }
+
+    return exit_code;
+}
+```
+   
+1)위의 코드를 작성   
+2)폴더->x64->Debug로 들어가서 start.bat , hello.txt 파일 만들기   
+3)start.bat에는   
+```java
+@echo off
+echo Shell Started...
+:repeat
+set /p str=input filename...
+rem echo string is %str%
+ConsoleApplication5.exe %str%
+rem echo [Check Exit Code]: %errorlevel%
+if %errorlevel% EQU -1 goto repeat
+if %errorlevel% EQU -2 goto repeat
+echo Shell Terminated...
+pause
+```
+라고 작성하기   
+4) hello.txt에는 아무렇게나 출력하고 싶은 문구 작성   
+5) 해당 폴더에서 cmd를 검색한다.   
+<img src="https://github.com/user-attachments/assets/02ea5807-e237-4023-b22b-f47c13dc7b7c" width="700" height="700">   
+6) 뜬 cmd 창에서 start 누르면 새로 또 뜸. 거기서 명령어 입력하면됨   
+<img src="https://github.com/user-attachments/assets/5a7f9e33-e119-4026-af7f-5be7da640720" width="700" height="700">   
