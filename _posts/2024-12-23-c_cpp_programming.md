@@ -32,10 +32,10 @@ int main() {
 
 int main()
 {
-int a = 0b1111;
-int b = 017; //8진수는 숫자 앞에 0을 붙임
-int c = 15;
-int d = 0xF;
+  int a = 0b1111;
+  int b = 017; //8진수는 숫자 앞에 0을 붙임
+  int c = 15;
+  int d = 0xF;
 
 	printf("%d %d %d %d", a, b, c, d);
  }
@@ -62,8 +62,9 @@ int main()
 #include <stdio.h>
 
 void print_bin(unsigned char reg) {
-	unsigned char tmp = 0x80;
-	for (int i = 0; i < 8;i++) {
+	unsigned char tmp = 0x80; // unsigned char를 사용한 이유는 크기가 8bit라서.
+  //0x80은 0b100000000임.
+	for (int i = 0; i < 8; i++) {
 		((reg & (tmp >> i)) == (tmp >> i)) ? putchar('1') : putchar('0');
 	}
 	printf("\r\n");
@@ -99,7 +100,7 @@ int main() {
 	printf("MAX=%d\n", max_n);
 	printf("MIN=%d", min_n);
 }
-```
+```   
    
 # C언어 소개
 
@@ -110,11 +111,14 @@ int main() {
  *(volatile unsigned int *)0xABCD = 0x1234; // 주소 0xABCD에 0x1234를 넣는단 뜻.
 ```
 C장점: 하드웨어 제어에 좋은 언어   
-C단점: 1.하드웨어 제어에 좋음(오류뜨면 그냥 컴퓨터 멈춤. 오류 메시지도 안 보여줌) 2.대규모 프로젝트엔 적합하진 않음 3. 객체 동적할당 후 해제해줘야함 (segment fault: 잘못된 메모리에 접근하는 오류. 많이뜸)   
-
+C단점:   
+1. 하드웨어 제어에 좋음(오류뜨면 그냥 컴퓨터 멈춤. 오류 메시지도 안 보여줌)   
+2. 대규모 프로젝트엔 적합하진 않음   
+3. 객체 동적할당 후 해제해줘야함 (segment fault: 잘못된 메모리에 접근하는 오류. 많이뜸)   
+   
 ## visual studio
 
-visual stdio는 표준이 아닌걸 추천해줄 때가 있음. scanf는 보안상 사용하지 않기를 권하면서 scanf_s를 추천한다.(참고로 임베디드에서 scanf 잘 안 씀) 하지만 scanf_s는 표준이 아니기에 사용하는 것을 지양해야한다. 또한   
+visual stdio는 표준이 아닌걸 추천할 가 있음. scanf는 보안상 사용하지 않기를 권하면서 scanf_s를 추천한다.(참고로 임베디드에서 scanf 잘 안 씀) 하지만 scanf_s는 표준이 아니기에 사용하는 것을 지양해야한다. 또한   
 ```c
 // 표준은 이러하지만
 #ifndef _ABC_
@@ -125,7 +129,7 @@ visual stdio는 표준이 아닌걸 추천해줄 때가 있음. scanf는 보안�
 // visual studio는 표준이 아닌 pragma를 추천함
 #pragma
 //blah
-```
+```   
    
 # I/O functions
 
@@ -155,16 +159,6 @@ int main() {
 	}
 }
 ```
-   
-# 자료형
-
-## 무슨 자료형
-변수 이름만 지우면 그 변수의 자료형이 나온다.(강사님께서 열변을 토하심. 화둔 쓰시는 줄베디드는 memory의 주소로 직접가서 값을 넣을 수 있음.   
-```c
- *(volatile unsigned int *)0xABCD = 0x1234; // 주소 0xABCD에 0x1234를 넣는단 뜻.
-```
-C장점: 하드웨어 제어에 좋은 언어   
-C단점: 1.하드웨어 제어에 좋음(오류뜨면 그냥 컴퓨터 멈춤. 오류 메시지도 안 보여줌) 2.대규모 프로젝트엔 적합하진 않음 3. 객체 동적할당 후 해제해줘야함 (segment fault: 잘못된 메모리에 접근하는 오류. 많이뜸)   
 
 ## visual studio
 
@@ -215,8 +209,17 @@ int main() {
 sprintf는 어디 네트워크로 보낼때 해당 문자열로 보내야하기때문에 종종 사용한다하셨다. (알고있어야한다셨음) 주로 문자열을 형식화(formatting) 할 때 사용한다.   
 printf: 형식화된 문자열을 화면에 출력.   
 sprintf: 형식화된 문자열을 변수에 저장.   
-
+   
 # 자료형
+
+## 무슨 자료형
+
+변수 이름만 지우면 그 변수의 자료형이 나온다.(강사님께서 열변을 토하심. 화둔 쓰시는 줄베디드는 memory의 주소로 직접가서 값을 넣을 수 있음.   
+```c
+ *(volatile unsigned int *)0xABCD = 0x1234; // 주소 0xABCD에 0x1234를 넣는단 뜻.
+```
+C장점: 하드웨어 제어에 좋은 언어   
+C단점: 1.하드웨어 제어에 좋음(오류뜨면 그냥 컴퓨터 멈춤. 오류 메시지도 안 보여줌) 2.대규모 프로젝트엔 적합하진 않음 3. 객체 동적할당 후 해제해줘야함 (segment fault: 잘못된 메모리에 접근하는 오류. 많이뜸)   
 
 ## 크기
 
@@ -509,3 +512,165 @@ AF 89 00 00 <- 리틀 엔디안 형태로 저장
 (앞에 생략) FF FF FF 19   
    
 ## 보수법
+
+# 함수
+
+## call by ~
+
+```c
+#include <stdio.h>
+
+// 값에 의한 전달 Call by value (10%)
+void bts(int x) {
+    x = 10; // 복사본만 변경됨
+}
+
+// 포인터를 사용한 원본 수정 Call by reference (90%)
+void exo(int* x) {
+    *x = 10; // 원본 데이터 변경
+}
+
+int main() {
+    int a = 5;
+    bts(a);
+    printf("a: %d\n", a); // 값 변경되지 않음
+
+    int b = 10;
+    exo(&b);
+    printf("b: %d\n", b); // 값이 변경됨
+    return 0;
+}
+```
+
+## 함수의 선언과 정의
+
+함수를 보통 정의하고 main함수를 작성하지만 사실, 선언 먼저하고(=전방선언) main 함수 밑에 정의해도 작동됨. (은근 중요하다 하심)
+또한 선언만 해도 컴파일은 됨. 다만 실행이 안 될 뿐.
+
+## 함수 리턴을 여러 개
+
+✅ 전역 변수 (되긴하지만 가장 안 좋은 방법)   
+```c
+#include <stdio.h>
+
+int x = 0;
+int y = 0;
+
+void func(void) {
+    x = 11;
+    y = 22;
+}
+
+int main() {
+    func();
+
+    printf("x = %d\r\n", x);
+    printf("y = %d\r\n", y);
+
+    return 0;
+}
+```
+✅ 참조 (위의 방법보단 그래도 낫다)   
+```c
+#include <stdio.h>
+
+//int x = 0; // 전역변수는 정말 정말 필요할때가 아니면 쓰지 말자.
+//int y = 0;
+
+void func(int* x, int *y) {
+    *x = 33;
+    *y = 44;
+}
+
+int main() {
+    int a = 0;
+    int b = 0;
+    func(&a, &b);
+
+    printf("a = %d\r\n", a);
+    printf("b = %d\r\n", b);
+
+    return 0;
+}
+```
+✅ 구조체 (공간복잡도가 커지면 복사할 때 안 좋다)   
+```c
+#include <stdio.h>
+
+typedef struct _point_t {
+	int x;
+	int y;
+} point_t;
+
+point_t get_point() {
+	point_t tmp_pt;
+	tmp_pt.x = 33;
+	tmp_pt.y = 44;
+	return (tmp_pt);
+}
+
+int main() {
+	point_t pt1 = { 0,0 };
+	pt1 = get_point();
+
+	printf("point(x,y) = (%d,%d)\r\n", pt1.x, pt1.y);
+
+	return (0);
+}
+```   
+   
+✅ 구조체 포인터 (그나마 가장 좋은듯)
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+typedef struct _point_t {
+	int x;
+	int y;
+} point_t;
+
+void get_xy(point_t* point) {
+	point->x = 33; // (*point).x = 33;
+	point->y = 44; // (*point).y = 44;
+}
+
+int main() {
+	point_t pt1 = { 0,0 };
+	get_xy(&pt1);
+
+	printf("point(x,y) = (%d,%d)\r\n", pt1.x, pt1.y);
+
+	return (0);
+}
+```   
+   
+✅ 참조를 리턴하자 (이 방법은 위험함)   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+typedef struct _point_t {
+	int x;
+	int y;
+} point_t;
+
+point_t* get_xy() {
+	point_t tmp_pt;
+  //stack에서 저장돼서 tmp가 지워질 수 있는데 
+	//point_t* tmp = (point_t*)malloc(sizeof(point_t)); 이렇게 한다면
+  //heap에 저장돼서 지워지진 않음
+	tmp_pt.x = 33; // (*point).x = 33;
+	tmp_pt.y = 44; // (*point).y = 44;
+	return (&tmp_pt);
+}
+
+int main() {
+	point_t* pt1 = NULL;
+	pt1 = get_xy();
+
+	printf("point(x,y) = (%d,%d)\r\n", pt1->x, pt1->y);
+
+	return (0);
+}
+```
+✅ 값 객체(Value Object), 출력 매개변수
