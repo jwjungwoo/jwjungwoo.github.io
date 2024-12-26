@@ -32,10 +32,10 @@ int main() {
 
 int main()
 {
-	int a = 0b1111;
-    int b = 017; //8진수는 숫자 앞에 0을 붙임
-	int c = 15;
-	int d = 0xF;
+int a = 0b1111;
+int b = 017; //8진수는 숫자 앞에 0을 붙임
+int c = 15;
+int d = 0xF;
 
 	printf("%d %d %d %d", a, b, c, d);
  }
