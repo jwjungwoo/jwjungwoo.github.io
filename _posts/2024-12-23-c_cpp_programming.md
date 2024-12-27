@@ -439,7 +439,7 @@ int main() {
 ✅변수 주소에 저장된 값 직접 찾아볼 땐 어떻게 하나?   
 
 1) 왼쪽에 빨간색점으로 디버그 중단점을 지정한다   
-<img src="https://github.com/user-attachments/assets/85cf8536-da8b-4548-ac11-fba248896032" width="600" height="100">   
+<img src="https://github.com/user-attachments/assets/85cf8536-da8b-4548-ac11-fba248896032" width="100" height="600">   
 2) ctrl + f5말고 f5를 누른다   
 3) 좌측 하단에 조사식 클릭, 검색에 x, &x 등을 찾아볼 수 있음   
 <img src="https://github.com/user-attachments/assets/16eb7df1-91dd-44e2-9f9d-70d906fa40dc" width="400" height="400">   
@@ -545,7 +545,7 @@ int main() {
 ## 배열의 장단점
 ✅배열의 장점   
 1. 빠른 접근 가능   
-2. 메모리 사용량 쉽게 관리
+2. 메모리 사용량 쉽게 관리   
 ✅배열의 단점   
 1. 고정된 크기 (malloc 통해서 해결가능하긴함)   
 2. 자료의 삽입,삭제의 비효율성   
