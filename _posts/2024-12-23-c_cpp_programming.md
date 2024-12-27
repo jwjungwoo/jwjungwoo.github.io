@@ -1051,6 +1051,7 @@ int main() {
 ## 실습: library
 
 <img src="https://github.com/user-attachments/assets/80d6d038-d039-42a7-9ea4-5a425e3d3c71" width="700" height="700">   
+   
 ✅book.c   
 ```c
 #include "book.h"
