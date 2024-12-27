@@ -110,8 +110,8 @@ int main() {
 ```c
  *(volatile unsigned int *)0xABCD = 0x1234; // 주소 0xABCD에 0x1234를 넣는단 뜻.
 ```
-C장점: 하드웨어 제어에 좋은 언어   
-C단점:   
+✅C장점: 하드웨어 제어에 좋은 언어   
+✅C단점:   
 1. 하드웨어 제어에 좋음(오류뜨면 그냥 컴퓨터 멈춤. 오류 메시지도 안 보여줌)   
 2. 대규모 프로젝트엔 적합하진 않음   
 3. 객체 동적할당 후 해제해줘야함 (segment fault: 잘못된 메모리에 접근하는 오류. 많이뜸)   
@@ -213,7 +213,7 @@ sprintf: 형식화된 문자열을 변수에 저장. 문자열을 return하며 �
 
 ## 무슨 자료형
 
-변수 이름만 지우면 그 변수의 자료형이 나온다.(강사님께서 열변을 토하심. 임베디드는 memory의 주소로 직접가서 값을 넣을 수 있음.   
+변수 이름만 지우면 그 변수의 자료형이 나온다. (강사님께서 열변을 토하심. 임베디드는 memory의 주소로 직접가서 값을 넣을 수 있음.   
 ```c
  *(volatile unsigned int *)0xABCD = 0x1234; // 주소 0xABCD에 0x1234를 넣는단 뜻.
 ```
@@ -302,12 +302,14 @@ int main()
 
 예를들면 구조체 같은 것. 기본형을 바탕으로 새로운 것을 만듦.   
    
-# 비트 연산자
+# 비트
 
-## 종류
+## 비트연산자 종류
 <img src="https://github.com/user-attachments/assets/9f55bfb8-fda4-4fbe-be36-f227bf5a9df8" width="600" height="400">   
 
 ## 예시
+
+✅예시1   
 ```c
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
@@ -326,6 +328,37 @@ int main() {
 	return 0;
 }
 ```   
+   
+✅예시2   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main() {
+
+	unsigned int a = 15;// 0 1111
+	unsigned int b = 20;// 1 0100
+
+	printf("(1) a & b  = %3d\r\n", a & b);		// 4
+	printf("(2) a | b  = %3d\r\n", a | b);		// 31
+	printf("(3) ~a     = %3d\r\n", ~a);			// -16
+	printf("(4) a ^ b  = %3d\r\n", a ^ b);		// 27
+	printf("(5) a << 1 = %3d\r\n", a << 1);		// 30
+	printf("(6) a >> 1 = %3d\r\n", a >> 1);		// 7
+
+	return 0;
+}
+```
+
+## 임베디드 비트연산
+
+mcu에서 특정 회로를 키기 위해 사용   
+```c
+// ex) 모두 키고싶다
+PORTA = 0xFF //PORTA = 0b11111111 : 이런식으로 해도되는데 빠질 수 있기에 보통 16진수로 표현함.
+// 상위 4비트만 키고싶다
+PORTB = 0xF0
+```
 
 # 각종 지식
 
@@ -543,6 +576,7 @@ int main() {
 *parr + 1 : parr값에서 1을 증가시켜라   
 
 ## 배열의 장단점
+
 ✅배열의 장점   
 1. 빠른 접근 가능   
 2. 메모리 사용량 쉽게 관리
@@ -730,7 +764,7 @@ void func() { //중복정의는 불가능
 ## 매크로
 매크로 함수란 #define문을 통해서 함수 처럼 동작하는 매크로를 말한다. 일반적인 함수와 전혀 상관 없음
 
-✅#define문이 어떻게 컴파일 되는지 확인하기
+✅#define문이 어떻게 컴파일 되는지 확인하기   
 <img src="https://github.com/user-attachments/assets/339bdc04-670a-49d0-bac6-8eab58ff8296" width="500" height="500">   
 위의 사진과 같이 프로젝트 속성 -> C/C++ -> 전처리기에 가서 파일로 전처리를 "예"로 바꿔준다. 그리고 프로젝트 파일에서 잘 뒤져서 main.i 파일을 찾는다. (파일 이름은 다를 수 있음) 찾은 main.i 파일을 리소스 파일에 추가하고,
 ctrl + f5가 아닌 ctrl + shift + b를 눌러 빌드를 한다.   
@@ -873,3 +907,291 @@ int main (int argc, const char* argv[]) {
 	}
 }
 ```
+
+# sht85 온도센서 만들기 실습
+
+## 개요
+
+임베디드 코딩은 특정 장치를 키고 끄는 코딩을 많이 한다. 센서에 해당하는 데이터형을 만들고, 
+센서의 동작을 함수로 구현한다. "어떤 동작을 할 것인가?"라는 생각을 갖고 구현하면된다.(온도를 읽겠지, 센서 같은 경우엔 초기화해야할 수 있음)
+
+```c
+double temp;
+double humi;를 따로 두면 연관성이 없어보이니 구조체로 묶음.
+
+typedef struct _sht85_t { //구조체 이름, 함수 이름 잘 지어야함.
+	double temp; // 데이터 사이즈 줄이거나 패킷을 줄이기 위해 int로 설정해도됨. 주고받은 후 나누기 10하면 되기때문.
+	double humi;
+} sht85_t;
+```
+
+## sht85.h
+```c
+#pragma once
+#include <stdio.h>
+
+//구조체 선언
+typedef struct _sht85_t { //구조체 이름, 함수 이름 잘 지어야함.
+	double temp;
+	double humi;
+	int cmd;
+	int a;
+} sht85_t;
+
+sht85_err_t sht85_init(sht85_t * sht85);
+void sht85_read(sht85_t* sht85); //main.c 목록 내려보면 함수들이 알파벳순으로 정렬돼서 보기 편함.
+void sht85_write(sht85_t* sht85, int cmd);
+void sht85_printf(sht85_t* sht85);
+
+typedef enum _sht85_err_t { //mcu가 센서와 연결되고 초기화할 때 문제가 있으면 화면에 알려주기 위해.
+	SHT_OK = 0x00, // no error
+	SHT_ERR_WRITECMD = 0x81, // I2C write failed
+	SHT_ERR_READBYTES = 0x82, // I2C read failed
+	SHT_ERR_HEATER_OFF = 0x83 // Could not switch off heater
+} sht85_err_t;
+```
+
+## sht85.c
+```c
+#include "sht85.h"
+#include <stdio.h>
+
+//멤버 변수 초기화
+sht85_err_t sht85_init(sht85_t* sht85) {
+	sht85_err_t err = SHT_ERR_HEATER_OFF;
+	sht85->temp = 0.0;
+	sht85->humi = 0.0;
+	sht85->cmd = 0;
+	sht85->a = 0;
+	return err;
+}
+
+// 하드웨어에 있는 값을 구조체로 옮김
+void sht85_read(sht85_t* sht85) {
+	sht85->temp = 12.34;
+	sht85->humi = 56.78;
+}
+
+void sht85_write(sht85_t* sht85, int cmd) { //cmd는 mcu에서 센서 모드 바꿀 때 씀.
+	//예를들어 저전력으로 구성하고싶다면 
+	// 1. mcu에 내재된 clock이 스스로 함수 작동
+	// 2. 외부에 연결된 버튼 누르면 함수 작동
+	sht85->cmd = cmd;
+}
+
+void sht85_print(sht85_t* sht85) {
+	printf("(temp,humi)=(%4.2f, %4.2f)", sht85->temp, sht85->humi);
+}
+```
+
+## main.c
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include "sht85.h"
+
+int main() {
+
+	sht85_t sht85;
+
+	sht85_err_t sht85_err;
+	sht85_err = sht85_init(&sht85);
+
+	switch (sht85_err) {
+	case SHT_OK:
+		// asdfkjasdklj
+		break;
+	case SHT_ERR_WRITECMD:
+		// asdfkljasdkjlfds
+		break;
+	case SHT_ERR_READBYTES:
+		// asdkfjasldkjfjk
+		break;
+	case SHT_ERR_HEATER_OFF:
+		// klajsdfkjasdfjadkjlf
+		break;
+	}
+	sht85_init(&sht85);
+	sht85_read(&sht85);
+	sht85_print(&sht85);
+
+	return 0;
+}
+```
+
+# 구조체
+
+## 개요
+
+## strcpy
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+
+typedef struct _book_t {
+	char title[128];
+	int price;
+	char author[128];
+} book_t;
+
+int main() {
+	book_t book1 = { "이런책",1000,"하쿠" };
+	book_t book2 = { "저런책",1200,"겨울" };
+	strcpy(book2.title, "그런책");
+	book2.price = 2000;
+	
+	printf("%s %d %s\n", book1.title, book1.price, book1.author);
+	printf("%s %d %s", book2.title, book2.price, book2.author);
+}
+```
+
+## 실습: library
+
+<img src="https://github.com/user-attachments/assets/80d6d038-d039-42a7-9ea4-5a425e3d3c71" width="700" height="700">   
+✅book.c   
+```c
+#include "book.h"
+
+void book_init(book_t* book, char* title, char* author, int price) {
+	strcpy(book->title, title);
+	strcpy(book->author, author);
+	book->price = price;
+}
+
+void book_print(book_t* book) {
+	static count = 0;
+	printf("[%d] %s / %s / \\%d\r\n", ++count, (*book).title, (*book).author, (*book).price);
+}
+
+void books_print(book_t(*books)[], int count) {
+	for (int i = 0; i < count;i++) {
+		book_print((*books) + i);
+	}
+}
+```   
+✅library.c
+```c
+#include "library.h"
+
+void lib_init(library_t* lib, char* name) { // 도서관을 초기화
+	strcpy(lib->name, name);
+	lib->count = 0;
+	for (int i = 0; i < MAX_BOOKS; i++) {
+		lib->books[i] = NULL;
+	}
+}
+
+void lib_add_book(library_t* lib, book_t* book) { // 도서관에 책을 들여옴(=신규서적)
+	lib->books[lib->count++] = book;
+}
+
+void lib_remove_book(library_t* lib, book_t* book) { // 도서관에서 책이 나감(=분실됨 or 파기됨)
+}
+
+void lib_print_all_books(library_t* lib) { // 도서관의 모든 책을 보여줘
+	for (int i = 0; i < lib->count; i++) {
+		printf("[%d] ", (i + 1));
+		book_print(lib->books[i]);
+	}
+}
+
+//void borrow_book(book_t* book) { // 책을 빌리다. 
+// }
+
+
+//void return_book(book_t* book) { // 책을 반납하다.
+//}
+```   
+✅main.c   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <string.h>
+
+#include "book.h"
+#include "library.h"
+
+int main(void) {
+
+	// 책
+	book_t book[3];
+
+	book_t sel_books[3]; // samsung_elementary_literaure_books 삼성 초등 문학 전집 sel_books
+	book_t mel_books[3]; // 민음사.. 
+
+	book_init(&sel_books[0], "15 소년 표류기", "쥘 베른", 5555);
+	book_init(&sel_books[1], "장발장", "빅토르 위고", 5555);
+	book_init(&sel_books[2], "걸리버 여행기", "조나단 스위프트", 5555);
+
+	book_init(&mel_books[0], "리어왕", "윌리엄 셰익스피어", 4444);
+	book_init(&mel_books[1], "동물 농장", "조지 오웰", 4444);
+	book_init(&mel_books[2], "파리대왕", "윌리엄 골딩", 4444);
+
+	books_print(&sel_books, 3);
+	books_print(&mel_books, 3);
+	printf("\n\n\n");
+
+	// 도서관
+	library_t lib;
+	lib_init(&lib, "남산");
+
+	lib_add_book(&lib, &sel_books[0]); // "야옹이 수영교실" 을 구매함
+	lib_add_book(&lib, &sel_books[1]); // "천개산 패밀리 1"을 구매함
+	lib_print_all_books(&lib); // 도서관에 있는 모든 책을 보여줘.
+
+	lib_add_book(&lib, &mel_books[2]); // "세상은 이야기로 만들어졌다"을 추가로 구매함
+	lib_print_all_books(&lib); // 도서관에 있는 모든 책을 보여줘.
+
+	return 0;
+}
+```   
+✅book.h   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#ifndef __BOOK_T__
+#define __BOOK_T__
+
+#include <stdio.h>
+#include <string.h>
+
+typedef struct _book_t {
+	char title[128];
+	char author[128];
+	int price;
+} book_t;
+
+void book_init(book_t* book, char* title, char* author, int price);
+void book_print(book_t* book);
+void books_print(book_t(*books)[], int count);
+
+#endif
+```   
+✅library.h   
+```c
+#ifndef __LIBRARY_T__
+#define __LIBRARY_T__
+
+#include "book.h"
+
+#define MAX_BOOKS (3)
+
+typedef struct _library_t {
+	char name[64]; // 도서관 이름, 예를 들면 남산 도서관
+	int count; // 책의 총 갯수
+	book_t* books[MAX_BOOKS]; // 책장, 서가?
+} library_t;
+
+void lib_init(library_t* lib, char* name); // 도서관을 초기화
+void lib_add_book(library_t* lib, book_t* book); // 도서관에 책을 들여옴(=신규서적)
+void lib_remove_book(library_t* lib, book_t* book); // 도서관에서 책이 나감(=분실됨 or 파기됨)
+void lib_print_all_books(library_t* lib); // 도서관의 모든 책을 보여줘     
+//void borrow_book(book_t* book); // 책을 빌리다. 
+//void return_book(book_t* book); // 책을 반납하다.
+
+#endif
+```   
