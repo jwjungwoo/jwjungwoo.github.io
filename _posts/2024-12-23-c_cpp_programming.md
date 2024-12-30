@@ -1196,3 +1196,92 @@ void lib_print_all_books(library_t* lib); // 도서관의 모든 책을 보여�
 
 #endif
 ```   
+
+## union
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+typedef union _jw_t {
+	int a;
+	int b;
+} jw_t;
+
+int main() {
+
+	jw_t jw;
+	jw.a = 11; jw.b = 22;
+
+	printf("%d %d", jw.a, jw.b);
+
+	return 0;
+}
+```
+
+## 구조체 비트 필드
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+
+typedef struct _bts_t {
+	uint8_t a : 4;
+	uint8_t b : 3;
+	uint8_t c : 1;
+
+	uint8_t d;
+	uint8_t e;
+	uint8_t f;
+	//a b c는 세 개 합쳐서 8byte고 d e f는 각각 8byte임.
+} bts_t;
+
+
+int main(void) {
+	bts_t bts;
+	bts.a = 0x0F;
+	bts.b = 0x07;
+	bts.c = 0x01;
+
+	printf("bts.a, bts.b, bts.c= (%d,%d,%d)\r\n", bts.a, bts.b, bts.c);
+
+	// 범위를 넘어가면 어찌될까?
+	bts.a = 0x10;
+	bts.b = 0x08;
+	bts.c = 0x02;
+	// 범위를 넘어가는 값은 무시된다.
+	printf("bts.a, bts.b, bts.c= (%d,%d,%d)\r\n", bts.a, bts.b, bts.c);
+
+	return 0;
+}
+```
+
+## 구조체 "="연산
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+typedef struct _jw_t {
+	int a;
+	int b;
+
+}jw_t;
+
+
+int main(void) {
+
+	jw_t a;
+	a.a = 11;
+	a.b = 12;
+
+	jw_t b;
+	b.a = 13;
+	b.b = 14;
+
+	b = a;
+
+	printf("%d %d", b.a, b.b); // 11 12 출력됨
+	return 0;
+}
+```
