@@ -1485,6 +1485,79 @@ int main(void) {
 }
 ```
 
+## 패딩
+
+✅ 패딩 예시
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stddef.h>
+#include <stdint.h>
+
+// 컴파일할 때 _node 전체를 한번 훑고 최대 사이즈가 4인걸 보고 구조체 사이즈를 조정한다.
+// 변수 사이즈 순서에 따라 크기가 달라진다.
+// abcd -> 16
+// acbd -> 12
+struct _node {
+	uint16_t a; // 2
+	uint8_t  c;  // 1
+	uint32_t b; // 4
+	uint32_t d; // 4
+};
+int main(void) {
+
+	struct _node node = { 1,2,3,4 };
+	printf("%d, %d, %d, %d\n", node.a, node.b, node.c, node.d);
+
+	printf("%d\n", offsetof(struct _node, a));
+	printf("%d\n", offsetof(struct _node, b));
+	printf("%d\n", offsetof(struct _node, c));
+	printf("%d\n", offsetof(struct _node, d));
+	printf("%d\n", sizeof(node));
+
+	return 0;
+}
+```
+
+✅ pragma pack   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stddef.h>
+#include <stdint.h>
+
+// 컴파일할 때 _node 전체를 한번 훑고 최대 사이즈가 4인걸 보고 구조체 사이즈를 조정한다.
+// 변수 사이즈 순서에 따라 크기가 달라진다.
+// abcd -> 16
+// acbd -> 12
+
+#pragma pack(push, 1) // 1은 정렬단위 숫자다. 여기엔 2 3 4...등 숫자가 자유롭게 들어갈 수 있다.
+// 이렇게 하면 1단위로 padding이 사라진다. 즉, padding이 아예 없어져 순서를 어떻게 바꾸든 size는 11이다.
+struct _node {
+	uint16_t a; // 2
+	uint32_t b; // 4
+	uint8_t  c;  // 1
+	uint32_t d; // 4
+};
+#pragma pack(pop)
+
+int main(void) {
+
+	struct _node node = { 1,2,3,4 };
+	printf("%d, %d, %d, %d\n", node.a, node.b, node.c, node.d);
+	
+	printf("%d\n", offsetof(struct _node, a));
+	printf("%d\n", offsetof(struct _node, b));
+	printf("%d\n", offsetof(struct _node, c));
+	printf("%d\n", offsetof(struct _node, d));
+	printf("%d\n", sizeof(node));
+
+	return 0;
+}
+```
+
 # 문자열
 
 ## 첫번째 문자열 예제: char[] vs char*
@@ -1626,3 +1699,77 @@ int main() {
    
 ✅ ‘0’은 0과 아무 상관없다.   
 0x30이다.   
+
+## string.h
+
+✅ strcpy   
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <string.h>
+
+void my_strcpy(char* dst, char* src) {
+	if (dst == NULL) return;
+	if (src == NULL) return;
+
+	while (*src != '\0') {
+		*dst = *src;
+		src += 1;
+		dst += 1;
+	}
+	*dst = '\0';
+	return;
+}
+
+int main(void) {
+
+	char dst[32] = { 0, };
+	char src[32] = "aaa yyy zzzz aaa";
+
+	my_strcpy(dst, src);
+	printf("%s\n", dst);
+	printf("%s\n", src);
+
+	return 0;
+}
+```
+
+✅ strcat   
+c++의 append() 기능을 한다.   
+   
+✅ strcmp, strncmp   
+   
+strcmp   
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str1[] = "hello";
+    char str2[] = "world";
+    char str3[] = "hello";
+
+    printf("strcmp(str1, str2): %d\n", strcmp(str1, str2));  // 음수
+    printf("strcmp(str1, str3): %d\n", strcmp(str1, str3));  // 0
+
+    return 0;
+}
+```   
+   
+strncmp
+```c
+#include <stdio.h>
+#include <string.h>
+
+int main() {
+    char str1[] = "hello";
+    char str2[] = "helicopter";
+
+    printf("strncmp(str1, str2, 3): %d\n", strncmp(str1, str2, 3));  // 0 (앞 3글자가 같음)
+    printf("strncmp(str1, str2, 5): %d\n", strncmp(str1, str2, 5));  // 양수 (4번째 문자부터 다름)
+
+    return 0;
+}
+```
