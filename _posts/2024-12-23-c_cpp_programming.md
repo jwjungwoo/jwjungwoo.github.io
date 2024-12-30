@@ -1235,6 +1235,7 @@ int main() {
 ```
 
 ## 구조체 비트 필드
+
 ```c
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -1302,10 +1303,10 @@ int main(void) {
 }
 ```
 
-
-
 ## 구조체 안에 배열
+
 구조체 안에 배열을 넣는 것은 좋지 않다. 왜냐하면 padding때문이다. 배열을 넣더라도 배열의 참조를 넣는 것이 좋다!   
+
 ```c
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
@@ -1398,7 +1399,6 @@ typedef union _ctp_t {
     } subset;
 } ctp_t;
 
-
 void print_ctp(const ctp_t* ctp) {
     //printf("%02X ", ctp->head);
     for (int i = 0; i < CTP_SIZE; i++) {
@@ -1411,7 +1411,7 @@ int main() {
     uint8_t rx_data[CTP_SIZE] = { 0xAA, 0x12, 0x13, 0x14, 0x15, 0x16, 0xBB };
     ctp_t ctp = { 0, };
 
-    memcpy(ctp.all, rx_data, CTP_SIZE); // 구조체로 memcpy는 안되나?
+    memcpy(ctp.all, rx_data, CTP_SIZE);
     //ctp.head = rx_data[0];
     //ctp.body[0] = rx_data[1];
     //ctp.body[1] = rx_data[2];
@@ -1422,5 +1422,61 @@ int main() {
 
     print_ctp(&ctp);
     return 0;
+}
+```
+
+## 공용체의 유용함: 레지스터의 비트 파싱
+
+<img src="https://github.com/user-attachments/assets/34616679-0763-4c1a-ae48-a22e35bf5a09" width="700" height="700">   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <string.h>
+#include <stdint.h>
+
+typedef union _uartdr_t {
+	uint16_t all; // (1) 요게 뽀인뜨! 중요하닷!
+	struct {
+		uint16_t reserved : 4; // (2) reserved, oe, be 적는 순서를 신경쓰는게 좋다.
+		uint16_t oe : 1; // oeverrun error
+		uint16_t be : 1; // break error
+		uint16_t pe : 1; // parity error
+		uint16_t fe : 1; // framing error
+		uint16_t data : 8;
+	} bits;
+} uartdr_t;
+
+void init_uartdr(uartdr_t* uartdr) {
+	uartdr->bits.reserved = 0;
+	uartdr->bits.oe = 0;
+	uartdr->bits.be = 0;
+	uartdr->bits.pe = 0;
+	uartdr->bits.fe = 0;
+	uartdr->bits.data = 0;
+
+	uartdr->all = 0;
+}
+
+void print_all_bits_uartdr(uartdr_t* uartdr) {
+	printf("%02X", uartdr->all);
+}
+
+// 위의 바이트 파싱 같이 받아오는 코드는 작성하지 않았지만 똑같이 할 수 있음.
+int main(void) {
+	uartdr_t uartdr;
+
+	init_uartdr(&uartdr);
+
+	uartdr.bits.oe = 1;
+	uartdr.bits.be = 1;
+	uartdr.bits.pe = 1;
+	uartdr.bits.fe = 1;
+	uartdr.bits.data = 0x42; // 'B' 
+	// 0000 1111 0100 0001 = 0F 42
+
+	print_all_bits_uartdr(&uartdr);
+
+	return 0;
 }
 ```
