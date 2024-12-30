@@ -1381,6 +1381,7 @@ int main() {
 ```
 
 ## 공용체의 유용함: 패킷의 바이트 파싱
+
 ```c
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -1428,6 +1429,7 @@ int main() {
 ## 공용체의 유용함: 레지스터의 비트 파싱
 
 <img src="https://github.com/user-attachments/assets/34616679-0763-4c1a-ae48-a22e35bf5a09" width="700" height="700">   
+
 ```c
 #define _CRT_SECURE_NO_WARNINGS
 
@@ -1462,21 +1464,57 @@ void print_all_bits_uartdr(uartdr_t* uartdr) {
 	printf("%02X", uartdr->all);
 }
 
-// 위의 바이트 파싱 같이 받아오는 코드는 작성하지 않았지만 똑같이 할 수 있음.
 int main(void) {
 	uartdr_t uartdr;
 
 	init_uartdr(&uartdr);
 
-	uartdr.bits.oe = 1;
-	uartdr.bits.be = 1;
-	uartdr.bits.pe = 1;
-	uartdr.bits.fe = 1;
-	uartdr.bits.data = 0x42; // 'B' 
+	//uartdr.bits.oe = 1;
+	//uartdr.bits.be = 1;
+	//uartdr.bits.pe = 1;
+	//uartdr.bits.fe = 1;
+	//uartdr.bits.data = 0x42; // 'B' 
 	// 0000 1111 0100 0001 = 0F 42
+	
+	uint16_t rx_data = 0b0000111101000010;
+	uartdr.all = rx_data;
 
 	print_all_bits_uartdr(&uartdr);
 
 	return 0;
 }
 ```
+
+# 문자열
+
+## 첫번째 문자열 예제: char[] vs char*
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h.>
+#include <string.h>
+
+int main() {
+#define STR_SIZE 32
+	unsigned char  str1[STR_SIZE + 1] = { 'a', 'b', 'c', 'd', 'e', 0 }; // (1) 배열로 만들기
+	unsigned char* str2 = "xyz"; // (2) 포인터로 만들기 : char array를 가리키는 포인터임. 관례상 문자열 포인터라 부름.
+
+	printf("%s\r\n", str1);
+	printf("%s\r\n", str2);
+
+	printf("%zu\r\n", strlen(str1));
+	printf("%zu\r\n", strlen(str2));
+
+	// 문자열 내의 요소 출력하기
+	printf("%c %c %c\r\n", str1[0], str1[2], str1[4]);
+	printf("%c %c %c\r\n", str2[0], str2[1], str2[2]);
+
+	return 0;
+}
+```
+
+✅ 어렵지는 않지만 알아두어야 할점   
+1. 1차원 배열의 경우 배열 요소 갯수를 생략할수 있다.   
+2. 2차원 배열에서도 첫 요소 갯수는 생략가능하다.   
+  - 예를 들어 str_arr[10][16]에서 10은 생략 가능. 16은 생략 불가능!
+  - 근데 보통 문자열은 2차원을 쓰는 경우가 드물다.
