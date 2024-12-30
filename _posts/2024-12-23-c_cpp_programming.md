@@ -250,6 +250,22 @@ sizeof(float) = 4
 sizeof(double) = 8
 ```
 
+## 주소는 unsigned int 타입
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main() {
+	int a = 11;
+	const int* pa = &a;
+	printf("%p\n", &a); // 주소는 'unsigned int' 타입임
+
+	printf("a size is %zu\n", sizeof(a));
+
+	return 0;
+}
+```
+
 ## int
 
 int는 꼭 32bit가 아닐 수 있음. 환경에 따라 다름. 혹여나 데이터 전송 시 깨지더라도 당황하지 말자. 이때, 
@@ -1229,7 +1245,7 @@ int main() {
 typedef struct _bts_t {
 	uint8_t a : 4;
 	uint8_t b : 3;
-	uint8_t c : 1;
+	uint8_t c : 1; //단, a,b,c 합쳐서 8이어야함.
 
 	uint8_t d;
 	uint8_t e;
@@ -1242,7 +1258,7 @@ int main(void) {
 	bts_t bts;
 	bts.a = 0x0F;
 	bts.b = 0x07;
-	bts.c = 0x01;
+	bts.c = 0x01; //c는 1bit까지만 저장이 돼서 0~1까지 밖에 안 됨.
 
 	printf("bts.a, bts.b, bts.c= (%d,%d,%d)\r\n", bts.a, bts.b, bts.c);
 
@@ -1283,5 +1299,128 @@ int main(void) {
 
 	printf("%d %d", b.a, b.b); // 11 12 출력됨
 	return 0;
+}
+```
+
+
+
+## 구조체 안에 배열
+구조체 안에 배열을 넣는 것은 좋지 않다. 왜냐하면 padding때문이다. 배열을 넣더라도 배열의 참조를 넣는 것이 좋다!   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int small_font[5] = { 11, 22, 33, 44 };
+int big_font[5] = { 55, 66, 77, 88 };
+
+typedef struct _lcd_t {
+    int x;
+    int y;
+    int* font;  //font_t* font; 포인터 크기는 8byte. 따라서 구조체 크기는 16
+} lcd_t;
+
+print_font(lcd_t* lcd) {
+    for (int i = 0; i < 4; i++) {
+        printf("%d,", lcd->font[i]);
+    }
+}
+
+int main() {
+
+    lcd_t lcd;
+
+    lcd.x = 3;
+    lcd.y = 5;
+
+    lcd.font = small_font;
+    print_font(&lcd);
+
+    return 0;
+}
+```
+
+## 구조체 안의 공용체, 공용체 안의 구조체
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+struct bts_t {
+    int a;
+    union {
+        int b;
+        int c;
+    };
+}; //union은 하나임. 따라서 크기는 12가 아닌 8임.
+
+union ses_t {
+    int a;
+    struct { //이름 빼도됨. 즉, struct ses 이런식으로 안 하고 그냥 struct라 해도됨. 홍길동이라는 union안에 홍길동의 왼쪽눈이란 구조체라고 만들 필요없이 그냥 왼쪽눈이라 두면됨.
+        int b; // a와 b가 겹침.
+        int c;
+    };
+}; //크기는 
+
+int main() {
+
+    struct bts_t bts;
+
+    bts.a = 11;
+    bts.b = 22;
+    bts.c = 33;
+    printf("%d %d %d\r\n", bts.a, bts.b, bts.c); // 11 33 33
+
+    union ses_t ses;
+    ses.a = 44;
+    ses.b = 55;
+    ses.c = 66;
+    printf("%d %d %d\r\n", ses.a, ses.b, ses.c); // 55 55 66 
+
+    return 0;
+}
+```
+
+## 공용체의 유용함: 패킷의 바이트 파싱
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+#define CTP_SIZE (7)
+
+typedef union _ctp_t {
+    uint8_t all[CTP_SIZE];
+    struct {
+        uint8_t head;
+        uint8_t body[5];
+        uint8_t tail;
+    } subset;
+} ctp_t;
+
+
+void print_ctp(const ctp_t* ctp) {
+    //printf("%02X ", ctp->head);
+    for (int i = 0; i < CTP_SIZE; i++) {
+        printf("%02X ", ctp->all[i] );
+    }
+    //printf("%02X ", ctp->tail);
+}
+
+int main() {
+    uint8_t rx_data[CTP_SIZE] = { 0xAA, 0x12, 0x13, 0x14, 0x15, 0x16, 0xBB };
+    ctp_t ctp = { 0, };
+
+    memcpy(ctp.all, rx_data, CTP_SIZE); // 구조체로 memcpy는 안되나?
+    //ctp.head = rx_data[0];
+    //ctp.body[0] = rx_data[1];
+    //ctp.body[1] = rx_data[2];
+    //ctp.body[2] = rx_data[3];
+    //ctp.body[3] = rx_data[4];
+    //ctp.body[4] = rx_data[5];
+    //ctp.tail = rx_data[6];
+
+    print_ctp(&ctp);
+    return 0;
 }
 ```
