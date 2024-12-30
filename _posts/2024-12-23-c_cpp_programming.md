@@ -1773,3 +1773,153 @@ int main() {
     return 0;
 }
 ```
+
+## 얕은 복사, 깊은 복사
+
+✅ 얕은 복사   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+typedef struct _stormtrooper_t {
+	char* code_name; //= class: sand, magma, dewback...
+	uint16_t year; // production year
+} stormtrooper_t;
+
+void print_stormtrooper(stormtrooper_t* s) {
+	printf("%s, %d\r\n", s->code_name, s->year);
+}
+
+int main() {
+	char sand_code[8] = "s100";
+	char magma_code[8] = "m100";
+
+	printf("샌드트루퍼를 하나 만들자.\r\n");
+	stormtrooper_t s1;
+	s1.code_name = sand_code;
+	s1.year = 23; // 23년식
+	
+	print_stormtrooper(&s1);
+
+	printf("마그마트루퍼를 하나 만들자.\r\n");
+	stormtrooper_t s2;// = { "m100", "magma-trooper", 24 };
+	s2.code_name = magma_code;
+	s2.year = 24; // 24년식, 더 최신식
+	print_stormtrooper(&s2);
+
+	printf("마그마트루퍼를 샌드트루퍼로 복사하자.\r\n");
+	//s1 <- s2 복사하자.
+	s1 = s2;
+
+	print_stormtrooper(&s1);
+	print_stormtrooper(&s2);
+
+	printf("마그마트루퍼 병과를 파이어트루퍼 병과로 바꾼다.\r\n");;
+	strcpy(magma_code, "f100");
+
+	print_stormtrooper(&s1);
+	print_stormtrooper(&s2);
+
+	return 0;
+}
+
+```   
+   
+✅ 깊은 복사   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+typedef struct _stormtrooper_t {
+	char* code_name; //= class: sand, magma, dewback...
+	uint16_t year; // production year
+} stormtrooper_t;
+
+void print_stormtrooper(stormtrooper_t* s) {
+	printf("%s, %d\r\n", s->code_name, s->year);
+}
+
+int main() {
+	char sand_code[8] = "s100";
+	char magma_code[8] = "m100";
+
+	printf("샌드트루퍼를 하나 만들자.\r\n");
+	stormtrooper_t s1;
+	s1.code_name = sand_code;
+	s1.year = 23; // 23년식
+
+	print_stormtrooper(&s1);
+
+	printf("마그마트루퍼를 하나 만들자.\r\n");
+	stormtrooper_t s2;
+	s2.code_name = magma_code;
+	s2.year = 24; // 24년식, 더 최신식
+	print_stormtrooper(&s2);
+
+	printf("마그마트루퍼를 샌드트루퍼로 복사하자.\r\n");
+	// s1 = s2; 이렇게 하지말고, 내용을 복사하자.
+	strcpy(s1.code_name, s2.code_name);
+	s1.year = s2.year;
+
+	print_stormtrooper(&s1); 
+	print_stormtrooper(&s2); 
+
+	printf("마그마트루퍼 병과를 파이어트루퍼 병과로 바꾼다.\r\n");
+	strcpy(magma_code, "f100");
+
+	print_stormtrooper(&s1);
+	print_stormtrooper(&s2); 
+
+	return 0;
+}
+```   
+   
+✅ 깔끔한 해결책   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+typedef struct _stormtrooper_t {
+	char* code_name; //= class: sand, magma, dewback...
+	uint16_t year; // production year
+} stormtrooper_t;
+
+void print_stormtrooper(stormtrooper_t* s) {
+	printf("%s, %d\r\n", s->code_name, s->year);
+}
+
+int main() {
+	char sand_code[8] = "s100";
+	char magma_code[8] = "m100";
+
+	printf("샌드트루퍼를 하나 만들자.\r\n");
+	stormtrooper_t s1 = { sand_code, 23 };
+	print_stormtrooper(&s1);
+
+	printf("마그마트루퍼를 하나 만들자.\r\n");
+	stormtrooper_t s2 = { "m100", 24 };
+	print_stormtrooper(&s2);
+
+	printf("마그마트루퍼를 샌드트루퍼로 복사하자.\r\n");
+	// 대입 연산자 말고 그냥 메모리 카피해..
+	memcpy(&s1, &s2, sizeof(s2));
+	print_stormtrooper(&s1);
+	print_stormtrooper(&s2);
+
+	printf("마그마트루퍼 병과를 파이어트루퍼 병과로 바꾼다.\r\n");
+	strcpy(magma_code, "f100");
+
+	print_stormtrooper(&s1); //m100, 23
+	print_stormtrooper(&s2); //m100, 24
+	return 0;
+}
+```
