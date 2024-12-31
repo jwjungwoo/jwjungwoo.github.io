@@ -2175,5 +2175,203 @@ int main() {
 	func(arr);
 }
 ```
-정답은 int(*arr)[3]
+정답은 int (*arr)[3]
 
+```c
+  int a = 1;
+  int b = 2;
+  int c = 3;
+
+  int* pa = &a;
+  int* pb = &b;
+  int* pc = &c;
+
+  int* arr[3] = {pa, pb, pc};
+```
+
+```c
+  int arr3[4][3] = {
+    {1,2,3},
+    {4,5,6},
+    {7,8,9},
+    {1,2,3},
+};
+// 얘를 가리키는 배열 포인터는 int* (arr)[3] 이다.
+
+  int arr4[2][3][2];
+// 얘를 가리키는 배열 포인터는 int* (arr)[3][2] 이다.
+
+  int arr5[3][2][4][8][7];
+// 애를 가리키는 배열 포인터는 int* (arr)[2][4][8][7] 이다.
+```
+
+## 보이드 포인터 활용: 정렬
+✅ 여러 데이터형(int, char, double)을 정렬하려면?   
+```c
+void sort(int* arr, int count);
+```   
+   
+```c
+void sort_by_int(int* arr, int count);
+void sort_by_char(char* arr, int count);
+void sort_by_float(float* arr, int count);
+```   
+   
+함수를 1개로 줄일수는 없을까?   
+   
+✅ C에서 해결책: void* (+형 정보도 같이 보내야)   
+```c
+#define INT_TYPE 0
+#define CHAR_TYPE 1
+#define LONG_TYPE 2
+
+void sort(void* arr, int count, int type);
+```   
+하지만 type 값에 define되지 않은 값도 잘못 들어오게 되면 위험하기 때문에 아래의 방식을 더 많이 사용한다.   
+   
+```c
+typedef enum _type_t {
+	char_type,
+	int_type,
+	long_type,
+} type_t;
+
+void sort(void* arr, int count, type_t type);
+```   
+   
+✅ 그렇담 현재 상태에서 가장 좋은건   
+```c
+typedef enum _type_t {
+	char_type,
+	int_type,
+	float_type,
+	double_type
+} type_t;
+
+void sort(void* arr, int count, type_t type) {
+	switch (type) {
+	case char_type:
+		// void*를 char*로 형변환
+		break;
+	case int_type:
+		// void*를 int*로 형변환
+		break;
+	case float_type:
+		//
+		break;
+	case double_type:
+		//
+		break;
+	}
+}
+```   
+
+## 당구선수 정렬
+✅ player.h   
+```c
+#ifndef __PLAYER_H__
+#define __PLAYER_H__
+
+#define MAX_PLAYER (10)
+#define woman 0
+#define man 1
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+
+typedef struct _player_t {
+    uint8_t rank;   // 랭킹 순위
+    char name[64];  // 이름
+    bool gender;    // 성별
+    double avg;     // 에버리지
+    uint8_t hr;     // 하이런 갯수
+    uint8_t  bsp;   // 뱅크샷 갯수
+    double bsp_rate;// 뱅크샷 성공 비율(%)
+} player_t;
+
+void print_all_player(char* title, player_t* player);
+void print_player(player_t* player);
+#endif
+```
+   
+✅ player.c   
+```c
+#include "player.h"
+
+void print_player(player_t* player) {
+    printf("%3d ", player->rank);
+    printf("%12s ", player->name);
+    switch (player->gender) {
+    case woman:
+        printf(" woman ");
+        break;
+    case man:
+        printf("   man ");
+        break;
+    }
+    printf("%6.3f ", player->avg);
+    printf("%2d ", player->hr);
+    printf("%3d/", player->bsp);
+    printf("%5.2f(%%)", player->bsp_rate);
+    printf("\r\n");
+}
+
+void print_line() {
+    printf("--------------------------------------------------\r\n");
+}
+
+void print_all_player(char* title, player_t* player) {
+    printf("               %s\r\n", title);
+    print_line();
+    for (int i = 0; i < MAX_PLAYER; i++) {
+        print_player(&player[i]);
+    }
+    print_line();
+}
+```
+   
+✅ main.c   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include "player.h"
+
+void sort_by_rank(player_t* dst, const player_t* src, int cnt) {
+    player_t temp;
+    memcpy(dst, src, sizeof(player_t) * cnt);
+
+    for (int i = 0; i < cnt - 1; i++) {
+        for (int j = 0; j < cnt - 1 - i; j++) {
+            if (dst[j].rank > dst[j + 1].rank) {
+                temp = dst[j];
+                dst[j] = dst[j + 1];
+                dst[j + 1] = temp;
+            }
+        }
+    }
+}
+
+int main() {
+
+    player_t players[MAX_PLAYER] = {
+        { 1, "김가영",     woman, 1.024, 9, 60, 23.810 },
+        { 2, "김세연",     woman, 1.010, 7, 26, 26.530 },
+        { 4, "김보미",     woman, 0.979, 6, 46, 24.210 },
+        { 3, "스롱 피아비",woman, 0.983, 7, 54, 22.880 },
+        { 5, "김영민",     woman, 0.915, 8, 36, 27.270 },
+        { 7, "백주민",     woman, 0.830, 8, 50, 37.310 },
+        { 6, "임정숙",     woman, 0.906, 5, 28, 35.900 },
+        { 8, "오정수",     woman, 0.819, 6, 22, 32.350 },
+        { 9, "임공진",     woman, 0.819, 5, 18, 23.380 },
+        { 10, "오정수",    woman, 0.815, 8, 30, 30.610 },
+    };
+
+    print_all_player("랭킹별 당구 선수", players);
+
+    player_t sorted_players[MAX_PLAYER];
+    sort_by_rank(sorted_players, players, MAX_PLAYER);
+    print_all_player("랭킹별 당구 선수", sorted_players);
+
+    return (0);
+}
+```
