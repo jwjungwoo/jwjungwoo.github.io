@@ -1674,6 +1674,7 @@ int main() {
    
 ✅ 똑같은 원리로 0이나 \0이나 똑같다.   
 ```c
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 
 int main() {
@@ -1681,8 +1682,8 @@ int main() {
 	char str2[8] = { 'a', 'b', 'c', 0 }; // (2)
 	char str3[8] = { 0x61, 0x62, 0x63, 0x00 }; //(3)
 	char str4[8] = { 0x61, 0x62, 0x63, 0 }; //(4)
-	char str5[8] = { 0x61, 0x62, 0x63, '\0'}; // (5)
-	char str6[8] = { 0x61, 0x62, 0x63, '0' }; // (5)
+	char str5[8] = { 0x61, 0x62, 0x63, '\0' }; // (5)
+	char str6[8] = { 0x61, 0x62, 0x63, '0' }; // (6)
 	char str7[8] = "abc";
 
 	printf("[1] %s\r\n", str1);
@@ -1923,3 +1924,156 @@ int main() {
 	return 0;
 }
 ```
+
+# 포인터
+
+## 포인터란?
+
+✅ 포인터   
+포인터 = 주소. 자료형은 int형이 아니라 int*형이다. 포인터 변수는 주소가 저장된 변수다.   
+   
+✅ 첫번째 포인터 예제   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main(void) {
+
+  char* name; // wild pointer: 초기화하지 않은 포인터
+	int* name = NULL; 
+	// name이 0을 가리키고있다. (x)
+	// name이 유효하지 않은 번지를 가리키고 있다. (o)
+
+	int a = 999;
+	int* pa = &a; // pa에 a의 주소를 대입(=저장)함, 이제 *pa는 a와 쌤쌤
+	// 즉 a를 쓰는 대신, *pa를 써도 무방하다.
+
+	printf("a= %d\r\n", a); // 11
+	printf("&a= %p\r\n", &a); // a의 주소
+	printf("*pa= %d\r\n", *pa); // 11    역참조
+  printf("*pa= %p\r\n", &a);
+
+  // 포인터 변수 *pa가 a를 가리키다.
+  // a 대신에 *pa를 써도 상관없다.
+  // scanf("%d", &a);
+  // scanf("%d",&(*pa));
+
+	// 포인터는 변수이므로 다른 값을 대입해도 된다.
+	int b = 22;
+	pa = &b;
+	printf("*pb= %d\r\n", *pa);
+
+	return 0;
+}
+```   
+   
+✅ 포인터 변수의 선언과 정의   
+```c
+int a; // 선언이자 정의임. 실제 메모리 공간할당 O, 실제 메모리 주소를 잡아먹으나 그 값이 쓰레기일뿐.
+int* pa; // 포인터 변수의 선언, 실제 메모리 공간할당 X, 단순히 int*를 쓸꺼야 라는걸 컴파일러에게 알려준다.
+
+int b= 22;
+int* *pb= &b; // 포인터 변수의 선언 및 정의, 실제 메모리 공간 할당 O, 
+```   
+   
+✅ 이렇게 선언하면 안된다   
+```c
+int* pa, pb; // 하나는 int 포인터요, 다른 하나는 int 형이다.
+int* pa, *pb;
+```   
+   
+아마도 int를 이렇게 선언하는게 습관이 되다 보니 위와 같이 하는것 같다.   
+```c
+int a, b;
+```   
+   
+정신건강에 좋게 이렇게 쓰자.   
+```c
+int* pa;
+int* pb;
+```
+
+## 역참조 연산자 vs 주소 연산자
+
+✅ 역 참조 연산자 *는 이름이 많다   
+참조 연산자, 역참조 연산자, 간접 참조 연산자, 간접 지정 연산자, Dereference Operator.   
+영어 표현을 가장 정확하게 표현하는거 같아서 우리도 주로 역참조 연산자라 부르자.   
+
+## 주소의 정확한 데이터형은 void*, intptr_t, uintptr_t
+
+✅ 주소의 정확한 데이터형은 void*   
+어떤 타입의 메모리 주소도 담을수 있다. 하지만 읽거나 쓰려면 특정 데이터로 형변환 해야 한다.   
+```c
+#include <stdio.h>
+
+int main(void) {
+	int a = 11;
+	void* pa = &a; // 주소를 담겠다.
+
+	printf("*pa= %p\r\n", (uintptr_t *)pa); // 출력하려면(=읽으려면) 형변환 해야 한다.
+
+	return 0;
+}
+```
+   
+✅ 특별히 문제가 없다면...   
+주소를 int*, unsigned int* 라고 생각해도 무방하다.   
+
+## int*는 32비트일까? 64비트일까?
+
+✅ 플랫폼에 따라 다르다   
+<img src="https://github.com/user-attachments/assets/af7525a6-c2cb-4341-9e8f-a23e30552a36" width="100" height="100">   
+하지만 윈도우상 visual studio에서 보이는건 64비트였다.   
+
+## swap 함수: call by value vs call by reference
+
+✅ 값에 의한 호출 (call by value)   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void swap(int a, int b) {
+	printf("in swap() before (a,b)=(%d,%d)\r\n", a, b);
+	int tmp = a;
+	a = b;
+	b = tmp;
+	printf("in swap() after  (a,b)=(%d,%d)\r\n", a, b);
+}
+
+int main(void) {
+	int a = 11;
+	int b = 22;
+
+	printf("in main() before (a,b)=(%d,%d)\r\n", a, b);
+	swap(a, b);
+	printf("in main() after  (a,b)=(%d,%d)\r\n", a, b);
+
+	return 0;
+}
+```   
+   
+✅ 참조에 의한 호출 (call by reference)   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void swap(int* a, int* b) {
+	printf("in swap() before (a,b)=(%d,%d)\r\n", *a, *b);
+	int tmp = *a;
+	*a = *b;
+	*b = tmp;
+	printf("in swap() after  (a,b)=(%d,%d)\r\n", *a, *b);
+}
+
+int main(void) {
+	int a = 11;
+	int b = 22;
+
+	printf("in main() before (a,b)=(%d,%d)\r\n", a, b);
+	swap(&a, &b);
+	printf("in main() after  (a,b)=(%d,%d)\r\n", a, b);
+
+	return 0;
+}
+```
+
