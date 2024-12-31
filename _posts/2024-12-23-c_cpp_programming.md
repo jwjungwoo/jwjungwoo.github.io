@@ -2002,7 +2002,7 @@ int* pb;
 ## 주소의 정확한 데이터형은 void*, intptr_t, uintptr_t
 
 ✅ 주소의 정확한 데이터형은 void*   
-어떤 타입의 메모리 주소도 담을수 있다. 하지만 읽거나 쓰려면 특정 데이터로 형변환 해야 한다.   
+근데 void*는 어떤 타입의 메모리 주소도 담을수 있다. 즉, 함수 인자에 void*를 쓰면 int*, char* 등 아무거나 다 넣을 수 있다. 하지만 읽거나 쓰려면 반드시 특정 데이터로 형변환 해야 한다.   
 ```c
 #include <stdio.h>
 
@@ -2014,17 +2014,17 @@ int main(void) {
 
 	return 0;
 }
-```
-   
+```   
+      
 ✅ 특별히 문제가 없다면...   
 주소를 int*, unsigned int* 라고 생각해도 무방하다.   
-
+   
 ## int*는 32비트일까? 64비트일까?
 
 ✅ 플랫폼에 따라 다르다   
 <img src="https://github.com/user-attachments/assets/af7525a6-c2cb-4341-9e8f-a23e30552a36" width="100" height="100">   
 하지만 윈도우상 visual studio에서 보이는건 64비트였다.   
-
+   
 ## swap 함수: call by value vs call by reference
 
 ✅ 값에 의한 호출 (call by value)   
@@ -2076,4 +2076,104 @@ int main(void) {
 	return 0;
 }
 ```
+
+## 배열 포인터
+
+✅ 배열 포인터란?   
+배열 포인터라고 흔히들 말하는데, Pointer to an Array 표현이 더 정확하다.   
+```c
+int arr[4]= {11, 22, 33, 44};
+
+int* parr2= arr; // (1)
+int* parr1= &arr[0]; // (2) C린이는 가급적 (2)와 같이 쓰자.
+```
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main() {
+
+	int arr[] = { 11,22,33,44 };
+	const int size = sizeof(arr) / sizeof(arr[0]);
+	const int* parr = arr; // arr을 가리키는 배열 포인터, *(parr+4) 부터는 쓰레기값
+
+	for (int i = 0; i < size;i++) {
+		printf("[%d] %d\r\n", i + 1, *(parr + i)); // 배열 포인터 연산
+	}
+	printf("\r\n");
+
+	for (int i = 0; i < size;i++) {
+		printf("[%d] %d\r\n", i + 1, parr[i]); // 배열 포인터 연산
+	}
+	printf("\r\n");
+
+	return (0);
+}
+```
+
+## 함수의 인자로 배열을 받아보자
+
+✅ 인자로 배열 및 포인터로 받아보자   
+```c
+#include <stdio.h>
+
+int sum_of_arr_by_array(const int arr[], int size) {
+	int sum = 0;
+	for (int i = 0; i < size; i++) {
+		sum += arr[i];
+	}
+
+	return sum;
+}
+
+int sum_of_arr_by_pointer(const int* arr, int size) {
+	int sum = 0;
+	for (int i = 0; i < size; i++) {
+		//sum += *(arr + i);
+		sum += arr[i];
+	}
+	return sum;
+}
+
+int main() {
+	int arr1[3] = { 1,2,3, };
+	int sum1 = 0;
+	sum1 = sum_of_arr_by_array(arr1, 3);
+	printf("배열 arr1의 합은 %d 입니다.\r\n", sum1);
+
+	int arr2[3] = { 3,3,4, };
+	int sum2 = 0;
+	sum2 = sum_of_arr_by_pointer(arr2, (sizeof(arr2)/sizeof(arr2[0])) );
+	printf("배열 arr2의 합은 %d 입니다.\r\n", sum2);
+
+	return 0;
+}
+```
+   
+✅ 결론   
+인자로 배열이라 적어도 배열 포인터 형태로 받는다! 즉, 포인터로 받으나 배열로 받으나 똑같다는 말이다. 배열로 받는다 해도 컴파일러는 포인터로 바꾸어 버린다. 포인터를 보낼때는 사이즈도 같이 보내야 한다.   
+   
+✅ [퀴즈] 포인터로 넘기는데, 사이즈를 안보내도 되는 경우가 있다? 문자열
+
+## 다차원 배열을 인자로 받기
+
+★ 에는 무엇이 들어가야 하나?   
+```c
+// 1차 부분배열의 포인터를 적으면 된다. 즉, 제일 바깥에 있는걸 넘기면 된다. 
+#include <stdio.h>
+
+int func(★ arr) {
+
+}
+
+int main() {
+	int arr[2][3] = {
+		{11, 22, 33},
+		{44, 55, 66},
+	};
+	func(arr);
+}
+```
+정답은 int(*arr)[3]
 
