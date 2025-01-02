@@ -2205,7 +2205,7 @@ int main() {
 // 1차 부분배열의 포인터를 적으면 된다. 즉, 제일 바깥에 있는걸 넘기면 된다. 
 #include <stdio.h>
 
-int func(★ arr) {
+int func(★) {
 
 }
 
