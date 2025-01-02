@@ -2417,3 +2417,78 @@ int main() {
     return (0);
 }
 ```
+
+## ***arr 출력해보기
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main(void) {
+
+	int a = 11; int b = 22; int c = 33;
+	int x = 44; int y = 55; int z = 66;
+
+	int* pa = &a; int* pb = &b; int* pc = &c;
+    int* px = &x; int* py = &y; int* pz = &z;
+
+	int* ppa = &pa; int* ppb = &pb; int* ppc = &pc;
+	int* ppx = &px; int* ppy = &py; int* ppz = &pz;
+
+	int* pppa = &ppa; int* pppb = &ppb; int* pppc = &ppc;
+	int* pppx = &ppx; int* pppy = &ppy; int* pppz = &ppz;
+
+	int*** arr[2][3] = {
+		{pppa, pppb, pppc},
+		{pppx,pppy,pppz}
+	};
+
+	for (int i = 0; i < 2;i++) {
+		for (int j = 0; j < 3;j++) {
+			printf("%d ", *(*(*(arr[i][j]))));
+		}
+		printf("\n");
+	}
+
+	return 0;
+}
+```
+
+## volatile
+✅ 정확한 '주소의 type'은 intptr_t, uintptr_t 이다. volatile은 코드 최적화를 막는 용도로 쓴다. 예를 들어서 mcu에 led가 연결돼있을 때   
+```c
+	*(unsigned int*)0x000000000014fcf4 = 0;
+	*(unsigned int*)0x000000000014fcf4 = 1;
+	*(unsigned int*)0x000000000014fcf4 = 0;
+	*(unsigned int*)0x000000000014fcf4 = 1;
+	*(unsigned int*)0x000000000014fcf4 = 0;
+	*(unsigned int*)0x000000000014fcf4 = 1;
+```   
+이런식으로 하면 내 뜻은 깜빡이게 하는건데 컴파일 입장에선 결국은 맨 마지막에 1이므로 위의 5줄은 다 없애고 맨 마지막 줄만 출력한다. 따라서 깜빡이지 않는다. 그래서 여기에 unsigned int 대신 volatile unsigned int를 사용하여 
+코드 최적화를 막으면 의도대로 깜빡인다.   
+   
+✅ ASLR   
+Adress Space Layout Randomization: 고정된 기계어 코드를 통한 해킹을 방지하기 위해 랜덤하게 주소 위치를 바꿔주는 옵션임. 하지만 우리는 a주소를 고정하고 pa에 주소값을 넣을 거기에 ASLR 옵션을 꺼준다.   
+<img src="https://github.com/user-attachments/assets/d6f236d7-b7f6-44ad-876f-da7855b5c0e9" width="800" height="700">   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main(void) {
+
+	int a = 11;
+	int* pa = NULL;
+	//pa = 0xABCD 얘는 안 됨. pa는 int*형이고 0xABCD는 int형이다.
+	pa = (volatile unsigned int*)0x000000000014fcf4; // ASLR 옵션을 끄면 &a가 바뀌지 않아서 주소 복풋하고 다시 실행하면 *pa도 a와 같은 값이 출력됨.
+
+	printf("a = %d\r\n", a);
+	printf("&a = %p\r\n", &a);
+	printf("*pa = %d\r\n", *pa);
+
+	*(volatile unsigned int*)0x000000000014fcf4 = 22;
+
+	printf("a = %d\r\n", a);
+
+	return 0;
+}
+```
+
