@@ -780,7 +780,7 @@ void func() { //중복정의는 불가능
 ## 매크로
 매크로 함수란 #define문을 통해서 함수 처럼 동작하는 매크로를 말한다. 일반적인 함수와 전혀 상관 없음
 
-✅#define문이 어떻게 컴파일 되는지 확인하기   
+✅ #define문이 어떻게 컴파일 되는지 확인하기   
 <img src="https://github.com/user-attachments/assets/339bdc04-670a-49d0-bac6-8eab58ff8296" width="500" height="500">   
 위의 사진과 같이 프로젝트 속성 -> C/C++ -> 전처리기에 가서 파일로 전처리를 "예"로 바꿔준다. 그리고 프로젝트 파일에서 잘 뒤져서 main.i 파일을 찾는다. (파일 이름은 다를 수 있음) 찾은 main.i 파일을 리소스 파일에 추가하고,
 ctrl + f5가 아닌 ctrl + shift + b를 눌러 빌드를 한다.   
@@ -803,6 +803,48 @@ int main() {
 ```   
 그럼 보기 화면처럼 aaa, bbb가 111 222로 들어간 것을 볼 수 있다.   
 <img src="https://github.com/user-attachments/assets/485c4a55-9e07-4d83-a540-f5a6946ac098" width="600" height="100">   
+
+✅ 숫자 입력 프로그램 매크로 함수   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+#define print_func_name (printf("%s%s\r\n", __func__, "()"))
+
+void zero() { print_func_name; }
+void one() { print_func_name; }
+void two() { print_func_name; }
+void three() { print_func_name; }
+void four() { print_func_name; }
+void five() { print_func_name; }
+void six() { print_func_name; }
+void seven() { print_func_name; }
+void eight() { print_func_name; }
+void nine() { print_func_name; }
+    
+
+int main() {
+    char key = 0;
+    int dummy = 0;
+    printf("Enter a number of between 0 to 9: ");
+    dummy = scanf("%c", &key);
+
+    switch (key) {
+    case '0': zero(); break;
+    case '1': one(); break;
+    case '2': two(); break;
+    case '3': three(); break;
+    case '4': four(); break;
+    case '5': five(); break;
+    case '6': six(); break;
+    case '7': seven(); break;
+    case '8': eight(); break;
+    case '9': nine(); break;
+    }
+
+    return (0);
+}
+```   
 
 ## main
 main함수엔 여러 종류가 있다. 많이 본 형태는 요러할 것이다.
