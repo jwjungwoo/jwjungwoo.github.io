@@ -376,6 +376,60 @@ PORTA = 0xFF //PORTA = 0b11111111 : 이런식으로 해도되는데 빠질 수 �
 PORTB = 0xF0
 ```
 
+## 반전, 세트와 클리어(Set vs Clear)
+
+✅ 비트 or 비트열 반전   
+0은 1로, 1은 0으로 만든다. 반전은 쉽다.   
+🔹예: 6,5,2비트를 반전시키기   
+○⬤⬤○○⬤○○   
+⬤○○⬤⬤○⬤⬤   
+```c
+uint8_t a= 0b01100100;
+b= ~a;
+```   
+   
+✅ 세트와 클리어(or 리셋)란?   
+🔹세트 (Set)   
+  - 특정 비트를 1로 만드는 것을 “세트(Set)한다”고 표현 한다.   
+  - 최상위 비트(MSB)를 세트해라   
+  - 3번째 비트를 세트해라   
+🔹클리어 혹은 리셋 (Clear or Reset)   
+  - 특정 비트를 0으로 만드는 것을 “클리어 혹은 리셋(Clear or Reset)한다”라고 표현한다.   
+  - 최하위 비트(LSB)를 클리어 해라   
+  - 하위 4개 비트를 클리어 해라   
+  - [3:0]을 클리해라   
+   
+🔹예: 7비트, 4비트, 1비트를 세트하라   
+○○○○○○○○   
+⬤○○⬤○○⬤○   
+```c
+uint8_t a= 0b00000000;
+a= 0b10010010;// 8번째, 5번째, 2번째 비트를 세트한다.
+//a= 0b01001001; // 주의! 이게 아니다! 
+```   
+   
+✅ 세트와 클리어할때는 OR, AND 연산을 사용하자.   
+🔹특정 비트를 세트하기   
+예) 8번째 LED를 켜려면?   
+```c
+PORTB = 0x80;
+```   
+⬤○○○○○○○   
+   
+예) 2번째 LED를 켜려면?   
+```c
+PORTB  = 0x02;
+```   
+○○○○○⬤○○   
+   
+✅ 세트: OR   
+추가로 3번째 LED를 점등하고 싶다!   
+```c
+PORTB = PORTB | 0b0000100;
+```
+<img src="https://github.com/user-attachments/assets/ed0c9ce0-cc59-448b-ab19-6ac1ad3cf1cc" width="600" height="200">   
+
+
 # 각종 지식
 
 ## bit, byte
@@ -2492,3 +2546,113 @@ int main(void) {
 }
 ```
 
+# 함수 포인터
+
+## 간단한 문법
+
+함수 포인터는 if else문을 없앨 수 있기 때문이다. 나중에 코드가 길어지면 유지보수가 어려워지는데 이를 방지할 수 있다.   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void hello(void) { printf("%s%s\r\n", __func__, "()"); } // 인자 X, 리턴 X
+void hi(int a) { printf("%s%s\r\n", __func__, "()"); }// 인자 0(한 개), 리턴 X 
+void welcome(int a, int b, float c) { printf("%s%s\r\n", __func__, "()"); }// 인자 0(여러 개), 리턴 X
+int go(void) { printf("%s%s\r\n", __func__, "()"); return 11; }// 인자 X, 리턴 0
+int well(int a, int b) { printf("%s%s\r\n", __func__, "()"); return 22; }//  인자 0, 리턴 0
+
+int main(void) {
+	(*hello)();
+	void (*phello)(void) = &hello;
+	// phello = &hello;
+
+	(*phello)();
+	phello();
+
+	int (*pwell)(int a, int b) = &well;
+	int r = pwell(1, 2);
+	printf("%d", r);
+	// pwell = &hello 는 모양이 서로 다르기 때문에 안 됨
+
+	return 0;
+}
+```
+
+## 함수를 인자로 받음
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void hello(void) { printf("%s%s\r\n", __func__, "()"); } // 인자 X, 리턴 X
+void hi(int a) { printf("%s%s\r\n", __func__, "()"); }// 인자 0(한 개), 리턴 X 
+void welcome(int a, int b, float c) { printf("%s%s\r\n", __func__, "()"); }// 인자 0(여러 개), 리턴 X
+int go(void) { printf("%s%s\r\n", __func__, "()"); return 11; }// 인자 X, 리턴 0
+int well(int a, int b) { printf("%s%s\r\n", __func__, "()"); return (a + b); }//  인자 0, 리턴 0
+
+void set_hello(void (*func)(void)) {
+	func();
+}
+
+int set_well(int (*func)(int, int), int a, int b) {
+	return func(a, b);
+}
+
+int main(void) {
+	(*hello)();
+	void (*phello)(void) = &hello;
+	// phello = &hello;
+
+	(*phello)();
+	phello();
+
+	int (*pwell)(int a, int b) = &well;
+	int r = pwell(1, 2);
+	printf("%d\n", r);
+	// pwell = &hello 는 모양이 서로 다르기 때문에 안 됨
+
+	set_hello(&hello);
+	printf("%d",set_well(&well, 11, 22));
+	return 0;
+}
+```
+
+## 함수 포인터 배열이란?
+✅ 함수 포인터 배열이란?   
+```c
+void (*fp)(); // 함수 포인터
+void (*fp1[])(); // 1차원 함수 포인터 배열
+void (*fp2[][])(); // 2차원 함수 포인터 배열
+void (*fp3[][][])(); // 3차원 함수 포인터 배열
+```   
+   
+✅ 함수 포인터 배열 문법을 헷갈리지 말자   
+void (*fp)()[]; // X 이런 문법은 존재하지 않는다.   
+void (*fp[])(); // O   
+   
+✅ 예시   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void bts() { printf("%s\r\n", __FUNCTION__); }
+void exo() { printf("%s\r\n", __FUNCTION__); }
+void ses() { printf("%s\r\n", __FUNCTION__); }
+
+#define MAX 3
+
+int main() {
+
+    void (*fp_arr1[MAX])() = { &bts, &exo, &ses }; // (1)
+    void (*fp_arr2[MAX])(); // (2)
+    fp_arr2[0] = &bts; 
+    fp_arr2[1] = &exo; 
+    fp_arr2[2] = &ses;
+
+    fp_arr1[0]();
+    fp_arr2[1]();
+    fp_arr2[2]();
+
+    return 0;
+}
+```
