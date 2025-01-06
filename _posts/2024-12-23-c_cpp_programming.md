@@ -425,10 +425,16 @@ PORTB  = 0x02;
 ✅ 세트: OR   
 추가로 3번째 LED를 점등하고 싶다!   
 ```c
-PORTB = PORTB | 0b0000100;
-```
+PORTB |= 0b0000100;
+```   
 <img src="https://github.com/user-attachments/assets/ed0c9ce0-cc59-448b-ab19-6ac1ad3cf1cc" width="600" height="200">   
 
+✅ 클리어: AND   
+비트 7을 클리어 하고 싶다!   
+```c
+PORTA &= 0b01111111;
+```
+<img src="https://github.com/user-attachments/assets/2427eeec-46db-46a9-a10f-43316d4e9d8f" width="600" height="200">   
 
 # 각종 지식
 
@@ -2618,6 +2624,7 @@ int main(void) {
 ```
 
 ## 함수 포인터 배열이란?
+
 ✅ 함수 포인터 배열이란?   
 ```c
 void (*fp)(); // 함수 포인터
@@ -2630,7 +2637,7 @@ void (*fp3[][][])(); // 3차원 함수 포인터 배열
 void (*fp)()[]; // X 이런 문법은 존재하지 않는다.   
 void (*fp[])(); // O   
    
-✅ 예시   
+✅ 예시1   
 ```c
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
@@ -2656,3 +2663,224 @@ int main() {
     return 0;
 }
 ```
+
+✅ 중요 예시   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#define MAX_FUNC_CNT (10)
+#define print_func_name (printf("%s%s\r\n", __func__,"()"))
+#include <stdio.h>
+
+void zero() { print_func_name; }
+void one() { print_func_name; }
+void two() { print_func_name; }
+void three() { print_func_name; }
+void four() { print_func_name; }
+void five() { print_func_name; }
+void six() { print_func_name; }
+void seven() { print_func_name; }
+void eight() { print_func_name; }
+void nine() { print_func_name; }
+
+int main() {
+	char key = 0;
+	int dummy = 0;
+	printf("Enter a number between 0 to 9: ");
+	dummy = scanf("%c", &key);
+
+	void (*fp_arr[MAX_FUNC_CNT])() = {
+		zero, one, two, three, four, five, six, seven, eight, nine
+	};
+
+	//switch (key) {
+	//case '0': zero(); break;
+	//case '1': one(); break;
+	//case '2': two(); break;
+	//case '3': three(); break;
+	//case '4': four(); break;
+	//case '5': five(); break;
+	//case '6': six(); break;
+	//case '7': seven(); break;
+	//case '8': eight(); break;
+	//case '9': nine(); break;
+	//}
+
+	unsigned int index = (unsigned int)(key - 0x30);
+	printf("key: %d, index: %d\n", key, index);
+
+	if ((index < 0) || (index >= MAX_FUNC_CNT)) {
+		printf("The number entered must be in the range 0 to 9.\r\n");
+		return;
+	}
+
+	if (fp_arr[index] == NULL) {
+		printf("function pointer is null...\r\n");
+		return;
+	}
+	(*fp_arr[index])();
+	return 0;
+}
+```
+
+# 콜백 함수
+
+## 콜백 함수 사용 이유
+협업할 때 남이 짠 프로그램 내 함수를 불러올 때 사용함. 콜백만 해두면 남이 함수를 수정할 때마다 내 코드도 바꿀 일이 없어짐.
+
+
+## 이벤트 핸들러 예제
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+void up_button_press(void (*callback)(void)) {
+    //printf("up 버튼이 클릭되었습니다.\n");
+    callback(); // 콜백 함수 호출
+}
+
+void down_button_press(void (*callback)(void)) {
+    //printf("down 버튼이 클릭되었습니다.\n");
+    callback(); // 콜백 함수 호출
+}
+
+void left_button_press(void (*callback)(void)) {
+    callback();
+}
+
+void right_button_press(void (*callback)(void)) {
+    callback();
+}
+
+// 버튼이 눌렸을때 실제 동작 함수
+void up_button_pressed() {
+    printf("이벤트: up 버튼 클릭 처리가 완료되었습니다.\n");
+}
+
+void down_button_pressed() {
+    printf("이벤트: down 버튼 클릭 처리가 완료되었습니다.\n");
+}
+
+void left_button_pressed() {
+    printf("이벤트: left 버튼 클릭 처리가 완료되었습니다.\n");
+}
+
+void right_button_pressed() {
+    printf("이벤트: right 버튼 클릭 처리가 완료되었습니다.\n");
+}
+
+int main() {
+    up_button_press(&up_button_pressed); // up 버튼 클릭 이벤트 등록
+    down_button_press(&down_button_pressed);
+    left_button_press(&left_button_pressed);
+    right_button_press(&right_button_pressed);
+    return 0;
+}
+```
+
+## getch() 함수 사용법
+
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdint.h>
+#include <conio.h>
+
+int main() {
+    uint16_t key_val = 0;
+    printf("Press any key...\r\n");
+    while((key_val = (uint16_t)_getch())!=NULL)
+        printf("%c", key_val);
+    // key_val = (uint16_t)_getch();         강사님이 알려주신 코드는 이 두 줄이었음
+    // printf("%c", key_val);                         
+    return 0;
+}
+```
+
+# sw 모듈화
+
+## 모듈화 하는 이유
+
+✅ include는 컴파일 과정에 헤더파일을 몽땅 가져온다. 따라서 최소한으로만 가져와야한다.
+
+## 헤더파일 위치 추가
+
+<img src="https://github.com/user-attachments/assets/814e3561-c7ce-4a16-bba8-ab0d0c1c67b5" width="800" height="800">   
+프로그램 -> 속성 -> C/C++ -> 일반 -> 추가포함디렉터리 -> 경로를 그냥 복사하면 안 되고 줄의 맨 오른쪽 부분 클릭하면 ... 이라고 뜨는데 그 부분을 클릭해서 파일이 속한 폴더 위치(ex. 배경화면)를 선택하면 된다.   
+
+## 헤더파일 저장 위치
+
+✅ Visual Studio를 본인만의 특별한 경로에 설치하지 않았다면..   
+**C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\ucrt**   
+✅ 리눅스 ubuntu에서는   
+**/usr/include**   
+
+## 링킹에러
+
+✅ 헤더가드   
+한 헤더가 다른 한 헤더에서 include된 상태에서 둘 다 main에서 include되면 그 안의 코드들이 중복 선언되면서 오류가 뜬다. 이를 해결하기 위해서 헤더가드를 작성한다.   
+```c
+#ifndef __AUTOEVER_H__
+#define __AUTOEVER_H__
+
+#endif
+```   
+하지만 이래도 코드가 서로 얽히면 중복정의가 된다.   
+   
+✅ #include "autoever.c"   
+autoever.c   
+```c
+int a = 11;
+int b = 22;
+```   
+   
+main.c   
+```c
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include "autoever.c"
+
+int main () {
+  printf("%d",a);
+}
+```   
+이렇게 하면 프로젝트 자체를 돌리면서 링킹할 때 main.c의 #include "autoever.c" 부분이 int a = 11; int b = 22;로 바뀌면서 컴파일 되면서 변수가 두 번 정의 되기 때문에 링킹에러가 뜬다.   
+bts.h, bts.c 는 bts.i로 전처리 되고, exo.h, exo.c는 exo.i로 전처리 되고, main.c는 main.i(그냥 소스파일이고 우리가 보는 상위레벨 언어파일이다. 다만 묶여있음.)로 전처리 된다. bts.i, exo.i, main.i는 각각 bts.o, exo.o, main.o로(오브젝트: 기계어로 구성) 컴파일 된다. 이들은 main.exe로 링킹된다. 전처리, 컴파일(컴파일러가 실행), 링킹(링커가 실행)을 쉽게 컴파일이라고 말한다.
+
+## 선언은 .h에, 정의는 .c
+```c
+typedef struct _autoever_t {
+  char name[20];
+  int price;
+}autoever_t; // 이건 .h에
+
+// 이런건 .c에
+auto면 호출 가능.  
+   
+✅ 예시
+```c
+#include <stdio.h>
+
+void meow(void) {
+  int cnt = 0;
+  printf("야옹 %d\n", ++cnt);
+}
+
+void woof(void) {
+  static int cnt = 0;
+  printf("멍멍 %d\n", ++cnt);
+}
+
+int main () {
+  meow();
+  meow();
+  meow();
+
+  woof();
+  woof();
+  woof();
+
+  return 0;
+  // 결과는 111 123임. static으로 정의되면 프로그램에서 죽을 때까지 살아있으며 접근은 해당 함수에서만 가능함.
+}
+```   
