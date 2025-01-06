@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "C/C++ 프로그래밍"
+title:  "C 프로그래밍"
 categories: autoever
 tag:
 author_profile: false #true면 글 안에서 내 프로필 보여줌
@@ -435,6 +435,8 @@ PORTB |= 0b0000100;
 PORTA &= 0b01111111;
 ```
 <img src="https://github.com/user-attachments/assets/2427eeec-46db-46a9-a10f-43316d4e9d8f" width="600" height="200">   
+
+
 
 # 각종 지식
 
@@ -2883,4 +2885,66 @@ int main () {
   return 0;
   // 결과는 111 123임. static으로 정의되면 프로그램에서 죽을 때까지 살아있으며 접근은 해당 함수에서만 가능함.
 }
-```   
+```
+
+# 메모리
+
+## 동적 할당당
+
+메모리를 해제한 이후에도 사용가능하지만 위험하다. free라는게 메모리 사용을 없애주는게 아니라 누구든 접근 가능하단걸 말해줌. 따라서 해제한 이후에도 nullptr을 대입하라. 또한 참조할 때 NULL이 아닌지 확인하는 if문을 넣어주는 것이 
+혹여나 있을 대형 참사를 막아줄 수 있다.   
+```c
+// c
+#include <stdio.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+typedef struct _car_t {
+    uint8_t fuel;
+    uint8_t speed;
+} car_t;
+
+int main() {
+    car_t* my_car = (car_t*)malloc(sizeof(car_t));
+    car_t* your_car = (car_t*)malloc(sizeof(car_t));
+
+    if (my_car == NULL) {
+        printf("my_car create error\r\n");
+        return 0;
+    }
+    else {
+        printf("my_car create ok\r\n");
+    }
+
+    if (your_car == NULL) {
+        printf("your_car create error\r\n");
+        return 0;
+    }
+    else {
+        printf("your_car create ok\r\n");
+
+    }
+
+    my_car->fuel = 11;
+    my_car->speed = 22;
+
+    your_car->fuel = 33;
+    your_car->speed = 44;
+
+    printf("%d, %d\r\n", my_car->fuel, my_car->speed);
+    printf("%d, %d\r\n", your_car->fuel, your_car->speed);
+
+    free(my_car); // (1) ★★★ 난 분명히 free를 했다고!
+    free(your_car);
+
+    my_car->fuel = 55; // (2) 여기서 값을 넣으면 어떻게 될까?
+    //my_car->speed = 66;
+
+    printf("%d, %d\r\n", my_car->fuel, my_car->speed);
+
+    return 0;
+}
+```
+
+## 정적 할당
+배열의 사이즈가 너무 커서 할당 받지 못할 수 있으므로 당연히 if문으로 해당 배열이 null인지도 확인해줘야한다.   
