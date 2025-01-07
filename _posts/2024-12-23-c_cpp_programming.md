@@ -436,8 +436,49 @@ PORTA &= 0b01111111;
 ```
 <img src="https://github.com/user-attachments/assets/2427eeec-46db-46a9-a10f-43316d4e9d8f" width="600" height="200">   
 
+## 굳이 왜 이렇게 코딩해야하나?
+✅ mcu에서 특정 비트를 세트, 클리어하는 예제   
+   
+이렇게 적으나   
+```c++
+PORTA= 0b10010010;
+```   
+이렇게 적으나   
+```c++
+PORTA |= 0x01 << 7;
+PORTA |= 0x01 << 4;
+PORTA |= 0x01 << 1;
+```   
+이렇게 적으나   
+```c++
+PORTA |= 0x01 << PORTA7
+PORTA |= 0x01 << PORTA4
+PORTA |= 0x01 << PORTA1
+```   
+이렇게 적으나
+```c++
+sbi(PORTA, PORTA7);
+sbi(PORTA, PORTA4);
+sbi(PORTA, PORTA1);
+```
+같다.   
+   
+4가지 방법모두 이해는 하고 있어야 한다.   
+나중에 코드를 보면 이 비트가 뭔놈의 비트인지 기억하기가 어렵다.   
+따라서, 맨 아래와 같이 적는게 낳다. 그치만 본인 취향에 맞게 쓰자.   
 
+## 유용한 매크로 함수: sbi, cbi 매크로 함수
 
+```c++
+#define set(REG, n) (REG |=  (1<<n))
+#define clr(REG, n) (REG &= ~(1<<n))
+```
+   
+아래와 같이 적어도된다.   
+```c++
+#define sbi(REG,n) REG |=  (1<<n) //set bit
+#define cbi(REG,n) REG &= ~(1<<n)
+```
 # 각종 지식
 
 ## bit, byte
