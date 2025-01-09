@@ -2732,7 +2732,7 @@ int main() {
 	dummy = scanf("%c", &key);
 
 	void (*fp_arr[MAX_FUNC_CNT])() = {
-		zero, one, two, three, four, five, six, seven, eight, nine
+		zero, one, two, three, four, five, six, seven, eight, nine // 함수 이름 자체가 주소임으로 &zero가 아닌 zero라 적음
 	};
 
 	//switch (key) {
