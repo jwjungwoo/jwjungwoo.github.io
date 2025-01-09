@@ -740,7 +740,30 @@ int main() {
 또한 선언만 해도 컴파일은 됨. 다만 실행이 안 될 뿐.
 
 ## 함수 리턴을 여러 개
+✅ 값 객체(Value Object), 출력 매개변수 (가장 좋은 방법)   
+```c
+#include <stdio.h>
 
+#include <stdio.h>
+
+typedef struct _point_t {
+	int x;
+	int y;
+} point_t;
+
+void get_xy(point_t* point, int x, int y) {
+	point->x = x;
+	point->y = y;
+}
+
+int main(void) {
+	point_t point = { 0, 0 };
+	get_xy(&point, 2, 3);
+	printf("(x,y)=(%d,%d)", point.x, point.y);
+
+	return (0);
+}
+```   
 ✅ 전역 변수 (되긴하지만 가장 안 좋은 방법)   
 ```c
 #include <stdio.h>
@@ -865,7 +888,6 @@ int main() {
 	return (0);
 }
 ```
-✅ 값 객체(Value Object), 출력 매개변수
 
 ## 선언과 정의
 
@@ -2930,7 +2952,7 @@ int main () {
 
 # 메모리
 
-## 동적 할당당
+## 동적 할당
 
 메모리를 해제한 이후에도 사용가능하지만 위험하다. free라는게 메모리 사용을 없애주는게 아니라 누구든 접근 가능하단걸 말해줌. 따라서 해제한 이후에도 nullptr을 대입하라. 또한 참조할 때 NULL이 아닌지 확인하는 if문을 넣어주는 것이 
 혹여나 있을 대형 참사를 막아줄 수 있다.   
