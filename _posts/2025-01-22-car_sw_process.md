@@ -71,6 +71,7 @@ eXit Criteria: 수행된 작업의 완료 기준(완료하기 위해 요구되�
 ## V-Model
 ✅ V-Model   
 개발 생명주기의 각 단계와 그에 상응하는 sw test 단계를 매핑한 모델   
+추적성, 일관성, 커뮤니케이션이 강조되며 sw의 품질을 높이기 위한 모델이다.   
 <img src="https://github.com/user-attachments/assets/a5ce23e3-9a49-4d41-9e59-a9805c684908" width="500" height="400">   
 실제 현차에서 하는 방식은 IVM(Iterative V-Model)이다.   
 <img src="https://github.com/user-attachments/assets/b262a5f2-f139-4695-b718-73871c33179e" width="500" height="400">   
@@ -112,4 +113,33 @@ Supporting Life Cycle Processes: 나머지 활동 잘 할 수 있게 도와줌
 <일반 프랙티스, 일반 자원>으로 구성된다. 이때, 각 LV별로 성과가 존재한다.
 <img src="https://github.com/user-attachments/assets/a8823194-ac24-44b3-be13-10f877bd68db" width="600" height="450">   
 
-#
+## A-SPICE 프로세스 능력 수준
+✅ 6단계의 프로세스 능력 수준(CL: Capability Level)으로 구분   
+CL0: incomplete process   
+outcome을 달성하지 못했다.   
+CL1: performed process   
+outcome이 있다.   
+CL2: managed process   
+보통 얘를 목표로 한다.   
+CL3: established process   
+조직의 표준 process가 정립됐다.   
+CL4: predictable process   
+CL5: innovating process   
+
+교재에는 CL1과 CL2, CL3에 대해 GP2.1.1, GP2.1.2, ... 등 자세히 나와있었다.   
+CL1: My Way, CL2: Project Way, CL3: Standard Way   
+CL별 프로젝트 관리를 위와같이 표현하셨다.   
+
+## A-SPICE의 핵심 컨셉
+✅ 플러그인 컨셉   
+필요함에 따라 추가할 수도, 뺄 수도 있다. 
+✅ V 모델 컨셉   
+V&V(Verification and Validation)   
+Verification: 제대로 만들어졌는가?   
+Validation: 요구사항을 충족하는가?   
+A-SPICE vs iso 26262
+테스팅 기법이나 구체적인 how를 얘기하지 않는다. what만 제공함.
+
+A이상은 좋은 아키텍쳐를 설계하기 위해 interface를 줄이라는 등의 구체적인 how를 제시한다. 
+
+A-SPICE를 기반으로 ISO 26262를 add해서 실무에서 적용되고있다. (+보안에서)
