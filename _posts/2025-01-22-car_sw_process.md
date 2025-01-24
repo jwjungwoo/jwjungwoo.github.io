@@ -105,13 +105,11 @@ Supporting Life Cycle Processes: 나머지 활동 잘 할 수 있게 도와줌
    
 ✅ PAM: 프로세스를 레벨에 따른 평가하기 위한 지표를 정의한 모델   
 1. 프로세스 수행 지표(= 프로세스 성과의 수행 정도)   
-1-1. 기본 프랙티스   
-1-2. 작업 산출물   
-2. 프로세스 능력 지표(= 프로세스 속성 성과의 달성 정도)   
-2-1. 일반 프랙티스   
-2-2. 일반 자원   
-
-
-
+<기본 프랙티스, 작업 산출물>로 구성된다. 6단계의 프로세스 능력 수준에서 LV1 이하를 위한 것이다.
+<img src="https://github.com/user-attachments/assets/e4e0e32c-e938-4803-a8e5-95e975bbf1a9" width="600" height="450">   
+   
+3. 프로세스 능력 지표(= 프로세스 속성 성과의 달성 정도)   
+<일반 프랙티스, 일반 자원>으로 구성된다. 이때, 각 LV별로 성과가 존재한다.
+<img src="https://github.com/user-attachments/assets/a8823194-ac24-44b3-be13-10f877bd68db" width="600" height="450">   
 
 #
