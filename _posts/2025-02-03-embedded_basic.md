@@ -18,6 +18,8 @@ sidebar:
 ## pull down
 <img src="https://github.com/user-attachments/assets/60d7c53a-9aab-47cc-aff5-64810ace96e8" width="500" height="400">   
 ✅ floating   
+선을 연결 안 했다 가정하자. 우린 이 값을 0이라 생각할 수 있다. 하지만 실제론 그렇지 않고 값이 0, 1로 랜덤으로 반복된다. 위의 사진에서 8번 앞에 저항이 없다 가정하자. 스위치를 안 누른 상태에선 floating 현상이 발생한다. 따라서 
+저항을 연결하여 8번이 floating 하는 것을 막는다. 또한 스위치를 누르면 당연히 저항으로 가지 않고 8번으로 전류가 잘 흐른다.
 
 ## RGB LED 점멸하기
 <img src="https://github.com/user-attachments/assets/e9806faa-65f5-4da6-bbb8-b34aa80944c9" width="500" height="400">   
