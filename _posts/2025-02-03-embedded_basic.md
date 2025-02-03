@@ -207,6 +207,86 @@ void loop()
 }
 ```
 
+# Timer
+## 초 재기
+<img src="https://github.com/user-attachments/assets/2b7d4e9b-472b-4d1b-b080-45c5a1a05917" width="500" height="400">   
+위의 사진과 같이 새로 file을 만들고 timer관련 파일을 같이 놓는다.   
+```c
+#include "SimpleTimer.h"
+
+SimpleTimer timer;
+
+#define LED_1_PIN    (13)
+#define TIMER_INTERVAL   1000
+
+void my_func() {
+    static int val= 1;
+    Serial.print("Uptime(s): ");
+    Serial.println(millis() / 1000);
+    digitalWrite(LED_1_PIN, val);
+    val ^= 0x01;
+}
+
+void setup() {
+    Serial.begin(9600);
+    pinMode(LED_1_PIN, OUTPUT);
+    timer.setInterval(TIMER_INTERVAL, my_func); // 1초마다 reapeatMe 함수를 호출..
+}
+void loop() {
+    //timer.update();
+    timer.run();
+}
+```   
+<img src="https://github.com/user-attachments/assets/00e64c07-6d91-4756-81c1-22ca326cc21c" width="500" height="400">   
+실행하면 다음과같이 시간이 측정된다.   
+
+## 시간에 따른 함수 호출
+<img src="https://github.com/user-attachments/assets/360b7aec-a863-45df-b1ce-437a6f2a64dd" width="600" height="400">   
+```c
+#include "SimpleTimer.h"
+SimpleTimer timer;
+#define LED_1_PIN    (13)
+
+#define TASK_1 2000
+#define TASK_2 3000
+#define TASK_3 5000
+int tick = 0;
+int tmp_cnt = 0;
+void my_func1() {
+    Serial.print("2 ");
+}
+void my_func2() {
+    Serial.print("3 ");
+}
+void my_func3() {
+    Serial.print("5 ");
+}
+
+void my_func() {
+    Serial.print("["+String(++tmp_cnt)+"]");
+    tick++;
+    if (tick % (TASK_1/ 1000) == 0) {
+        my_func1();
+    }
+    if (tick % (TASK_2/ 1000) == 0) {
+        my_func2();
+    }
+    if (tick % (TASK_3/ 1000) == 0) {
+        my_func3();
+    }
+    Serial.println();
+}
+void setup() {
+    Serial.begin(9600);
+    pinMode(LED_1_PIN, OUTPUT);
+    timer.setInterval(1000, my_func);
+}
+void loop() {
+    //timer.update();
+    timer.run();
+}
+```
+
 # ETC
 ## Digital vs Analog
 ✅ GPIO   
