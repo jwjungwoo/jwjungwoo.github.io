@@ -18,7 +18,7 @@ sidebar:
 # Arduino Practice
 ## pull down
 <img src="https://github.com/user-attachments/assets/60d7c53a-9aab-47cc-aff5-64810ace96e8" width="500" height="400">   
-✅ floating
+✅ floating   
 
 ## RGB LED 점멸하기
 <img src="https://github.com/user-attachments/assets/e9806faa-65f5-4da6-bbb8-b34aa80944c9" width="500" height="400">   
@@ -51,7 +51,6 @@ void loop() {
 ```
 
 ## 아두이노에서 pc로 보내기
-✅ ascii
 <img src="https://github.com/user-attachments/assets/09b683e6-f6bf-446c-9405-fd0027bd1656" width="500" height="400">   
 우측 상단에 돋보기 모양의 serial 버튼을 누르고 실행하면 위와 같이 나온다.   
 ```c
