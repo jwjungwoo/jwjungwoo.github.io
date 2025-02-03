@@ -70,7 +70,8 @@ void loop() {
 }
 ```
 
-## pc에서 아두이노로 보내기
+# pc에서 아두이노로 보내기
+## 123 -> RGB
 아두이노에 Easy Module Shield를 장착하고 pc에서 1,2,3을 누르면 r,g,b 불이 들어오게 한다.   
 ```c
 #define R_PIN 9
@@ -105,6 +106,102 @@ void loop() {
     if(c=='4') {
         digitalWrite(R_PIN, LOW); digitalWrite(G_PIN, LOW); digitalWrite(B_PIN, LOW); delay(100);
     }
+}
+```
+
+## Rotation A0로 밝기 조절
+✅ pwm_val   
+
+```c
+#define VR_PIN A0
+#define LED_PIN 9
+
+int tmp_cnt = 0;
+int adc_val = 0;
+
+void setup() {
+    Serial.begin(9600);
+}
+
+void loop() {
+      adc_val= analogRead(VR_PIN);
+    Serial.println("["+String(++tmp_cnt)+"]"+String(adc_val));
+
+    int pwm_val = 0;
+    pwm_val = map(adc_val, 0, 1023, 0, 255);
+    analogWrite(LED_PIN, pwm_val);
+    delay(100);
+}
+```   
+<img src="https://github.com/user-attachments/assets/3eb8145e-0cad-4d5a-8305-dce9f73e71a4" width="500" height="400">   
+우측 상단 serial 옆의 그래프를 누르고 아래 코드만 바꾸면 위의 사진과 같이 그래프로도 볼 수 있다.   
+```c
+Serial.println("["+String(++tmp_cnt)+"]"+String(adc_val));
+Serial.println(String(adc_val));
+```
+
+## 조도 센서
+조도 센서에 들어가는 빛의 양을 바꾸면 LED 값이 바뀐다.   
+<img src="https://github.com/user-attachments/assets/1303fb12-87ff-4669-a07c-ecc718c9a293" width="500" height="400">   
+```c
+
+#define cds_pin (15)
+#define g_pin (10)
+
+void setup() {
+    Serial.begin(9600);
+    pinMode(g_pin, OUTPUT);
+}
+
+void loop() {
+    int adc1_val= 0;
+    int lux= 0;
+
+    while(1) {
+        adc1_val= analogRead(cds_pin);
+        lux= map(adc1_val, 0, 1023, 255, 0);
+        Serial.println(lux);
+        analogWrite(g_pin, lux);
+        delay(10);
+    }
+}
+```
+
+## 온도 습도
+필요한 라이브러리를 다운 받아 arduino가 지정한 곳에 넣는다.   
+<img src="https://github.com/user-attachments/assets/e4c82e64-ed67-41a5-ad1d-18e92e341444" width="500" height="400">   
+```c
+#include <DHT11.h>
+int pin=4;
+DHT11 dht11(pin); 
+void setup()
+{
+   Serial.begin(9600);
+  while (!Serial) {
+      ; // wait for serial port to connect. Needed for Leonardo only
+    }
+}
+
+void loop()
+{
+  int err;
+  float temp, humi;
+  if((err=dht11.read(humi, temp))==0)
+  {
+    Serial.print("temperature:");
+    Serial.print(temp);
+    Serial.print(" humidity:");
+    Serial.print(humi);
+    Serial.println();
+  }
+  else
+  {
+    Serial.println();
+    Serial.print("Error No :");
+    Serial.print(err);
+    Serial.println();    
+  }
+  delay(DHT11_RETRY_DELAY); //delay for reread
 }
 ```
 
