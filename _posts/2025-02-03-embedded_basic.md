@@ -47,9 +47,7 @@ void loop() {
     digitalWrite(R_PIN, LOW); digitalWrite(G_PIN, HIGH); digitalWrite(B_PIN, HIGH); delay(100);
     digitalWrite(R_PIN, LOW); digitalWrite(G_PIN, LOW); digitalWrite(B_PIN, HIGH); delay(100);
     digitalWrite(R_PIN, HIGH); digitalWrite(G_PIN, HIGH); digitalWrite(B_PIN, HIGH); delay(100);
-}
-```
-```
+}```
 
 ## 아두이노에서 pc로 보내기
 <img src="https://github.com/user-attachments/assets/09b683e6-f6bf-446c-9405-fd0027bd1656" width="500" height="400">   
@@ -73,6 +71,42 @@ void loop() {
 ```
 
 ## pc에서 아두이노로 보내기
+아두이노에 Easy Module Shield를 장착하고 pc에서 1,2,3을 누르면 r,g,b 불이 들어오게 한다.   
+```c
+#define R_PIN 9
+#define G_PIN 10
+#define B_PIN 11
+
+void setup() {
+    pinMode(R_PIN, OUTPUT);
+    pinMode(G_PIN, OUTPUT);
+    pinMode(B_PIN, OUTPUT);
+
+    digitalWrite(R_PIN, LOW);
+    digitalWrite(G_PIN, LOW);
+    digitalWrite(B_PIN, LOW);
+    Serial.begin(9600);
+}
+
+void loop() {
+    char c= 0;
+    if(Serial.available()) {
+        c= Serial.read();
+    }
+    if(c=='1') {
+        digitalWrite(R_PIN, HIGH); digitalWrite(G_PIN, LOW); digitalWrite(B_PIN, LOW); delay(100);
+    }
+    if(c=='2') {
+        digitalWrite(R_PIN, LOW); digitalWrite(G_PIN, HIGH); digitalWrite(B_PIN, LOW); delay(100);
+    }
+    if (c == '3') {
+        digitalWrite(R_PIN, LOW); digitalWrite(G_PIN, LOW); digitalWrite(B_PIN, HIGH); delay(100);
+    }
+    if(c=='4') {
+        digitalWrite(R_PIN, LOW); digitalWrite(G_PIN, LOW); digitalWrite(B_PIN, LOW); delay(100);
+    }
+}
+```
 
 # ETC
 ## Digital vs Analog
