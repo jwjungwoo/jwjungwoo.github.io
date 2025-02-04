@@ -9,6 +9,82 @@ sidebar:
 #search: false
 ---
 
+# 실버2
+
+## 14620 꽃길
+```c++
+#include <iostream>
+#include <vector>
+#include <memory.h>
+#include <map>
+using namespace std;
+
+const int dy[4] = { 0,-1,0,1 };
+const int dx[4] = { 1,0,-1,0 };
+int n, a[14][14], visited[14][14], y, x, ny, nx, flag, ret = 987654321;
+
+vector<pair<int, int>> v;
+vector<pair<int, int>> s;
+int tmp;
+
+void combi(int start, vector<pair<int, int>>& v) {
+	if (v.size() == 3) {
+		fill(&visited[0][0], &visited[0][0] + 14 * 14, 0);
+		for (int i = 0; i < v.size(); i++) {
+			tie(y, x) = v[i];
+			visited[y][x] += 1;
+			for (int j = 0; j < 4;j++) {
+				ny = y + dy[j];
+				nx = x + dx[j];
+				visited[ny][nx] += 1;
+			}
+		}
+		for (int i = 1; i < n - 1;i++)
+			for (int j = 1; j < n - 1;j++)
+				if (visited[i][j] >= 2)
+					return;
+		int tmp = 0;
+		for (int i = 0; i < n;i++) {
+			for (int j = 0; j < n;j++) {
+				if (visited[i][j] == 1) {
+					tmp += a[i][j];
+				}
+			}
+		}
+		ret = min(ret, tmp);
+		return;
+	}
+
+	for (int i = start + 1; i < s.size();i++) {
+		v.push_back(s[i]);
+		combi(i, v);
+		v.pop_back();
+	}
+	return;
+}
+
+int main() {
+	ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+	cin >> n;
+	for (int i = 0; i < n;i++) {
+		for (int j = 0; j < n;j++) {
+			cin >> a[i][j];
+		}
+	}
+
+	for (int i = 1; i < n - 1; i++) {
+		for (int j = 1; j < n - 1; j++) {
+			s.push_back({ i,j });
+		}
+	}
+	
+	combi(-1, v);
+	cout << ret;
+	return 0;
+}
+```
+
 # 골드3
 
 ## 4179 불
