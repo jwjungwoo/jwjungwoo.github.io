@@ -167,6 +167,59 @@ int main(void) {
 	return (0);
 }
 ```
+
+## Tera Term 이용하기
+✅ Tera Term   
+Tera Term은 serial 통신을 할 수 있게 해준다. 아래의 코드는 내 pc에서 누른걸 AVR이 +1 해서 보낸걸 출력해준다. 코드의 작동은 AVR에서 작동한다. AVR에서 receive하면 trasmit한다.   
+<img src="https://github.com/user-attachments/assets/62f118e9-0c29-4b18-a335-3499a1014055" width="500" height="400">   
+✅ USART는 동기(Synchronous)와 비동기(Asynchronous) 모드를 모두 지원하는 직렬 통신 방식   
+✅ UART는 USART의 하위 개념이며, 비동기 방식만 지원   
+✅ AVR MCU에서는 UCSR0A, UCSR0B, UCSR0C, UBRR0H/L, UDR0 등을 통해 제어   
+✅ 비동기 방식(UART)이 가장 일반적이며, 동기 방식(Synchronous Mode)은 속도가 더 빠름   
+   
+```c
+//#define F_CPU 16000000UL
+#define F_CPU 8000000UL
+#define _BV(bit) (1<<bit)
+#include <stdio.h>
+#include <util/delay.h>
+#include <avr/io.h>
+
+void UART_0_init(void);
+void UART1_transmit(char data);
+unsigned char UART1_receive(void);
+
+void UART_0_init(void){
+	UBRR0H = 0x00;		// 9,600보율로 설정
+	UBRR0L = 207;
+	UCSR0A = UCSR0A | (1<<1);		// 2배속 모드(= _BV(U2X1))
+	UCSR0C |= 0x06;
+	
+	UCSR0B |= _BV(RXEN0);		// 송수신 가능
+	UCSR0B |= _BV(TXEN0);
+}
+
+void UART1_transmit(char data){
+	while(!(UCSR0A & (1 << UDRE0))); // 데이터 송신을 기다림
+	UDR0 = data;		//데이터 전송
+}
+
+unsigned char UART1_receive(void){
+	while(!(UCSR0A & (1<<RXC0))); // 데이터 수신을 기다림
+	return UDR0;
+}
+
+int main(void){
+	UART_0_init();		// UART0 초기화
+	
+	while(1){
+		UART1_transmit(UART1_receive()+1);
+	}
+	
+	return 0;
+}
+```
+
 # Arduino Practice
 
 ## pull down
@@ -505,3 +558,10 @@ void loop() {
     delay(500);    
 }
 ```
+
+## 통신
+✅ 동기/비동기   
+Synchronous / Asynchronous   
+동기ex. 광통신을 할 때 데이터만 보내면 이게 11111000인지 11110000인지 구분하기 힘들다. 이때 data와 함께 clk을 보낸다.   
+비동기ex. 동기와 다르게 clk이 없다. 따라서 data 1bit을 보내는 시간을 약속한다. (내가 1초마다 1bit를 보낼게)   
+
