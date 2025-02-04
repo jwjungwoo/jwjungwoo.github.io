@@ -18,12 +18,12 @@ sidebar:
 ## pull down
 <img src="https://github.com/user-attachments/assets/60d7c53a-9aab-47cc-aff5-64810ace96e8" width="500" height="400">   
 ✅ floating   
-선을 연결 안 했다 가정하자. 우린 이 값을 0이라 생각할 수 있다. 하지만 실제론 그렇지 않고 값이 0, 1로 랜덤으로 반복된다. 위의 사진에서 8번 앞에 저항이 없다 가정하자. 스위치를 안 누른 상태에선 floating 현상이 발생한다. 따라서 
-저항을 연결하여 8번이 floating 하는 것을 막는다. 또한 스위치를 누르면 당연히 저항으로 가지 않고 8번으로 전류가 잘 흐른다.
+선을 5V와 연결 안 했다 가정하자. 우린 이 값을 0이라 생각할 수 있다. 하지만 실제론 그렇지 않고 값이 0, 1로 랜덤으로 반복된다. 이 현상을 floating 이라한다. 위의 사진에서 8번 앞에 저항이 없다 가정하자. 
+스위치를 안 누른 상태에선 floating 현상이 발생한다. 따라서 저항을 연결하여 8번이 floating 하는 것을 막는다. 또한 스위치를 누르면 당연히 저항으로 가지 않고 8번으로 전류가 잘 흐른다.
 
 ## RGB LED 점멸하기
 <img src="https://github.com/user-attachments/assets/e9806faa-65f5-4da6-bbb8-b34aa80944c9" width="500" height="400">   
-다음과 같이 하면, 삼원색과 그 조합의 색들이 순차적으로 빛난다.   
+다음과 같이 코하면, 삼원색과 그 조합의 색들이 순차적으로 빛난다. (보라색이 영롱했다.)   
 ```c
 #define R_PIN 9
 #define G_PIN 10
@@ -43,7 +43,7 @@ void setup() {
 void loop() {
     digitalWrite(R_PIN, HIGH); digitalWrite(G_PIN, LOW); digitalWrite(B_PIN, LOW); delay(100);
     digitalWrite(R_PIN, HIGH); digitalWrite(G_PIN, HIGH); digitalWrite(B_PIN, LOW); delay(100);
-    digitalWrite(R_PIN, HIGH); digitalWrite(G_PIN, LOW); digitalWrite(B_PIN, HIGH); delay(100);
+    digitalWrite(R_PIN, HIGH); digitalWrite(G_PIN, LOW); digitalWrite(B_PIN, HIGH); delay(100); // 보라!
     digitalWrite(R_PIN, LOW); digitalWrite(G_PIN, HIGH); digitalWrite(B_PIN, LOW); delay(100);
     digitalWrite(R_PIN, LOW); digitalWrite(G_PIN, HIGH); digitalWrite(B_PIN, HIGH); delay(100);
     digitalWrite(R_PIN, LOW); digitalWrite(G_PIN, LOW); digitalWrite(B_PIN, HIGH); delay(100);
@@ -53,7 +53,7 @@ void loop() {
 
 ## 아두이노에서 pc로 보내기
 <img src="https://github.com/user-attachments/assets/09b683e6-f6bf-446c-9405-fd0027bd1656" width="500" height="400">   
-우측 상단에 돋보기 모양의 serial 버튼을 누르고 실행하면 위와 같이 나온다.   
+우측 상단에 돋보기 모양의 serial 버튼을 누르고 실행하면 하단에 serial 통신화면이 나온다.   
 ```c
 void setup() {
     Serial.begin(9600);
@@ -113,7 +113,8 @@ void loop() {
 
 ## Rotation A0로 밝기 조절
 ✅ pwm_val   
-
+pwm_val은 아날로그 입력 값 (adc_val)을 PWM 출력 값으로 변환한 변수이다.   
+easy shield의 파란색 조절기를 통해 가변저항(VR, Variable Resistor)의 값을 바꾸고, 아래의 코드는 이를 읽어서 LED 밝기를 조절하는 기능을 한다.   
 ```c
 #define VR_PIN A0
 #define LED_PIN 9
@@ -170,11 +171,11 @@ void loop() {
 ```
 
 ## 온도 습도
-필요한 라이브러리를 다운 받아 arduino가 지정한 곳에 넣는다.   
+필요한 라이브러리를 다운 받아 arduino 파일이 지정된 주소에 넣은 뒤 아래의 코드를 작동한다.   
 <img src="https://github.com/user-attachments/assets/e4c82e64-ed67-41a5-ad1d-18e92e341444" width="500" height="400">   
 ```c
 #include <DHT11.h>
-int pin=4;
+int pin = 4;
 DHT11 dht11(pin); 
 void setup()
 {
