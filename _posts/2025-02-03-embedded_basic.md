@@ -14,7 +14,22 @@ sidebar:
 <https://www.arduino.cc/>에서 본인의 환경에 맞게 스케치를 다운해준다. 그 뒤 아래와 같이 세팅해준다.   
 <img src="https://github.com/user-attachments/assets/cc718a89-d4dd-465e-a913-ae8d29a13fcc" width="600" height="400">   
 
+# AVR
+## AVR 기초
+✅ 국내에서 80 ~ 90년대 마이크로컨트롤러 시장   
+1. 8051 -> Intel   
+2. PIC -> Microchip   
+3. AVR -> Microchip
+   
+✅ 현재는 뭐가 많이 쓰일까?   
+1. ARM MCU -> ST Microelectronics (ARM Cortex M3 기반)   
+2. Infienon -> ARM Core X 독일회사   
+## 장치 관리자(AVR연결)
+장치 관리자에서 몇 번 포트인지 확인한다.   
+<img src="https://github.com/user-attachments/assets/23369bf3-4119-41a0-9197-8232547f2908" width="400" height="500">   
+
 # Arduino Practice
+
 ## pull down
 <img src="https://github.com/user-attachments/assets/60d7c53a-9aab-47cc-aff5-64810ace96e8" width="500" height="400">   
 ✅ floating   
