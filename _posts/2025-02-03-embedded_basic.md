@@ -101,22 +101,22 @@ int main(void) {
 #define LED_DIR_PORT  (DDRB)
 #define LED_OUT_PORT  (PORTB)
 
-#define LED_1_PIN (PINB5)
+#define LED_1_PIN (PINB5) // LED
 
-#define KEY_DIR_PORT	(DDRB)
-#define KEY_IN_PORT		(PINB)
+#define KEY_DIR_PORT	(DDRB) // 버튼 방향 설정
+#define KEY_IN_PORT		(PINB) // 버튼 입력 상태 읽기
 
-#define KEY_PRESSED		(0)
-#define KEY_RELEASED	(1)
+#define KEY_PRESSED		(0) // Low
+#define KEY_RELEASED	(1) // High
 
-#define KEY_1_PIN		(PINB7)
+#define KEY_1_PIN		(PINB7) // 버튼이 연결된 핀
 
 
 int main(void) {
-	cbi(DDRB, PINB7); // KEY는 PB7 입력 설정
+	cbi(DDRB, PINB7); // 버튼을 입력 모드로 설정
 	
-	sbi(DDRB, PINB5); // LED는 PB5 출력 설정	
-	cbi(PORTB, PINB5); // LED 꺼놓고..
+	sbi(DDRB, PINB5); // LED는 출력 모드로 설정	
+	cbi(PORTB, PINB5); // 초기 LED를 OFF(LOW) 상태로 설정
 	
 	uint8_t key_1_val= 0; // 키값을 받을 변수 하나 만들어 놓고
 	
@@ -170,13 +170,14 @@ int main(void) {
 
 ## Tera Term 이용하기
 ✅ Tera Term   
-Tera Term은 serial 통신을 할 수 있게 해준다. 아래의 코드는 내 pc에서 누른걸 AVR이 +1 해서 보낸걸 출력해준다. 코드의 작동은 AVR에서 작동한다. AVR에서 receive하면 trasmit한다.   
-<img src="https://github.com/user-attachments/assets/62f118e9-0c29-4b18-a335-3499a1014055" width="500" height="400">   
+Tera Term은 serial 통신을 할 수 있게 해준다. 
 ✅ USART는 동기(Synchronous)와 비동기(Asynchronous) 모드를 모두 지원하는 직렬 통신 방식   
 ✅ UART는 USART의 하위 개념이며, 비동기 방식만 지원   
 ✅ AVR MCU에서는 UCSR0A, UCSR0B, UCSR0C, UBRR0H/L, UDR0 등을 통해 제어   
 ✅ 비동기 방식(UART)이 가장 일반적이며, 동기 방식(Synchronous Mode)은 속도가 더 빠름   
-   
+
+아래의 코드는 내 pc에서 누른걸 AVR이 +1 해서 보낸걸 출력해준다. 코드의 작동은 AVR에서 작동한다. AVR에서 receive하면 trasmit한다.   
+<img src="https://github.com/user-attachments/assets/62f118e9-0c29-4b18-a335-3499a1014055" width="500" height="400">   
 ```c
 //#define F_CPU 16000000UL
 #define F_CPU 8000000UL
@@ -217,6 +218,86 @@ int main(void){
 	}
 	
 	return 0;
+}
+```
+
+## 1,0 -> led on,off
+<img src="https://github.com/user-attachments/assets/0c5e8f2d-aecb-417b-9136-842c4d6bd7ad" width="500" height="400">   
+<img src="https://github.com/user-attachments/assets/a90f77bf-817d-44db-acfe-410d9801addd" width="500" height="400">   
+<img src="https://github.com/user-attachments/assets/979625e2-047f-43c3-ac7a-07aa5f7996e8" width="500" height="400">   
+✅ DDR = Data Direction Register   
+0이면 입력, 1이면 출력   
+DDRA (A 포트 DDR)   
+ex. DDRA = 0x1F (5번째 이하는 전부 출력으로 쓸거라고 말해줌)   
+ex. DDRB = 0x04 (2번쩨 led 전부 끄려함   
+   
+```c
+#define F_CPU 8000000UL  // 8MHz CPU 클럭 설정
+#include <avr/io.h>
+#include <util/delay.h>
+#include <stdio.h>
+
+#define sbi(REG, n) (REG |=  (1 << n))  // 특정 비트를 1로 설정 (SET BIT)
+#define cbi(REG, n) (REG &= ~(1 << n))  // 특정 비트를 0으로 설정 (CLEAR BIT)
+
+#define LED_DIR_PORT  DDRB   // LED 방향 설정
+#define LED_OUT_PORT  PORTB  // LED 출력 설정
+#define LED_1_PIN     PINB5  // LED 핀 (PB5)
+
+// UART 초기화 함수 (9600bps 설정)
+void UART_0_init(void) {
+    UBRR0H = 0x00;  
+    UBRR0L = 207;  // 9600bps (8MHz 기준)
+    UCSR0A = UCSR0A | (1 << U2X0);  // 2배속 모드 설정 (U2X0 비트 활성화)
+    UCSR0C |= 0x06;  // 비동기 모드, 8비트 데이터, 패리티 없음, 1 스톱 비트
+
+    UCSR0B |= (1 << RXEN0);  // UART 수신 활성화
+    UCSR0B |= (1 << TXEN0);  // UART 송신 활성화
+}
+
+// UART 송신 함수 (1바이트 전송)
+void UART1_transmit(char data) {
+    while (!(UCSR0A & (1 << UDRE0))); // 송신 가능할 때까지 대기
+    UDR0 = data;  // 데이터 전송
+}
+
+// UART 문자열 전송 함수
+void UART_send_string(const char *str) {
+    while (*str) {
+        UART1_transmit(*str++); // ++는 포인터 연산으로 str 포인터를 다음 문자로 이동시킨다.
+    }
+}
+
+// UART 수신 함수 (1바이트 수신)
+char UART1_receive(void) {
+    while (!(UCSR0A & (1 << RXC0))); // 데이터 수신 대기
+    return UDR0;
+}
+
+int main(void) {
+    char received_char;
+    
+    sbi(DDRB, LED_1_PIN); // LED 핀을 출력으로 설정
+    cbi(PORTB, LED_1_PIN);  // LED 초기 상태 OFFx
+
+    UART_0_init();  // UART 초기화
+    UART_send_string("shell> ");  // 초기 프롬프트 출력
+
+    while (1) {
+        received_char = UART1_receive();  // UART 데이터 수신
+        UART1_transmit(received_char);  // 입력된 문자 Echo 출력
+
+        // LED 제어 (1을 입력하면 LED ON, 0을 입력하면 LED OFF)
+        if (received_char == '1') {
+            sbi(PORTB, LED_1_PIN);  // LED ON
+        } else if (received_char == '0') {
+            cbi(PORTB, LED_1_PIN);  // LED OFF
+        }
+
+        UART_send_string("\r\nshell> ");  // 새로운 프롬프트 출력
+    }
+    
+    return 0;
 }
 ```
 
