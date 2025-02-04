@@ -23,14 +23,154 @@ sidebar:
    
 ✅ 현재는 뭐가 많이 쓰일까?   
 1. ARM MCU -> ST Microelectronics (ARM Cortex M3 기반)   
-2. Infienon -> ARM Core X 독일회사   
+2. Infienon -> ARM Core X 독일회사
+
 ## 장치 관리자(AVR연결)
 장치 관리자에서 몇 번 포트인지 확인한다.   
 <img src="https://github.com/user-attachments/assets/23369bf3-4119-41a0-9197-8232547f2908" width="400" height="500">   
 
+## 프로그램 설정
+
+<https://www.microchip.com/en-us/tools-resources/archives/avr-sam-mcus> 여기서 가장 위에껄 다운 받은 뒤 아래와 같이 ATMega328p를 누른다.   
+<img src="https://github.com/user-attachments/assets/ae4ccc3d-9c8f-4f77-acf2-fb79dd7c1eca" width="400" height="500">   
+또한 처음엔 alt+f5가 안됨으로 다음과 같이 solution viewer로 들어가서   
+<img src="https://github.com/user-attachments/assets/0e87391c-c993-4f1e-b1ea-f8a69cd16e78" width="600" height="400">   
+아래와 같이 속성에 들어가 사진과 같이 설정해줘야한다.   
+<img src="https://github.com/user-attachments/assets/e16b3db8-fc75-4b79-9813-ed24d392f379" width="600" height="400">   
+
+## bit 연산
+
+```c
+#define F_CPU 8000000UL
+
+#include <avr/io.h>
+#include <util/delay.h>
+
+#define LED_DELAY_TIME	(50) //ms
+
+#define sbi(REG, n) (REG |=  (1<<n))
+#define cbi(REG, n) (REG &= ~(1<<n))
+
+int main(void) {
+	sbi(DDRB, PINB5);
+	cbi(PORTB, PINB5);
+	
+	while (1) {
+		sbi(PORTB, PINB5);
+		_delay_ms(LED_DELAY_TIME);
+		cbi(PORTB, PINB5);
+		_delay_ms(LED_DELAY_TIME);
+	}
+	return (0);
+}
+```   
+   
+가장 좋은건 아래와 같이 register를 숨기는 것이다.   
+   
+```c
+#define F_CPU 16000000UL
+#include <config.h> // avr, pic, stm을 설정한다.
+#include <gpio_driver.h> // 추상화된 gpio_driver 헤더파일을 포함한다.
+
+#define BLINK_DELAY_TIME	(20) //ms
+
+int main(void) {
+	gpio_int(PINB5, OUTPUT);// pinMode();
+	gpio_write(PINB5, LOW);	 // digitalWrie();
+	
+	while (1) {
+		gpio_write(PINB5, HIGH);
+		delay_ms(BLINK_DELAY_TIME);		
+
+		gpio_write(PINB5, LOW);
+		delay_ms(BLINK_DELAY_TIME);		
+	}
+}
+```
+
+## 누르면 불 들어오게 하는 예재
+```c
+#define F_CPU 8000000UL
+
+#include <avr/io.h>
+#include <util/delay.h>
+
+#define sbi(REG, n) (REG |=  (1<<n))
+#define cbi(REG, n) (REG &= ~(1<<n))
+
+#define LED_DIR_PORT  (DDRB)
+#define LED_OUT_PORT  (PORTB)
+
+#define LED_1_PIN (PINB5)
+
+#define KEY_DIR_PORT	(DDRB)
+#define KEY_IN_PORT		(PINB)
+
+#define KEY_PRESSED		(0)
+#define KEY_RELEASED	(1)
+
+#define KEY_1_PIN		(PINB7)
+
+
+int main(void) {
+	cbi(DDRB, PINB7); // KEY는 PB7 입력 설정
+	
+	sbi(DDRB, PINB5); // LED는 PB5 출력 설정	
+	cbi(PORTB, PINB5); // LED 꺼놓고..
+	
+	uint8_t key_1_val= 0; // 키값을 받을 변수 하나 만들어 놓고
+	
+	while(1) {
+		//key_1_val= (KEY_IN_PORT & (1<< KEY_1_PIN)) >> KEY_1_PIN; 
+		key_1_val= (PINB >> PINB7);
+		// 꼭 쉬프트 시켜줘야 0,1이 들어온다.
+		// 그렇지 않으면 0x8?, 0x?? 값이 들어올수 있다.
+		// ??는 PINB의 각 핀 상태에 따라서 달라지기 때문에 꼭 0이라고 말할수 없다.
+		
+		switch(key_1_val) {
+			case 0: // 0 1이 아니라 0이다. Pull-up 회로이기 때문에
+				sbi(PORTB, PINB5);
+				break;
+				
+			case 1: // 1y
+				cbi(PORTB, PINB5);
+				break;				
+		}
+	}
+	return (0);
+}
+```
+
+## memory mapped io 예재
+불 깜빡깜빡하게 하는 코드   
+```c
+#define F_CPU 8000000UL
+
+//#include <avr/io.h>
+#include <util/delay.h>
+
+#define LED_DELAY_TIME	(1000) //ms
+
+int main(void) {
+
+	*(volatile unsigned int *)0x24 |=  (1<<5); // DDRB = 0x05;
+	*(volatile unsigned int *)0x25 &= ~(1<<5); // cbi(PORTB, 5);
+	
+	while (1) {
+		*(volatile unsigned int *)0x25 |= (1<<5);
+		_delay_ms(LED_DELAY_TIME);
+
+		*(volatile unsigned int *)0x25 &= ~(1<<5);
+		_delay_ms(LED_DELAY_TIME);
+
+	}
+	return (0);
+}
+```
 # Arduino Practice
 
 ## pull down
+
 <img src="https://github.com/user-attachments/assets/60d7c53a-9aab-47cc-aff5-64810ace96e8" width="500" height="400">   
 ✅ floating   
 선을 5V와 연결 안 했다 가정하자. 우린 이 값을 0이라 생각할 수 있다. 하지만 실제론 그렇지 않고 값이 0, 1로 랜덤으로 반복된다. 이 현상을 floating 이라한다. 위의 사진에서 8번 앞에 저항이 없다 가정하자. 
@@ -313,3 +453,55 @@ Analog Input, Analog Output
 ✅ ADC   
 Digital 장치는 Analog input을 받을 수 없기 때문에 Analog input을 Digital 신호로 바꿔주는 장치가 필요한데 이를 ADC(Analog to Digital Converter)라고 한다. DAC도 있는데 임베디드 mcu에선 없는 경우가 잦다. 그 이유는 
 임베디드 장치는 보통 측정하는 기능을 하기 때문이다.
+
+## motor
+<img src="https://github.com/user-attachments/assets/172721e3-ce89-484f-b455-d7528d0abf02" width="500" height="600">   
+모터 돌리는 코드   
+```c
+// define Motor Driver Pins
+#define MOTOR_DIR_PIN (12)
+#define MOTOR_PWM_PIN (3)
+#define MOTOR_BRK_PIN (9)
+
+// define Motor Direction
+#define CW LOW
+#define CCW HIGH
+
+// define Brake On/Off
+#define BRAKE_ON HIGH
+#define BRAKE_OFF LOW
+
+void setup() {
+    Serial.begin(9600);
+    pinMode(MOTOR_DIR_PIN, OUTPUT); // 모터 제어 핀 설정
+    pinMode(MOTOR_PWM_PIN, OUTPUT);
+    pinMode(MOTOR_BRK_PIN, OUTPUT);
+    
+    digitalWrite(MOTOR_DIR_PIN, HIGH); // 초기에는 모터 정지
+    digitalWrite(MOTOR_PWM_PIN, 0);
+    digitalWrite(MOTOR_BRK_PIN, HIGH);
+    delay(1000);
+}
+
+void loop() {
+    digitalWrite(MOTOR_DIR_PIN, CW); // 시계 방향 회전
+    digitalWrite(MOTOR_BRK_PIN, BRAKE_OFF); //release breaks
+    analogWrite(MOTOR_PWM_PIN, 255); //set work duty for the motor
+    Serial.println("motor cw rotate");
+    delay(2000);
+    
+    digitalWrite(MOTOR_BRK_PIN, HIGH);//activate breaks
+    Serial.println("motor brake on");
+    delay(500);
+
+    digitalWrite(MOTOR_DIR_PIN, CCW); // 반시계 방향 회전
+    digitalWrite(MOTOR_BRK_PIN, BRAKE_OFF); //release breaks
+    analogWrite(MOTOR_PWM_PIN, 255); //set work duty for the motor to 0 (off)
+    Serial.println("motor ccw rotate");
+    delay(2000);
+
+    digitalWrite(MOTOR_BRK_PIN, BRAKE_OFF);//activate breaks
+    Serial.println("motor brake on");
+    delay(500);    
+}
+```
