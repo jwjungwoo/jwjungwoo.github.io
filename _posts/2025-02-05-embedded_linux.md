@@ -1,4 +1,4 @@
-![dif](https://github.com/user-attachments/assets/f5416d20-177d-4141-8202-aa50dc73604b)---
+---
 layout: single
 title:  "임베디드 리눅스 시스템 프로그래밍"
 categories: autoever
@@ -68,7 +68,7 @@ $./hello
 ```
 
 ## 다른 이름으로 저장
-<img src="https://github.com/user-attachments/assets/de2b16ec-5831-4e4b-bc36-63631fbb7f08" width="600" height="400">   
+<img src="https://github.com/user-attachments/assets/f5416d20-177d-4141-8202-aa50dc73604b" width="600" height="400">   
 
 ## 저장 안하고 종료
 <img src="https://github.com/user-attachments/assets/128e52dd-8def-4656-a512-b7aa3ca775a1" width="600" height="400">   
