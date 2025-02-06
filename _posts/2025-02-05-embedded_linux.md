@@ -262,7 +262,79 @@ rwx rwx rwx = 777
 rw- rw- r-- = 664
 ```
 
-# Make Build System
+# Build System
+## gcc build process
+✅ 임베디드 리눅스에서 자주 사용되는 Build System 종류
+make (우리 수업에서는 make만 다뤘다.)   
+cmake   
+   
+✅ 빌드란?   
+소스코드( .c, .cpp )에서 실행 가능한 Software( .elf, .exe )로 변환하는 과정 (Process) 또는 결과물   
+   
+✅ gcc 기준 빌드 과정은 크게 둘로 나뉜다.   
+Compile & Assemble: 하나의 소스코드 파일이 0과 1로 구성된 Object 파일이 만들어짐   
+Linking: 만들어진 Object 파일들 + Library 들을 모아 하나로 합침   
+   
+✅ gcc 예재   
+gcc 명령어를 이용하면 여러개의 파일을 같이 Build할 수 있다.   
+1. work 파일에 main.c cat.h cat.c dog.h dog.c 이렇게 5개 파일을 만든다.
+2. .c 파일을 각각 Compile & Assemble 하자.
+```c
+$gcc –c ./main.c
+$gcc –c ./dog.c
+$gcc -c ./cat.c
+```   
+3. .o 파일이 생성된다. ($ls -al 로 확인)   
+4. 만들어진 Object 파일들과 라이브러리 함수들을 하나로 합친다.
+```c
+$gcc ./main.o ./dog.o ./cat.o -o ./go
+```   
+5. $.go를 하면 한번에 실행된다.   
+   
+근데 gcc는 똑똑해서 굳이 나눠서 작업하지 않아도 동작한다.   
+<img src="https://github.com/user-attachments/assets/e0f368bb-64be-4dde-a706-260c362c5e8c" width="600" height="400">   
+
+## 빌드 자동화 스크립트
+
+✅ bash shell script 를 이용한 build 방식   
+자동화 프로그램 개발에 특화된 Script 언어가 있다. ( .sh ) bash Script로 build 스크립트를 작성하고 실행해봤다.   
+```c  
+$vi ./run.sh
+
+<파일내용>
+#!/bin/sh
+gcc -c ./*.c -I .
+gcc -o ./zoo ./*.o
+
+<./run.sh 실행>
+$source ./run.sh     하면 zoo라고 만들어진다.
+$./zoo               라고 하면 된다.
+```   
+   
+.o 파일들을 지우는 것도 가능하다.   
+```c
+$vi ./clean.sh
+
+<파일내용>
+#!/bin/sh
+
+rm -r *.o
+rm -r ./zoo
+```   
+<img src="https://github.com/user-attachments/assets/2dffe5f2-a176-4dca-a94a-3e66a5ef9709" width="600" height="600">   
+
+## build system 체험
+✅ make   
+make: 프로그램   
+Makefile: 뭘 make 할지 기술한 파일   
+make프로그램이 Makefile을 읽어옴.   
+```c
+$sudo apt install make -y
+```   
+<img src="https://github.com/user-attachments/assets/720d0174-77ca-4a3f-9206-9df3136610ef" width="600" height="600">   
+Makefile 내용을 기술할 때는 꼭 탭으로!!!!!!!   
+
+
 # System Call
 # Thread
 # 라즈베리파이
