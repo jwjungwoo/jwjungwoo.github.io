@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/c5e4dc96-78ab-4732-8513-50f2229b6ff0)---
+![image](https://github.com/user-attachments/assets/2370bba2-860f-4a6b-ba24-f58017aa4e5b)---
 layout: single
 title:  "임베디드 리눅스 시스템 프로그래밍"
 categories: autoever
@@ -561,7 +561,71 @@ tiger.o: tiger.c /usr/include/stdc-predef.h tiger.h /usr/include/stdio.h \
 ✅ 참고:SUFFIXES는 Default이므로 쓸 필요가 없다.   
 <img src="https://github.com/user-attachments/assets/f84b2e10-b40c-4920-aa55-8c555acbd5fa" width="600" height="400">   
 
-# System Call
+# System
+## System
+컴퓨팅 시스템과 임베디드 시스템의 차이를 이해해보자.   
+   
+✅ 시스템   
+어떤 구성 요소들이 모여서 서로 통신하면 시스템이다. 컴퓨팅 시스템이란 CPU, 기억장치, I/O 장치 등이 서로 통신하는 시스템이다. 임베디드 시스템이란 컴퓨팅 시스템 중, 전용 기능을 수행하도록 만들어진 시스템이다. PC와 달리 특정 목적(ex.CCTV)
+을 가진다. Firmware는 임베디드 시스템이다. 그리고 OS는 컴퓨팅 시스템 (범용)이다. 
+<img src="https://github.com/user-attachments/assets/96d645f9-6935-4f4c-a61b-8ebd85736e85" width="600" height="400">   
+<img src="https://github.com/user-attachments/assets/f5e077ff-5b7f-4ced-b4dc-3fb96b725631" width="600" height="400">   
+<img src="https://github.com/user-attachments/assets/6b4caee9-5a07-4f2d-8d3f-ca63b7af6ec1" width="600" height="400">   
+<img src="https://github.com/user-attachments/assets/a0679da9-ee37-48e3-850d-5cf2432ea89a" width="600" height="400">   
+<img src="https://github.com/user-attachments/assets/c901f78d-4b56-4e1d-8fcb-2b7f33b32fcf" width="600" height="400">   
+Linux에서 App이 커널의 기능을 쓸 수 있도록 만든 API를 뭐라고 부를까? 바로 System Call이라 부른다. System Call은 비단 Linux에서만 사용하는 것은 아니다.   
+1) 시스템이라는 것은 컴퓨팅 시스템에서 S/W 개발을 의미하며,   
+2) System Call을 사용한 Application을 개발하는 수업이 시스템 프로그래밍이다.   
+
+## POSIX
+POSIX와 System call의 차이를 이해해보자.   
+   
+✅ POSIX   
+Application 개발자들을 위해 OS마다 제공되는 API들을 하나로 통일하였다. 통일된 API 의 이름이 바로 POSIX이다. 
+POSIX API 만 배워두면 여러 임베디드 OS에서도 편리하게 App 개발이 가능하다. 
+POSIX: OS 들이 지원하는 API 들의 표준 규격. IEEE에서 제정했다.   
+
+1) Quiz 1. POSIX 함수 형태는 똑같지만, 내부 구현은 OS마다 다를 수 있을까?   
+→ OS마다 구현 하는 방법이 다르다! , POSIX는 Interface 표준일 뿐
+   
+2) Quiz 2. Linux 에서 POSIX API로 개발한 C언어 소스코드가 있다. 이것을 VxWorks같은 다른 운영체제에서빌드하면, 잘 동작할까?   
+→ 어떤 OS 개발이든, POSIX 표준으로 개발한다면, 다른 OS에서도 동작하게 된다!
+   
+3) Quiz 3. Windows App / Android App 개발할 때도, POSIX를 쓸 수 있을까?   
+→ Windows 는 win8 부터 POSIX 지원이 안된다.   
+→ 안드로이드는 일부만 지원한다.   
+
+POSIX: OS가 App에 제공하는 API들의 표준   
+System Call: 리눅스가 App개발자들을 위해 제공하는 API   
+System Call에는 POSIX API 호환도 있고 아닌 것도 있다.
+<img src="https://github.com/user-attachments/assets/867261ca-b3ff-421c-b500-a21bdc900e14" width="300" height="300">   
+<img src="https://github.com/user-attachments/assets/e4d41939-c7c8-4e26-a691-caba1c52d589" width="300" height="500">   
+<img src="https://github.com/user-attachments/assets/d79ce53a-77c4-4028-af7b-f9809839c50a" width="300" height="600">   
+결론, OS를 쓰는 임베디드 시스템의 App 개발자들은 POSIX API를 쓰면서 App을 만들어낸다.   
+
+# 시스템 아키텍처 기본
+## 폰노이만 아키텍처
+✅ CPU   
+Disk에 저장된 0, 1로 된 명렁어를 하나씩 수행하는 장치이다. CPU는 엄청 빠른데 Disk에서 직접 데이터를 전송하면 작동시간의 99퍼센트는 놀고있다고 생각하면된다. 폰노이만은 이에 memory를 개발했다. 하지만 Load 작업은 여전히 느리다. 
+저장장치는 걸어다니는 속도, 메모리는 람보르기니 속도라면 CPU는 전투기다. 이에 나온 해결방법이 S램(cache memory)이다. S램은 저장공간은 작지만, 기존에 메모리보다 더 빠른 성능을 내는 메모리다. 
+D램에서 S램으로 여러줄의 명령어를 한꺼번에 전달하면 CPU는 기존보다 더 빠르게 한줄씩, 명령어를 수행할 수 있다. D램은 Main메모리, S램은 Cache메모리라고 부른다.   
+<img src="https://github.com/user-attachments/assets/918a7ad4-15dd-472a-b758-db66e72d666a" width="600" height="400">   
+   
+✅ Memory   
+Memory : 휘발성(volatile), 비휘발성(nonvolatile)   
+휘발성: D램, S램   
+qlgnlqkftjd: EEPROM, NAND, NOR   
+
+## 프로그램과 프로세스
+✅ 프로세스   
+프로세스는 메모리 공간을 나누어서 활용한다.   
+<img src="https://github.com/user-attachments/assets/a33dad1b-9cde-4974-bcde-b262a5bef8df" width="600" height="400">   
+<img src="https://github.com/user-attachments/assets/4574d212-1137-48a3-8c9c-0b9e2cbb1f53" width="600" height="400">   
+<img src="https://github.com/user-attachments/assets/e76de015-388a-4b36-945a-0506f720c30e" width="600" height="400">   
+<img src="https://github.com/user-attachments/assets/b89763cc-4a12-46ab-8495-16fa7469fe76" width="600" height="400">   
+프로세스끼리 독립된 메모리를 갖는다. 따라서, 변수 값들을 서로 공유할 수 없다. 
+
 # Thread
+
 # 라즈베리파이
 # Character Device Driver 개발
