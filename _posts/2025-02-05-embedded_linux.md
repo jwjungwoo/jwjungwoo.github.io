@@ -551,7 +551,10 @@ tiger.o: tiger.c /usr/include/stdc-predef.h tiger.h /usr/include/stdio.h \
 <img src="https://github.com/user-attachments/assets/e3f3e4cc-b0e8-4078-bcea-cb6793e8fd1a" width="600" height="400">   
 ✅ 4단계:컴파일 옵션 지정   
 <img src="https://github.com/user-attachments/assets/f239e594-17bc-44cc-bcc6-f358827d8f0d" width="600" height="400">   
+✅ 5단계:wildcard, 확장자 치환 사용   
+<img src="https://github.com/user-attachments/assets/72da62d1-64a6-4f40-8176-93bc95dd7a43" width="600" height="400">   
 ✅ 5단계:gccmakedep하면 Makefile.bak에 백업 파일 생성, Makefile에 의존성 파일 작성됨   
+<img src="https://github.com/user-attachments/assets/1603c73f-508c-4b9d-a28b-681414345529" width="600" height="400">   
 ✅ 6단계:makedepend, SUFFIXES 사용   
 
 ✅ 7단계:파일명 매크로 추가   
