@@ -9,7 +9,7 @@ sidebar:
 #search: false
 ---
 
-# 실버3
+# 실버3 한국이 그리울 땐~
 
 ## 9996
 ```c++
@@ -40,6 +40,30 @@ int main() {
 	}
 
 
+	return 0;
+}
+```
+
+# 실버5
+## 14405 피카츄
+```c++
+#include <iostream>
+using namespace std;
+
+int flag;
+string s;
+
+int main() {
+	ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+
+	cin >> s;
+	for (int i = 0; i < s.length(); i++) {
+		if (i < s.length() - 1 && (s.substr(i, 2) == "pi" || s.substr(i, 2) == "ka")) i += 1;
+		else if (i < s.length() - 2 && (s.substr(i, 3) == "chu")) i += 2;
+		else { flag = 1; break;}
+	}
+	if (flag) cout << "NO\n";
+	else cout << "YES\n";
 	return 0;
 }
 ```
