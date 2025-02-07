@@ -553,13 +553,13 @@ tiger.o: tiger.c /usr/include/stdc-predef.h tiger.h /usr/include/stdio.h \
 <img src="https://github.com/user-attachments/assets/f239e594-17bc-44cc-bcc6-f358827d8f0d" width="600" height="400">   
 ✅ 5단계:wildcard, 확장자 치환 사용   
 <img src="https://github.com/user-attachments/assets/72da62d1-64a6-4f40-8176-93bc95dd7a43" width="600" height="400">   
-✅ 5단계:gccmakedep하면 Makefile.bak에 백업 파일 생성, Makefile에 의존성 파일 작성됨   
-<img src="https://github.com/user-attachments/assets/1603c73f-508c-4b9d-a28b-681414345529" width="600" height="400">   
-✅ 6단계:makedepend, SUFFIXES 사용   
-
-✅ 7단계:파일명 매크로 추가   
-✅ 
-✅
+✅ 6단계:gccmakedep하면 Makefile.bak에 백업 파일 생성, Makefile에 의존성 파일 작성됨   
+✅ 7단계:makedepend, SUFFIXES 사용   
+<img src="https://github.com/user-attachments/assets/1f8e6c1a-17be-42ad-b71f-51444a40f5e2" width="600" height="400">   
+✅ 8단계:파일명 매크로 추가   
+<img src="https://github.com/user-attachments/assets/73974e75-ee65-4664-bb5c-c2907611536e" width="600" height="400">   
+✅ 참고:SUFFIXES는 Default이므로 쓸 필요가 없다.   
+<img src="https://github.com/user-attachments/assets/f84b2e10-b40c-4920-aa55-8c555acbd5fa" width="600" height="400">   
 
 # System Call
 # Thread
