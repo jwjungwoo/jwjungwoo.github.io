@@ -1,4 +1,4 @@
----
+![image](https://github.com/user-attachments/assets/c5e4dc96-78ab-4732-8513-50f2229b6ff0)---
 layout: single
 title:  "임베디드 리눅스 시스템 프로그래밍"
 categories: autoever
@@ -171,7 +171,8 @@ gcc -o ./cat ./cat.c
 gcc -o ./tiger ./tiger.c
 ```
 ✅ 증분빌드   
-파일이 많아지면 Shell Script로 빌드하면 좋다. 근데 문법도 복잡한 make는 왜 사용하는가? 이유는 바로 증분빌드때문이다. 증분빌드란 make의 증분 빌드는 변경된 파일만 다시 컴파일하여 전체 빌드 시간을 줄이는 기능이다.   
+Shell Script도 좋다. 근데 문법도 복잡한 make는 왜 사용하는가? 이유는 바로 증분빌드때문이다. 증분빌드란 make의 증분 빌드는 변경된 파일만 다시 컴파일하여 전체 빌드 시간을 줄이는 기능이다. 5000개 중 1개의 파일이 
+변경됐을 때 Shell Script는 다시 5000개 전부, make는 바뀐 파일 1개의 object를 생성한다.   
 
 ## 원격접속
 1. 윈도우에 MobaXterm 설치   
@@ -217,7 +218,7 @@ $sudo rm -r kfc // kfc 관련파일 삭제
 ```
 kfc에서 sudo apt install sl -y 명령어를 하면 안 된다. kfc는 adduser로 만든 사용자이기에 root 권한이 없다. 물론 줄 수는 있지만 수업시간에 다루진 않았다. 중요하지 않나보다.   
    
-✅ 그룹
+✅ 그룹   
 <img src="https://github.com/user-attachments/assets/d27545f0-04c0-427a-b99b-88e5ff9315ea" width="600" height="400">   
 서버에서는 그룹이 중요하나 임베디드에선 그렇게 중요하진 않다. 따라서 패스!   
 ```c
@@ -284,7 +285,7 @@ $gcc –c ./main.c
 $gcc –c ./dog.c
 $gcc -c ./cat.c
 ```   
-3. .o 파일이 생성된다. ($ls -al 로 확인)   
+3. 각각의 .o 파일(object 파일)이 생성된다. ($ls -al 로 확인)   
 4. 만들어진 Object 파일들과 라이브러리 함수들을 하나로 합친다.
 ```c
 $gcc ./main.o ./dog.o ./cat.o -o ./go
@@ -334,6 +335,228 @@ $sudo apt install make -y
 <img src="https://github.com/user-attachments/assets/720d0174-77ca-4a3f-9206-9df3136610ef" width="600" height="600">   
 Makefile 내용을 기술할 때는 꼭 탭으로!!!!!!!   
 
+## Makefile에서 의존성
+✅ 의존성   
+의존성이란, 특정 타겟을 생성하거나 업데이트하기 위해 필요한 파일이나 다른 타켓을 말한다. 예를들어 
+Makefile 안에 my_target : aaa bbb가 있다. 그때 $make bbb my_target을 하면 bbb, aaa, my_target 순으로 동작한다.   
+
+## make 여러가지 실행
+<img src="https://github.com/user-attachments/assets/6ea920ff-78e6-4f67-a02c-8cbe57577490" width="600" height="400">   
+
+## =과 :=
+```c
+var = 11
+
+a := $(var) # a = 11w
+r  = $(var) # r = 11
+
+var = 22 # var값이 바뀌었다!
+
+my_target:
+        @echo $(a) # a =11
+        @echo $(r) # r = 11이 아닌 22가 나온다.. 이를 지연 치환이라고 한다.
+```
+
+## make 파일 만들기
+```c
+CC = gcc
+CFLAGS = -c
+
+zoo: main.o dog.o cat.o tiger.o
+    $(CC) -o zoo main.o dog.o cat.o tiger.o
+
+main.o: main.c
+    $(CC) $(CFLAGS) main.c
+
+dog.o: dog.c dog.h
+    $(CC) $(CFLAGS) dog.c
+
+cat.o: cat.c cat.h
+    $(CC) $(CFLAGS) cat.c
+
+tiger.o: tiger.c tiger.h
+    $(CC) $(CFLAGS) tiger.c
+
+clean:
+    rm -r *.o
+    rm -r zoo
+```
+<img src="https://github.com/user-attachments/assets/4faf1dab-fd5d-43a2-9def-a928730570ab" width="600" height="400">   
+   
+✅ 가장 효율적으로 만든 경우   
+```c
+# 컴파일러와 컴파일 옵션 정의
+CC = gcc #사용할 컴파일 gcc
+CFLAGS = -Wall -c
+
+# 타겟 실행 파일
+TARGET = zoo
+
+# 소스 파일과 객체 파일
+SRCS = main.c dog.c cat.c tiger.c
+OBJS = main.o dog.o cat.o tiger.o
+
+# 최종 실행 파일 생성 규칙
+$(TARGET): $(OBJS)
+    $(CC) -o $(TARGET) $(OBJS)
+
+# 개별 소스 파일 -> 객체 파일 규칙
+%.o: %.c
+    $(CC) $(CFLAGS) -c $< -o $@
+
+# clean 규칙 (빌드 파일 정리)
+clean:
+    rm -f $(OBJS) $(TARGET)
+```
+
+## 의존성 관리 자동화 도구:gccmakedep
+✅ gccmakedep   
+설치   
+```c
+$ sudo apt install xutils-dev -y
+```   
+의존성 추가   
+```c
+$ gccmakedep main.c dog.c cat.c tiger.c
+```
+실행   
+```c
+$ gccmakedep 
+```   
+그럼 아래의 Makefile이 자동으로 만들어진다.   
+```c
+# 컴파일러와 컴파일 옵션 정의
+CC = gcc #사용할 컴파일 gcc
+CFLAGS = -Wall -g
+
+# 타겟 실행 파일
+TARGET = zoo
+
+# 소스 파일과 객체 파일
+SRCS = main.c dog.c cat.c tiger.c
+OBJS = main.o dog.o cat.o tiger.o
+
+# 최종 실행 파일 생성 규칙
+$(TARGET): $(OBJS)
+	$(CC) -o $(TARGET) $(OBJS) 
+
+# 개별 소스 파일 -> 객체 파일 규칙
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# clean 규칙 (빌드 파일 정리)
+clean:
+	rm -f $(OBJS) $(TARGET)
+
+# DO NOT DELETE
+main.o: main.c /usr/include/stdc-predef.h main.h dog.h \
+ /usr/include/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/bits/long-double.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/9/include/stddef.h \
+ /usr/lib/gcc/x86_64-linux-gnu/9/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/timesize.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/time64.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/sys_errlist.h cat.h tiger.h
+dog.o: dog.c /usr/include/stdc-predef.h dog.h /usr/include/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/bits/long-double.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/9/include/stddef.h \
+ /usr/lib/gcc/x86_64-linux-gnu/9/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/timesize.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/time64.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/sys_errlist.h
+cat.o: cat.c /usr/include/stdc-predef.h cat.h /usr/include/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/bits/long-double.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/9/include/stddef.h \
+ /usr/lib/gcc/x86_64-linux-gnu/9/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/timesize.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/time64.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/sys_errlist.h
+tiger.o: tiger.c /usr/include/stdc-predef.h tiger.h /usr/include/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/libc-header-start.h \
+ /usr/include/features.h /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/bits/long-double.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/9/include/stddef.h \
+ /usr/lib/gcc/x86_64-linux-gnu/9/include/stdarg.h \
+ /usr/include/x86_64-linux-gnu/bits/types.h \
+ /usr/include/x86_64-linux-gnu/bits/timesize.h \
+ /usr/include/x86_64-linux-gnu/bits/typesizes.h \
+ /usr/include/x86_64-linux-gnu/bits/time64.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__mbstate_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
+ /usr/include/x86_64-linux-gnu/bits/types/__FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
+ /usr/include/x86_64-linux-gnu/bits/sys_errlist.h
+```   
+기존에 만들었던 Makefile은 Makefile.bak이란 이름으로 바꼈다!   
+<img src="https://github.com/user-attachments/assets/2a6a9359-290a-42d4-9c03-1137ce23b102" width="600" height="400">   
+
+## make의 여러 문법법
+✅ variable 변수   
+<img src="https://github.com/user-attachments/assets/f879328e-c5fc-4264-af5c-006f7f7579a8" width="600" height="400">   
+✅ 특수 변수   
+<img src="https://github.com/user-attachments/assets/266d8028-3d0e-4671-a200-b16b893d2ed8" width="600" height="400">   
+✅ 1단계:코드 작성 후 빌드   
+<img src="https://github.com/user-attachments/assets/10e6ae7e-d1d9-49ef-8aa8-ca48b0e1f7ff" width="600" height="400">   
+✅ 2단계:변수 추가   
+<img src="https://github.com/user-attachments/assets/432022f1-69a6-4355-a0c3-64de1fcf67ed" width="600" height="400">   
+✅ 3단계:특수 변수 사용   
+<img src="https://github.com/user-attachments/assets/e3f3e4cc-b0e8-4078-bcea-cb6793e8fd1a" width="600" height="400">   
+✅ 4단계:컴파일 옵션 지정   
+<img src="https://github.com/user-attachments/assets/f239e594-17bc-44cc-bcc6-f358827d8f0d" width="600" height="400">   
+✅ 5단계:gccmakedep하면 Makefile.bak에 백업 파일 생성, Makefile에 의존성 파일 작성됨   
+✅ 6단계:makedepend, SUFFIXES 사용   
+
+✅ 7단계:파일명 매크로 추가   
+✅ 
+✅
 
 # System Call
 # Thread
