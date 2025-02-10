@@ -12,7 +12,7 @@ sidebar:
 # 리눅스 기본
 ## linux
 ✅ 리눅스의 정확한 의미   
-<img src="https://github.com/user-attachments/assets/cc1d0c76-d4a4-4660-bac6-a6f11756b51b" width="600" height="400">   
+<img src="https://github.com/user-attachments/assets/cc1d0c76-d4a4-4660-bac6-a6f11756b51b" width="600" height="350">   
 리눅스는 서버 PC의 OS로 가장 많이 사용된다. 무료에 성능도 좋기 때문이다.
 
 ## ubuntu 설치
@@ -84,6 +84,7 @@ insert모드 하기전에 /를 치고 n을 누르면서 위에서부터 찾을 �
 
 ## 설정
 <img src="https://github.com/user-attachments/assets/ddf70269-83dc-4e94-8d91-65cada939823" width="600" height="600">   
+   
 근데 나갔다 들어오면 세팅이 다 사라진다. 디폴트로 설정하려면 .vimrc 파일을 만들면 된다.   
 <img src="https://github.com/user-attachments/assets/98ccbb5e-8805-4375-8bbc-fd07ca62e4ba" width="600" height="600">   
 
@@ -538,7 +539,7 @@ tiger.o: tiger.c /usr/include/stdc-predef.h tiger.h /usr/include/stdio.h \
 기존에 만들었던 Makefile은 Makefile.bak이란 이름으로 바꼈다!   
 <img src="https://github.com/user-attachments/assets/2a6a9359-290a-42d4-9c03-1137ce23b102" width="600" height="400">   
 
-## make의 여러 문법법
+## make의 여러 문법
 ✅ variable 변수   
 <img src="https://github.com/user-attachments/assets/f879328e-c5fc-4264-af5c-006f7f7579a8" width="600" height="400">   
 ✅ 특수 변수   
@@ -584,17 +585,17 @@ POSIX와 System call의 차이를 이해해보자.
 Application 개발자들을 위해 OS마다 제공되는 API들을 하나로 통일하였다. 통일된 API 의 이름이 바로 POSIX이다. 
 POSIX API 만 배워두면 여러 임베디드 OS에서도 편리하게 App 개발이 가능하다. 
 POSIX: OS 들이 지원하는 API 들의 표준 규격. IEEE에서 제정했다.   
-
+   
 1) Quiz 1. POSIX 함수 형태는 똑같지만, 내부 구현은 OS마다 다를 수 있을까?   
-→ OS마다 구현 하는 방법이 다르다! , POSIX는 Interface 표준일 뿐
+→ OS마다 구현 하는 방법이 다르다! , POSIX는 Interface 표준일 뿐   
    
 2) Quiz 2. Linux 에서 POSIX API로 개발한 C언어 소스코드가 있다. 이것을 VxWorks같은 다른 운영체제에서빌드하면, 잘 동작할까?   
-→ 어떤 OS 개발이든, POSIX 표준으로 개발한다면, 다른 OS에서도 동작하게 된다!
+→ 어떤 OS 개발이든, POSIX 표준으로 개발한다면, 다른 OS에서도 동작하게 된다!   
    
 3) Quiz 3. Windows App / Android App 개발할 때도, POSIX를 쓸 수 있을까?   
 → Windows 는 win8 부터 POSIX 지원이 안된다.   
 → 안드로이드는 일부만 지원한다.   
-
+   
 POSIX: OS가 App에 제공하는 API들의 표준   
 System Call: 리눅스가 App개발자들을 위해 제공하는 API   
 System Call에는 POSIX API 호환도 있고 아닌 것도 있다.
