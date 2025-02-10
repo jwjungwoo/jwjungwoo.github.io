@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/2370bba2-860f-4a6b-ba24-f58017aa4e5b)---
+---
 layout: single
 title:  "임베디드 리눅스 시스템 프로그래밍"
 categories: autoever
