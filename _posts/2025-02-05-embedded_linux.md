@@ -625,7 +625,34 @@ qlgnlqkftjd: EEPROM, NAND, NOR
 <img src="https://github.com/user-attachments/assets/b89763cc-4a12-46ab-8495-16fa7469fe76" width="600" height="400">   
 프로세스끼리 독립된 메모리를 갖는다. 따라서, 변수 값들을 서로 공유할 수 없다. 
 
-# Thread
-
 # 라즈베리파이
-# Character Device Driver 개발
+## hw
+사용한 칩은 BCM2711이다. 
+# Linux Driver
+## Device Driver 개념
+✅ Driver vs Device Driver   
+드라이버(Driver): 하드웨어뿐만 아니라 소프트웨어도 포함하는 광범위한 개념   
+디바이스 드라이버(Device Driver): 하드웨어 전용 드라이버. Program이 HW를 제어하기 위한 sW
+
+## Device Driver 필요성
+✅ Firmware에서 임베디드 개발   
+HW 메모리 맵 Address에 직접 값 Access 가능하다. 중간 Layer 없이 Firmware가 HW를 직접 제어한다.   
+```c
+int main (void) {
+  (*(volatile unsigned*)0x40021018) |= 0x8;
+  (*(volatile unsigned*)0x40010C04) |= 0x10;
+}
+```
+✅ 문제점   
+<img src="https://github.com/user-attachments/assets/c9ca4295-5ab8-4c65-b5aa-5b5f18578d49" width="500" height="400">   
+HW를 사용하는 Firmware가 여러개 있다. 이때 HW를 바꿔버리면 Firmware의 HW 관련 코드를 전부 수정해야한다. 이에따라 Laver가 등장했다.   
+   
+✅ Layer의 편리함   
+Kernel은 공통적으로 쓰는 API를 제공한다. Kernel 소스코드만 새로운 HW가 동작되도록 수정하여 다시 Build하면, 다른 
+Firmware들을 수정할 필요가 없다.   
+<img src="https://github.com/user-attachments/assets/81ad4baf-c1f7-4d40-b928-05bd33d59467" width="600" height="400">   
+그런데 Build 시간이 너무 오래걸린다.   
+   
+✅ Device Driver 등장   
+<img src="https://github.com/user-attachments/assets/81d7b350-a518-470a-abd6-cf0fa4f733cc" width="600" height="350">   
+<img src="https://github.com/user-attachments/assets/f123c1c6-9771-41fd-87f2-e3f11bd4f71f" width="600" height="350">   
