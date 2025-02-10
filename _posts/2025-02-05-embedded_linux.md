@@ -627,7 +627,41 @@ qlgnlqkftjd: EEPROM, NAND, NOR
 
 # 라즈베리파이
 ## hw
-사용한 칩은 BCM2711이다. 
+사용한 칩은 BCM2711이다.
+
+## 원격접속
+✅ 졸업프로젝트   
+졸업프로젝트 때 라즈베리파이 pc를 사용하기 위해서 초반에 라즈베리파이의 ip를 확인해야하기에 모니터로 켜서 확인해야했다. 근데 모니터 없이 바로 확인할 수 있었다!!!   
+   
+✅ 원격접속하는 방법   
+1. 노트북에서 핫스팟을 킨다.   
+2. 라즈베리파이를 설치할 때 초기 와이파이와 비밀번호를 노트북의 핫스팟으로 설정한다.   
+3. port번호는 22로 디폴트다.   
+4. 노트북에 연결된 라즈베리파이의 ip를 확인한다.   
+5. $ssh -p 22 jw@192.168.137.1   
+<img src="https://github.com/user-attachments/assets/d1ddcf23-4763-47c2-8df4-1ca8ca4f5eab" width="600" height="400">   
+   
+✅ led 한 개 깜빡이기   
+1. vim을 설치한다.   
+2. led.py 파일을 생성한다.   
+```python
+from gpiozero import LED
+from time import sleep
+
+led1 = LED(14)
+led2 = LED(15)
+
+while:
+  led1.on()
+  led2.off()
+  sleep(0.1)
+  led1.off()
+  led2.on()
+  sleep(0.1)
+```   
+4. $python led.py   
+<img src="https://github.com/user-attachments/assets/483416a2-3713-4d82-9445-8f997b1d8ecd" width="500" height="400">   
+
 # Linux Driver
 ## Device Driver 개념
 ✅ Driver vs Device Driver   
@@ -643,6 +677,7 @@ int main (void) {
   (*(volatile unsigned*)0x40010C04) |= 0x10;
 }
 ```
+   
 ✅ 문제점   
 <img src="https://github.com/user-attachments/assets/c9ca4295-5ab8-4c65-b5aa-5b5f18578d49" width="500" height="400">   
 HW를 사용하는 Firmware가 여러개 있다. 이때 HW를 바꿔버리면 Firmware의 HW 관련 코드를 전부 수정해야한다. 이에따라 Laver가 등장했다.   
