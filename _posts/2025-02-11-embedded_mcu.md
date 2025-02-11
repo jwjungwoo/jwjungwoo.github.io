@@ -36,7 +36,7 @@ MCU(Micro Control Unit)
 3.(AI) ADC. Analog In   
 4.(유사AO) PWM. Analog Out   
    
-이 네가지를 배울 것이다.   
+이 네 가지를 배울 것이다.   
 
 ## 임베디드 개발을 위한 회로도  
 임베디드 개발자는 회로의 모든것을 다 알필요는 없다!   
