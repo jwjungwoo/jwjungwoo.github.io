@@ -193,8 +193,8 @@ int core0_main(void) {
     initLED();
 
     while(1) {
-        if( (P02_IN.U &= (0x1 << P1_IDX)) == 0) {
-            P10_OUT.U = 0x1 << P2_IDX;
+        if( (P02_IN.U &= (0x1 << P1_IDX)) == 0) {  // 누르면 0
+            P10_OUT.U = 0x1 << P2_IDX;  
         }
         else {
             P10_OUT.U = 0x0 << P2_IDX;
