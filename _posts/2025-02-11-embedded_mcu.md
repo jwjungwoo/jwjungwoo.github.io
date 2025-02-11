@@ -52,7 +52,7 @@ MCU(Micro Control Unit)
 ✅ 다이오드   
 전압(or전류) 방향 안정화   
 양극이 음극보다 0.7V 이상 커지면 전류가 흐른다.   
-<img src="ㅗttps://github.com/user-attachments/assets/e9ecec48-7570-4573-8432-b4ffac800029" width="400" height="60">   
+<img src="https://github.com/user-attachments/assets/e9ecec48-7570-4573-8432-b4ffac800029" width="400" height="60">   
    
 ✅ 스위치   
 회로 on/off   
