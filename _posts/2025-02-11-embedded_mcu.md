@@ -99,7 +99,7 @@ P10_IOCR0&=~(0x1f<<19)
 ```c
 0x10 == 0b10000
 P10_IOCR0 |= (0x10)<<19
-```   `
+```
    
 ✅ 레지스터   
 Register는 unsigned int로 표현한다. Register 뒤에 .U를 붙이면 unsigned int로 접근할 수 있다. Register를 초기화한 후에 0x10으로 세팅한다.   
