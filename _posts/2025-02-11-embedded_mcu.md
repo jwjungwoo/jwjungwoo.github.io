@@ -25,11 +25,14 @@ MPU(Micro Processor Unit)
 CPU, 기본 메모리, I/O 포트, 타이머, 직렬통신 등의 기능을 하나의 칩에 내장   
 8051, AVR 등   
 MCU(Micro Control Unit)   
-
+   
+✅ 디버거   
+보드 안에 디버거가 있냐 없냐에 따라 가격이 달라진다. 우리가 쓸 보드는 디버거가 내재돼있다. 
 ## 실습물품
 ✅ TC275 보드   
 <img src="https://github.com/user-attachments/assets/ca5d9d36-1924-407d-a91f-edc3b2efe06f" width="400" height="600">   
 빨간색 보드가 TC275보드이다. TC275보드의 정중앙의 정사각형 보드가 바로 마이크로컨트롤러이다.   
 
 ## infineon
+빌드를 하고 디버그를 해야한다. 빌드를 먼저하면 elf 파일이 생긴다. 
 ✅ 
