@@ -166,6 +166,7 @@ void initLED(void) {
 ## P02.1을 읽어와서(D3스위치) 눌렀을 때 D13 LED가 켜지는 실습
 1. P02_IOCR0의 15~11bit를 00010으로 setting
 2. P02_IN인지 확인하기
+
 ```c
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
