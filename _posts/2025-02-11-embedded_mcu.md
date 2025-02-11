@@ -63,6 +63,9 @@ MCU(Micro Control Unit)
 전류: 전자의 흐름 (전류가 +에서 -로 흐른다를 약속한거고 실제 전자는 -에서 +로흐르는거임)   
 가변저항: 
 사인파의 진동을 만들어 놓고 변형을 하면 된다.   
+   
+✅ Pull-up, Pull-down   
+아무것도 안 했을 때 높은 전압이 읽히냐 낮은 전압이 읽히냐가 pull-up, pull-down의 의미다.
 
 ## 실습물품
 ✅ TC275 보드   
@@ -111,3 +114,191 @@ while(1) {
 }
 ```   
 
+## ShieldBuddy 확인법
+1. ShieldBuddy p.44를 확인하여 Digital Pin 번호의 TC275T Pin Assignment를 확인한다.
+2. 
+
+## 실습
+### 파란색 LED 점등 실습
+빌드는 맨 처음에 해주고, 디버그 중인 코드들을 멈추고, 디버그하고, resume을 하면 된다.   
+initLED() 함수가 존재하는 이유는 GPIO 핀을 출력 모드로 설정한 후에야 P10_OUT을 통해 LED를 제어할 수 있기 때문이다.   
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+void initLED(void); //가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+
+    while(1) {
+        P10_OUT.U = 0x1 << P2_IDX;
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+```
+
+### P02.1을 읽어와서(D3스위치) 눌렀을 때 D13 LED가 켜지는 실습
+1. P02_IOCR0의 15~11bit를 00010으로 setting
+2. P02_IN인지 확인하기
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+#define PCn_1_IDX 11
+#define P1_IDX 1
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+void initLED(void); //가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+
+    while(1) {
+        if( (P02_IN.U &= (0x1 << P1_IDX)) == 0) {
+            P10_OUT.U = 0x1 << P2_IDX;
+        }
+        else {
+            P10_OUT.U = 0x0 << P2_IDX;
+        }
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+```
+
+### 안눌파, 눌빠
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+#define PCn_1_IDX 11
+#define P1_IDX 1       //D3스위치는 P2.1이다. 1번이므로 P1_IDX = 1이다.
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+void initLED(void); //가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+
+    while(1) {
+        if( (P02_IN.U &= (0x1 << P1_IDX)) == 0) {
+            P10_OUT.U = 0x1 << P1_IDX;
+        }
+        else {
+            P10_OUT.U = 0x1 << P2_IDX;
+        }
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);//
+    P02_IOCR0.U |= 0x02 << PCn_1_IDX;   //P02는 00010일때가 켜져있는 것이다.
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;   //P10.2를 output으로 설정 블루
+
+    P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_1_IDX;   //P10.1를 output으로 설정 레드
+}
+```
+
+### 위의 실습을 OMR 레지스터로 구현하기
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+#define PCn_1_IDX 11
+#define P1_IDX 1       // D3 스위치는 P2.1이다. 1번이므로 P1_IDX = 1이다.
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+void initLED(void); // 가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+
+    while(1) {
+        if( (P02_IN.U & (0x1 << P1_IDX)) == 0) {  // 버튼이 눌리면
+            P10_OMR.U = (1 << P1_IDX) | (1 << (P2_IDX + 16)); // P10.1(레드 LED ON), P10.2(블루 LED OFF). OMR 레지스터의 하위 16비트는 PCL(clear)비트이기 때문이다.
+        }
+        else {  // 버튼이 눌리지 않으면
+            P10_OMR.U = (1 << P2_IDX) | (1 << (P1_IDX + 16)); // P10.2(블루 LED ON), P10.1(레드 LED OFF)
+        }
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_1_IDX;   // P02는 00010일 때 켜짐
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;   // P10.2를 output으로 설정 (블루 LED)
+
+    P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_1_IDX;   // P10.1을 output으로 설정 (레드 LED)
+}
+```
