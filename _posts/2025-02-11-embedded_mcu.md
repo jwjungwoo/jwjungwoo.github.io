@@ -118,8 +118,8 @@ while(1) {
 1. ShieldBuddy p.44를 확인하여 Digital Pin 번호의 TC275T Pin Assignment를 확인한다.
 2. 
 
-## 실습
-### 파란색 LED 점등 실습
+# 실습
+## 파란색 LED 점등 실습
 빌드는 맨 처음에 해주고, 디버그 중인 코드들을 멈추고, 디버그하고, resume을 하면 된다.   
 initLED() 함수가 존재하는 이유는 GPIO 핀을 출력 모드로 설정한 후에야 P10_OUT을 통해 LED를 제어할 수 있기 때문이다.   
 ```c
@@ -157,7 +157,7 @@ void initLED(void) {
 }
 ```
 
-### P02.1을 읽어와서(D3스위치) 눌렀을 때 D13 LED가 켜지는 실습
+## P02.1을 읽어와서(D3스위치) 눌렀을 때 D13 LED가 켜지는 실습
 1. P02_IOCR0의 15~11bit를 00010으로 setting
 2. P02_IN인지 확인하기
 ```c
@@ -205,7 +205,7 @@ void initLED(void) {
 }
 ```
 
-### 안눌파, 눌빠
+## 안눌파, 눌빠
 ```c
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
@@ -254,7 +254,7 @@ void initLED(void) {
 }
 ```
 
-### 위의 실습을 OMR 레지스터로 구현하기
+## 위의 실습을 OMR 레지스터로 구현하기
 ```c
 #include "Ifx_Types.h"
 #include "IfxCpu.h"
