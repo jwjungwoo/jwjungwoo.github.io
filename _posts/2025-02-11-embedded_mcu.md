@@ -13,6 +13,7 @@ sidebar:
 ✅ 회로: 회로를 어느정도 알아야한다는 강사님의 말씀이 인상 깊었다. 난 회로를 보면 눈 감아. 가 되면 안 된다고하셨다.   
 ✅ 어려워: ShieldBuddy 메뉴얼 표를 찾아가며 프로그래밍하는 것이 처음이라 다소 어려웠다. 첫날엔 7시까지 남아서 공부를 하다 집에 와서 더 했다. 복습하며 새로운 것을 소화해서 뿌듯했다.   
 ✅ 팀워크: 팀원들과 모르는 부분을 서로 채워주어 이해하기 수월했다. 팀워크는 중요하고 소중하다는 것을 가장 많이 느꼈다...(매번 느끼는 중) 우리는 나보다 똑똑하다!!!   
+✅ 메뉴얼: 변수는 한번에 하나씩 선언해야한다.
 
 # 임베디드 시스템
 
@@ -289,10 +290,10 @@ int core0_main(void) {
 
     while(1) {
         if( (P02_IN.U & (0x1 << P1_IDX)) == 0) {  // 버튼이 눌리면
-            P10_OMR.U = (1 << P1_IDX) | (1 << (P2_IDX + 16)); // P10.1(레드 LED ON), P10.2(블루 LED OFF). OMR 레지스터의 하위 16비트는 PCL(clear)비트이기 때문이다.
+            P10_OMR.U = (1 << P1_IDX) | (1 << (P2_IDX + 16)); // P10.1(레드 LED ON), P10.2(블루 LED OFF). OMR 레지스터의 하위 16비트는 PCL(clear)비트이기 때문이다. // P10_OMR.U = 0x40002;
         }
         else {  // 버튼이 눌리지 않으면
-            P10_OMR.U = (1 << P2_IDX) | (1 << (P1_IDX + 16)); // P10.2(블루 LED ON), P10.1(레드 LED OFF)
+            P10_OMR.U = (1 << P2_IDX) | (1 << (P1_IDX + 16)); // P10.2(블루 LED ON), P10.1(레드 LED OFF) // P10_OMR = 0x20004;
         }
     }
     return(1);
@@ -309,3 +310,163 @@ void initLED(void) {
     P10_IOCR0.U |= 0x10 << PCn_1_IDX;   // P10.1을 output으로 설정 (레드 LED)
 }
 ```
+
+## 스위치 눌렀을 때 상태 토글
+스위치를 눌렀을 때 빨간 LED의 상태가 바뀌도록 (on->off, off->on) OMR 레지스터를 활용해서 작성해보세요.
+
+### 이전 상태 현재 상태 저장
+✅ 이걸 가장 많이 선호   
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+
+#define PCn_1_IDX 11
+#define P1_IDX 1
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+void initLED(void); // 가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+    unsigned char preSW = 1;
+    unsigned char curSW;
+    while(1) { // 1줄에 5클락,  대략 6줄 -> 30클락, 1 클락 200Mhz에 5nano초
+        curSW = P02_IN.U & (0x1 << P1_IDX); // 눌리면 P02_IN.U가 0
+        if (preSW && !curSW) {
+            P10_OMR.U = 0x20002;
+        }
+        preSW = curSW;
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_2_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+```
+
+### 현재 0이 되었으면, 1이 될때까지 무한 loop
+✅ 데드락의 위험   
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+
+#define PCn_1_IDX 11
+#define P1_IDX 1
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+int flag = 0;
+void initLED(void); // 가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+
+    while(1) { // 1줄에 5클락,  대략 6줄 -> 30클락, 1 클락 200Mhz에 5nano초
+        flag = 0;
+        while((P02_IN.U &= (0x1 << P1_IDX)) == 0)
+            if (flag == 0)
+                flag = 1;
+
+        if (flag == 1)
+            P10_OMR.U = (1 << P1_IDX) | (1 <<(P1_IDX + 16));
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_2_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+```
+
+### cnt 값이 thr 이상
+✅ 데드락 위험   
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+
+#define PCn_1_IDX 11
+#define P1_IDX 1
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+int cnt = 0;
+void initLED(void); // 가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+
+    while(1) { // 1줄에 5클락,  대략 6줄 -> 30클락, 1 클락 200Mhz에 5nano초
+        cnt = 0; 
+        while((P02_IN.U &= (0x1 << P1_IDX)) == 0) {
+            cnt++;
+        }
+        if (cnt > 1000) {
+            P10_OMR.U = (1 << P1_IDX) | (1 <<(P1_IDX + 16));
+        }
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_2_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+```
+
+# 인터럽트
