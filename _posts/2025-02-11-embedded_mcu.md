@@ -12,8 +12,7 @@ sidebar:
 
 ✅ 회로: 회로를 어느정도 알아야한다는 강사님의 말씀이 인상 깊었다. 난 회로를 보면 눈 감아. 가 되면 안 된다고하셨다.   
 ✅ 어려워: ShieldBuddy 메뉴얼 표를 찾아가며 프로그래밍하는 것이 처음이라 다소 어려웠다. 첫날엔 7시까지 남아서 공부를 하다 집에 와서 더 했다. 복습하며 새로운 것을 소화해서 뿌듯했다.   
-✅ 팀워크: 팀원들과 모르는 부분을 서로 채워주어 이해하기 수월했다. 팀워크는 중요하고 소중하다는 것을 가장 많이 느꼈다...(매번 느끼는 중) 우리는 나보다 똑똑하다!!!   
-✅ 메뉴얼: 변수는 한번에 하나씩 선언해야한다.
+✅ 팀워크: 팀원들과 모르는 부분을 서로 채워주어 이해하기 수월했다. 팀워크는 중요하고 소중하다는 것을 가장 많이 느꼈다...(매번 느끼는 중) 우리는 나보다 똑똑하다.   
 
 # 임베디드 시스템
 
@@ -470,3 +469,230 @@ void initLED(void) {
 ```
 
 # 인터럽트
+## 기본 지식
+✅ Datasheet: HW적인 정의   
+✅ UM, RM: 기능(SW)적인 정의   
+   
+✅ 폴링 방식: 우선 순위가 없는 순차적 처리 방식   
+✅ 인터럽트 방식: 우선 순위가 높은 코드를 먼저 처리하는 방식   
+HW 인터럽트: 하드웨어에 의해 발생   
+SW 인터럽트: 운영체재의 커널에 의해 발생   
+   
+✅ ISR: Interrupt Service Routine   
+
+## ISR 호출 및 실행
+✅ ISR 호출을 위한 3가지 조건   
+전역적인 인터럽트 활성화 비트 세트   
+인터럽트 별 인터럽트 활성화 비트 세트   
+인터럽트 발생 조건 충족   
+   
+✅ 인터럽트 처리 순서   
+PC: 다음 실행 위치를 가르켜줌   
+ex) 2번 인터럽트 발생   
+1. Program Counter(PC)를 인터럽트 벡터 테이블의 2번 위치로 이동   
+2. 해당 ISR의 위치를 이동   
+3. ISR 실행 (인터럽트 처리)   
+4. 인터럽트 발생 전 위치로 복귀   
+
+## 인터럽트 사용 시 주의사항
+✅ 중첩된 인터럽트: 가능한 짧게   
+✅ 인터럽트 우선순위: User Manual에 큰 번호 or 작은 번호 순이라고 나와있음   
+✅ 최적화 방지: ISR은 일반 함수와 달리 코드 내에서 명시적으로 호출하지 않음. 따라서 volatile 사용   
+
+## ERU
+✅ ERU: External Request Unit
+IR(Interrupt Router): external request unit, internal request unit으로 구성   
+
+## TS275 외부 인터럽트 사용
+✅ External Request Selection (ERS) Unit   
+Input channel에 연결된 4개의 pin 중 하나를 선택   
+Event Trigger Logic(ETL) Unit: 언제 이벤트 트리거를 발생시킬 것인가. input edge, rising edge selection, falling edge selection 등이 있다.   
+
+# 실습
+## 누를 때 파란불 키기
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+#define PCn_1_IDX 11
+#define P1_IDX 1
+
+// ERU related
+#define EXISO_IDX 4 // 감지할 입력 신호 선택
+#define FENO_IDX 8 // 하강 엣지 감지 설정
+#define RENO_IDX 9 // 상승 엣지 감지 설정
+#define EIENO_IDX 11 
+#define INP0_IDX 12  // 인터럽트 요청 라인 연결
+#define IGP0_IDX 14
+
+// SRC related
+#define SRE_IDX 10
+#define TOS_IDX 11
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+void initGPIO(void);
+void initERU(void);
+
+IFX_INTERRUPT(ISR0,0,0x10); // 0x10이 발생했을 때 ISR0를 실행한다.
+void ISR0(void) {
+    P10_OUT.U = 0x1 << P2_IDX;
+}
+
+void initLED(void); // 가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+    initGPIO();
+    initERU();
+    while(1) {
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_2_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+
+void initGPIO(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+
+void initERU (void) {
+    //set EICR: 외부 신호(버튼, 센서 등)를 감지하여 인터럽트를 발생시키도록 설정
+    SCU_EICR1.U &= ~(0x7 << EXISO_IDX);
+    SCU_EICR1.U |= 0x1 << EXISO_IDX; // 감지할 입력 신호 선택
+
+    SCU_EICR1.U |= 1 << FENO_IDX; // 하강 엣지(신호가 HIGH에서 LOW로 변화할 때) 감지 활성화. 이 설정으로 신호가 하강 엣지에서 변할 때 인터럽트가 발생한다.
+    // 떼는 동작은 rising egde
+    SCU_EICR1.U |= 1 << EIENO_IDX;  
+
+    SCU_EICR1.U &= ~(0x7 << INP0_IDX);
+
+    //set IGCR: 감지된 신호가 인터럽트를 발생시키는 방식 결정
+    SCU_IGCR0.U &= ~(0x3 << IGP0_IDX);
+    SCU_IGCR0.U |= 0x1 << IGP0_IDX;
+
+    //set SCUERU: 인터럽트 요청을 CPU로 전달하여 ISR 실행
+    SRC_SCU_SCU_ERU0.U &= ~0xff;
+    SRC_SCU_SCU_ERU0.U |= 0x10; // 서비스 private number
+
+    SRC_SCU_SCU_ERU0.U |= 1 << SRE_IDX;
+    SRC_SCU_SCU_ERU0.U &= ~(0x3 << TOS_IDX);
+}
+```
+## 뗄 때 파란불 키기
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+#define PCn_1_IDX 11
+#define P1_IDX 1
+
+// ERU related
+#define EXISO_IDX 4 // 감지할 입력 신호 선택
+#define FENO_IDX 8 // 하강 엣지 감지 설정
+#define RENO_IDX 9 // 상승 엣지 감지 설정
+#define EIENO_IDX 11
+#define INP0_IDX 12  // 인터럽트 요청 라인 연결
+#define IGP0_IDX 14
+
+// SRC related
+#define SRE_IDX 10
+#define TOS_IDX 11
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+void initGPIO(void);
+void initERU(void);
+
+IFX_INTERRUPT(ISR0,0,0x10); // 0x10이 발생했을 때 ISR0를 실행한다.
+void ISR0(void) {
+    P10_OUT.U = 0x1 << P2_IDX;
+}
+
+void initLED(void); // 가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+    initGPIO();
+    initERU();
+    while(1) {
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_2_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+
+void initGPIO(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+
+void initERU (void) {
+    //set EICR: 외부 신호(버튼, 센서 등)를 감지하여 인터럽트를 발생시키도록 설정
+    SCU_EICR1.U &= ~(0x7 << EXISO_IDX);
+    SCU_EICR1.U |= 0x1 << EXISO_IDX; // 감지할 입력 신호 선택
+      
+    SCU_EICR1.U |= 1 << RENO_IDX; // 떼는 동작은 rising egde
+    SCU_EICR1.U |= 1 << EIENO_IDX;
+
+    SCU_EICR1.U &= ~(0x7 << INP0_IDX);
+
+    //set IGCR: 감지된 신호가 인터럽트를 발생시키는 방식 결정
+    SCU_IGCR0.U &= ~(0x3 << IGP0_IDX);
+    SCU_IGCR0.U |= 0x1 << IGP0_IDX;
+
+    //set SCUERU: 인터럽트 요청을 CPU로 전달하여 ISR 실행
+    SRC_SCU_SCU_ERU0.U &= ~0xff;
+    SRC_SCU_SCU_ERU0.U |= 0x10; // 서비스 private number
+
+    SRC_SCU_SCU_ERU0.U |= 1 << SRE_IDX;
+    SRC_SCU_SCU_ERU0.U &= ~(0x3 << TOS_IDX);
+}
+```
