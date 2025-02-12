@@ -696,3 +696,122 @@ void initERU (void) {
     SRC_SCU_SCU_ERU0.U &= ~(0x3 << TOS_IDX);
 }
 ```
+
+## SW1->파란, SW2->빨강
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+#define PCn_1_IDX 11
+#define P1_IDX 1
+
+// ERU related
+#define EXISO_IDX 4 // 감지할 입력 신호 선택
+#define FENO_IDX 8 // 하강 엣지 감지 설정
+#define RENO_IDX 9 // 상승 엣지 감지 설정
+#define EIENO_IDX 11
+#define INP0_IDX 12  // 인터럽트 요청 라인 연결
+#define IGP0_IDX 14
+#define IGP1_IDX 30
+
+#define FENO_IDX1 24
+#define RENO_IDX1 25
+#define EIENO_IDX1 27
+#define INP1_IDX 28
+
+// SRC related
+#define SRE_IDX 10 //Service Request Enable
+#define TOS_IDX 11 //Type of Service Control
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+void initGPIO(void);
+void initERU(void);
+
+IFX_INTERRUPT(ISR0,0,0x10); // 0x10이 발생했을 때 ISR0를 실행한다.
+IFX_INTERRUPT(ISR1,0,0x20); // 0x10이 발생했을 때 ISR0를 실행한다.
+void ISR0(void) {
+    P10_OUT.U = 0x1 << P1_IDX;
+}
+void ISR1(void) {
+    P10_OUT.U = 0x1 << P2_IDX;
+}
+void initLED(void); // 가독성 증가
+
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+    initGPIO();
+    initERU();
+    while(1) {
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_2_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+
+void initGPIO(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+
+void initERU (void) {
+    //EICR 설정(설정) -> OGU 설정(전달) ->  IGCR 값 설정(IOUT으로 전달하기 위해) ->
+    //set EICR: 외부 신호(버튼, 센서 등)를 감지하여 인터럽트를 발생시키도록 설정
+    SCU_EICR1.U &= ~(0x7 << EXISO_IDX | 0x7 << (EXISO_IDX + 16)); // 첫번째 레지스터에서 사용할 곳 초기화
+    SCU_EICR1.U |= 0x1 << EXISO_IDX; // 아랫버튼. 감지할 입력 신호 선택 001
+    SCU_EICR1.U |= 0x2 << (EXISO_IDX + 16); //윗버튼   010
+
+    SCU_EICR1.U |= 1 << RENO_IDX; // 하강 엣지(신호가 HIGH에서 LOW로 변화할 때) 감지 활성화. 이 설정으로 신호가 하강 엣지에서 변할 때 인터럽트가 발생한다.
+    SCU_EICR1.U |= 1 << EIENO_IDX;
+    SCU_EICR1.U |= 1 << RENO_IDX1;
+    SCU_EICR1.U |= 1 << EIENO_IDX1;
+
+    SCU_EICR1.U &= ~(0x7 << INP0_IDX);
+    SCU_EICR1.U &= ~(0x7 << INP1_IDX);  //OGU1 사용하려고 초기화    OGU: ERU 결과를 특정 핀(GPIO)이나 PWM 등의 모듈에 전달
+    SCU_EICR1.U |= 0x1 << INP1_IDX;     //OGU1 사용하려고 값 대입
+
+    //set IGCR: 감지된 신호가 인터럽트를 발생시키는 방식 결정
+    SCU_IGCR0.U &= ~(0x3 << IGP0_IDX);   //IGP0는 IDX 14부터 시작한다.
+    SCU_IGCR0.U |= 0x1 << IGP0_IDX;      //1로 값을 설정
+    SCU_IGCR0.U &= ~(0x3 << IGP1_IDX);
+    SCU_IGCR0.U |= 0x1 << IGP1_IDX;
+
+    //set SCUERU: 인터럽트 요청을 CPU로 전달하여 ISR 실행
+    SRC_SCU_SCU_ERU0.U &= ~0xff;
+    SRC_SCU_SCU_ERU0.U |= 0x10; // 서비스 private number
+
+    SRC_SCU_SCU_ERU0.U |= 1 << SRE_IDX;
+    SRC_SCU_SCU_ERU0.U &= ~(0x3 << TOS_IDX);
+
+    SRC_SCU_SCU_ERU1.U &= ~0xff;
+    SRC_SCU_SCU_ERU1.U |= 0x20; // 서비스 private number
+
+    SRC_SCU_SCU_ERU1.U |= 1 << SRE_IDX;
+    SRC_SCU_SCU_ERU1.U &= ~(0x3 << TOS_IDX);
+}
+```
+
+## 
