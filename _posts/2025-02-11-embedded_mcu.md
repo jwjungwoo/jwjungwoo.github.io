@@ -468,7 +468,7 @@ void initLED(void) {
 }
 ```
 
-# 인터럽트
+# 외부 인터럽트
 ## 기본 지식
 ✅ Datasheet: HW적인 정의   
 ✅ UM, RM: 기능(SW)적인 정의   
@@ -811,6 +811,310 @@ void initERU (void) {
 
     SRC_SCU_SCU_ERU1.U |= 1 << SRE_IDX;
     SRC_SCU_SCU_ERU1.U &= ~(0x3 << TOS_IDX);
+}
+```
+
+## 누르면 정지, 다시 누르면 토글
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#define PCn_2_IDX 19
+#define P2_IDX 2
+#define PCn_1_IDX 11
+#define P1_IDX 1
+
+// ERU related
+#define EXISO_IDX 4 // 감지할 입력 신호 선택
+#define FENO_IDX 8 // 하강 엣지 감지 설정
+#define RENO_IDX 9 // 상승 엣지 감지 설정
+#define EIENO_IDX 11
+#define INP0_IDX 12  // 인터럽트 요청 라인 연결
+#define IGP0_IDX 14
+#define IGP1_IDX 30
+
+#define FENO_IDX1 24
+#define RENO_IDX1 25
+#define EIENO_IDX1 27
+#define INP1_IDX 28
+
+// SRC related
+#define SRE_IDX 10 //Service Request Enable
+#define TOS_IDX 11 //Type of Service Control
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+#define BLINK 1
+#define STOP 0
+
+void initGPIO(void);
+void initERU(void);
+
+IFX_INTERRUPT(ISR0,0,0x10); // 0x10이 발생했을 때 ISR0를 실행한다.
+IFX_INTERRUPT(ISR1,0,0x20); // 0x10이 발생했을 때 ISR0를 실행한다.
+
+int state = STOP;
+void ISR0(void) {
+    switch(state) {
+        case STOP:
+            state = BLINK;
+            break;
+        case BLINK:
+            state = STOP;
+            break;
+        default:
+            break;
+    }
+}
+void ISR1(void) {
+    switch(state) {
+        case STOP:
+            state = BLINK;
+            break;
+        case BLINK:
+            state = STOP;
+            break;
+        default:
+            break;
+    }
+}
+void initLED(void); // 가독성 증가
+
+int flag1 = 0;
+int core0_main(void) {
+    IfxCpu_enableInterrupts();
+    
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent,1);
+
+    initLED();
+    initGPIO();
+    initERU();
+    P10_OUT.U = 0x1 << 1;
+    while(1) {
+        switch(state) {
+            case BLINK:
+                P10_OMR.U = 0x60006;
+                for(int i =0; i< 10000000;i++);
+                break;
+            case STOP:
+            default:
+                break;
+        }
+    }
+    return(1);
+}
+
+void initLED(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_2_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+
+void initGPIO(void) {
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
+    P02_IOCR0.U |= 0x02 << PCn_1_IDX;
+
+    P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
+    P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+}
+
+void initERU (void) {
+    //EICR 설정(설정) -> OGU 설정(전달) ->  IGCR 값 설정(IOUT으로 전달하기 위해) -> SRC_SCU_SCU_ERU 설정
+    //set EICR: 외부 신호(버튼, 센서 등)를 감지하여 인터럽트를 발생시키도록 설정
+    SCU_EICR1.U &= ~(0x7 << EXISO_IDX | 0x7 << (EXISO_IDX + 16)); // 첫번째 레지스터에서 사용할 곳 초기화
+    SCU_EICR1.U |= 0x1 << EXISO_IDX; // 아랫버튼. 감지할 입력 신호 선택 001
+    SCU_EICR1.U |= 0x2 << (EXISO_IDX + 16); //윗버튼   010
+
+    SCU_EICR1.U |= 1 << RENO_IDX; // 하강 엣지(신호가 HIGH에서 LOW로 변화할 때) 감지 활성화. 이 설정으로 신호가 하강 엣지에서 변할 때 인터럽트가 발생한다.
+    SCU_EICR1.U |= 1 << EIENO_IDX;
+    SCU_EICR1.U |= 1 << RENO_IDX1; // 사용하는 회로가 눌렸을때 1->0으로 변화하므로 falling edge로 하면 된다.
+    SCU_EICR1.U |= 1 << EIENO_IDX1;
+
+    SCU_EICR1.U &= ~(0x7 << INP0_IDX); //여기서부터 OGU
+    SCU_EICR1.U &= ~(0x7 << INP1_IDX);  //OGU1 사용하려고 초기화    OGU: ERU 결과를 특정 핀(GPIO)이나 PWM 등의 모듈에 전달
+    SCU_EICR1.U |= 0x1 << INP1_IDX;     //OGU1 사용하려고 값 대입
+
+    //set IGCR: 감지된 신호가 인터럽트를 발생시키는 방식 결정
+    SCU_IGCR0.U &= ~(0x3 << IGP0_IDX);   //IGP0는 IDX 14부터 시작한다.
+    SCU_IGCR0.U |= 0x1 << IGP0_IDX;      //1로 값을 설정 (IOUT)
+    SCU_IGCR0.U &= ~(0x3 << IGP1_IDX);
+    SCU_IGCR0.U |= 0x1 << IGP1_IDX;
+
+    //set SCUERU: 인터럽트 요청을 CPU로 전달하여 ISR 실행
+    SRC_SCU_SCU_ERU0.U &= ~0xff;
+    SRC_SCU_SCU_ERU0.U |= 0x10; // 서비스 private number
+
+    SRC_SCU_SCU_ERU0.U |= 1 << SRE_IDX;
+    SRC_SCU_SCU_ERU0.U &= ~(0x3 << TOS_IDX);
+
+    SRC_SCU_SCU_ERU1.U &= ~0xff;
+    SRC_SCU_SCU_ERU1.U |= 0x20; // 서비스 private number
+
+    SRC_SCU_SCU_ERU1.U |= 1 << SRE_IDX;
+    SRC_SCU_SCU_ERU1.U &= ~(0x3 << TOS_IDX);
+}
+```
+
+# 내부 타이머 인터럽트
+## 함수
+✅ 함수는 궁극적으로 타고타고 들어가면 결국 레지스터를 바꾸는 것이다.   
+OUT: 전체를 바꾸는 경우   
+OMR: 특정 비트를 바꾸는 경우   
+## 클락
+✅ Clock을 사용하여 clock의 개수를 센다. Clock은 보통 외부에서 가져온다. TC275도 외부것이 붙어있다.   
+   
+✅ 보드에서 정확한 clock의생성은?   
+cristal oscillator에서 수행, 이 소자는 자세히 들여다보면 20MHz이다.   
+   
+✅ Timer 클럭 분석   
+Timer를 사용하기 위한 모듈 -> UM ch.17   
+전체 시스템은 200Mhz인데 STM frequency는 100Mhz이다. 전체시스템 2클락일 때 STM은 1클락이다.   
+   
+기능   
+모듈 자체 변수: 레지스터   
+모듈 config 변수: 설정   
+   
+전체코드   
+1. config 초기화   
+2. config 설정: 타이머에게 줄 정보를 설정   
+3. config 적용: 레지스터 변경
+
+## 파란색 LED 깜빡깜빡 실습
+```c
+/**********************************************************************************************************************
+ * \file Cpu0_Main.c
+ * \copyright Copyright (C) Infineon Technologies AG 2019
+ *
+ * Use of this file is subject to the terms of use agreed between (i) you or the company in which ordinary course of
+ * business you are acting and (ii) Infineon Technologies AG or its licensees. If and as long as no such terms of use
+ * are agreed, use of this file is subject to following:
+ *
+ * Boost Software License - Version 1.0 - August 17th, 2003
+ *
+ * Permission is hereby granted, free of charge, to any person or organization obtaining a copy of the software and
+ * accompanying documentation covered by this license (the "Software") to use, reproduce, display, distribute, execute,
+ * and transmit the Software, and to prepare derivative works of the Software, and to permit third-parties to whom the
+ * Software is furnished to do so, all subject to the following:
+ *
+ * The copyright notices in the Software and this entire statement, including the above license grant, this restriction
+ * and the following disclaimer, must be included in all copies of the Software, in whole or in part, and all
+ * derivative works of the Software, unless such copies or derivative works are solely in the form of
+ * machine-executable object code generated by a source language processor.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+ * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+ * COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ *********************************************************************************************************************/
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+
+#include "IfxPort.h"
+#include "IfxPort_PinMap.h"
+
+#include "IfxStm.h"
+#include "IfxCpu_Irq.h"
+
+typedef struct
+{
+    Ifx_STM             *stmSfr;            /**< \brief Pointer to Stm register base */
+    IfxStm_CompareConfig stmConfig;         /**< \brief Stm Configuration structure */
+    volatile uint8       LedBlink;          /**< \brief LED state variable */
+    volatile uint32      counter;           /**< \brief interrupt counter */
+} App_Stm;
+
+App_Stm g_Stm; /**< \brief Stm global data */
+
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+
+void IfxStmDemo_init(void);
+
+int core0_main(void)
+{
+    IfxCpu_enableInterrupts();
+    
+    /* !!WATCHDOG0 AND SAFETY WATCHDOG ARE DISABLED HERE!!
+     * Enable the watchdogs and service them periodically if it is required
+     */
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    /* Wait for CPU sync event */
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent, 1);
+
+    IfxStmDemo_init();
+
+    /*P00_5    Digital Output*/
+    IfxPort_setPinModeOutput(IfxPort_P10_2.port, IfxPort_P10_2.pinIndex, IfxPort_OutputMode_pushPull, IfxPort_OutputIdx_general);
+    IfxPort_setPinLow(IfxPort_P10_2.port, IfxPort_P10_2.pinIndex);
+
+    while(1)
+    {
+
+    }
+    return (1);
+}
+
+IFX_INTERRUPT(STM_Int0Handler, 0, 100);
+
+void STM_Int0Handler(void)
+{
+    static int flag = 0;
+    static int cnt = 0;
+
+    IfxStm_clearCompareFlag(g_Stm.stmSfr, g_Stm.stmConfig.comparator); // compare 관련 flag 초기화
+    IfxStm_increaseCompare(g_Stm.stmSfr, g_Stm.stmConfig.comparator, 100000000u); // compare 관련 register 다시 세팅 // 한번 하고나서의 간격
+
+    cnt++;
+    
+    if(flag == 0)
+    {
+        IfxPort_setPinLow(IfxPort_P10_2.port, IfxPort_P10_2.pinIndex);
+        flag = 1;
+    }
+    else
+    {
+        IfxPort_setPinHigh(IfxPort_P10_2.port, IfxPort_P10_2.pinIndex);
+        flag = 0;
+    }
+
+    IfxCpu_enableInterrupts();
+}
+
+void IfxStmDemo_init(void)
+{
+    /* disable interrupts */
+    boolean interruptState = IfxCpu_disableInterrupts(); // 인터럽트 중지
+
+    IfxStm_enableOcdsSuspend(&MODULE_STM0);
+
+    g_Stm.stmSfr = &MODULE_STM0;
+    IfxStm_initCompareConfig(&g_Stm.stmConfig); // config를 초기화.. 초기 간격
+    
+    // config 설정
+    // 멤버변수들 값 설정
+    g_Stm.stmConfig.triggerPriority = 100u;
+    g_Stm.stmConfig.typeOfService   = IfxSrc_Tos_cpu0;
+    g_Stm.stmConfig.ticks           = 100000000; // 1초를 세겠다. (100M)
+
+    // config 적용... 이 config로 시작하자!! compare를 시작하자!!
+    IfxStm_initCompare(g_Stm.stmSfr, &g_Stm.stmConfig); // config의 주소를 전달한다.
+
+    /* enable interrupts again */
+    IfxCpu_restoreInterrupts(interruptState); // 인터럽트 활성화
 }
 ```
 
