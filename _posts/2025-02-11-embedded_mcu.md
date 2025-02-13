@@ -79,6 +79,8 @@ MCU(Micro Control Unit)
 빨간색 보드가 TC275보드이다. TC275보드의 정중앙의 정사각형 보드가 바로 마이크로컨트롤러이다. 테두리엔 확장보드를 끼울 수 있다.
 
 ## infineon (GPIO)
+ctrl+클릭: 세부사항 확인 가능   
+ctrl+스페이스: 자동완성 가능   
 <img src="https://github.com/user-attachments/assets/d6ce9181-0bcd-4262-9076-0f697e440816" width="600" height="350">   
 위의 경로로 프로젝트를 생성한다. 그리고 빌드를 하고 디버그를 해야한다. 빌드를 먼저하면 elf 파일이 생긴다.   
    
