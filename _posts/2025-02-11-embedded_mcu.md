@@ -734,10 +734,10 @@ void initERU(void);
 IFX_INTERRUPT(ISR0,0,0x10); // 0x10이 발생했을 때 ISR0를 실행한다.
 IFX_INTERRUPT(ISR1,0,0x20); // 0x10이 발생했을 때 ISR0를 실행한다.
 void ISR0(void) {
-    P10_OUT.U = 0x1 << P1_IDX;
+    P10_OUT.U = 0x20002;
 }
 void ISR1(void) {
-    P10_OUT.U = 0x1 << P2_IDX;
+    P10_OUT.U = 0x400004;
 }
 void initLED(void); // 가독성 증가
 
@@ -778,7 +778,7 @@ void initGPIO(void) {
 }
 
 void initERU (void) {
-    //EICR 설정(설정) -> OGU 설정(전달) ->  IGCR 값 설정(IOUT으로 전달하기 위해) ->
+    //EICR 설정(설정) -> OGU 설정(전달) ->  IGCR 값 설정(IOUT으로 전달하기 위해) -> SRC_SCU_SCU_ERU 설정
     //set EICR: 외부 신호(버튼, 센서 등)를 감지하여 인터럽트를 발생시키도록 설정
     SCU_EICR1.U &= ~(0x7 << EXISO_IDX | 0x7 << (EXISO_IDX + 16)); // 첫번째 레지스터에서 사용할 곳 초기화
     SCU_EICR1.U |= 0x1 << EXISO_IDX; // 아랫버튼. 감지할 입력 신호 선택 001
@@ -786,16 +786,16 @@ void initERU (void) {
 
     SCU_EICR1.U |= 1 << RENO_IDX; // 하강 엣지(신호가 HIGH에서 LOW로 변화할 때) 감지 활성화. 이 설정으로 신호가 하강 엣지에서 변할 때 인터럽트가 발생한다.
     SCU_EICR1.U |= 1 << EIENO_IDX;
-    SCU_EICR1.U |= 1 << RENO_IDX1;
+    SCU_EICR1.U |= 1 << RENO_IDX1; // 사용하는 회로가 눌렸을때 1->0으로 변화하므로 falling edge로 하면 된다.
     SCU_EICR1.U |= 1 << EIENO_IDX1;
 
-    SCU_EICR1.U &= ~(0x7 << INP0_IDX);
+    SCU_EICR1.U &= ~(0x7 << INP0_IDX); //여기서부터 OGU
     SCU_EICR1.U &= ~(0x7 << INP1_IDX);  //OGU1 사용하려고 초기화    OGU: ERU 결과를 특정 핀(GPIO)이나 PWM 등의 모듈에 전달
     SCU_EICR1.U |= 0x1 << INP1_IDX;     //OGU1 사용하려고 값 대입
 
     //set IGCR: 감지된 신호가 인터럽트를 발생시키는 방식 결정
     SCU_IGCR0.U &= ~(0x3 << IGP0_IDX);   //IGP0는 IDX 14부터 시작한다.
-    SCU_IGCR0.U |= 0x1 << IGP0_IDX;      //1로 값을 설정
+    SCU_IGCR0.U |= 0x1 << IGP0_IDX;      //1로 값을 설정 (IOUT)
     SCU_IGCR0.U &= ~(0x3 << IGP1_IDX);
     SCU_IGCR0.U |= 0x1 << IGP1_IDX;
 
