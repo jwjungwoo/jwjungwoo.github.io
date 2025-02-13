@@ -9,6 +9,58 @@ sidebar:
 #search: false
 ---
 
+# 실버1
+## 14888 연산자 끼워넣기
+```c
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int n;
+int a[14];
+int oc[4];
+int o[14];
+int cnt;
+int max_n = -1987654321;
+int min_n = 1987654321;
+
+int main() {
+    ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
+    
+    cin >> n;
+    for (int i = 0; i < n;i++) cin >> a[i];
+    for (int i = 0; i < 4;i++) cin >> oc[i];
+
+    for (int i = 0; i < 4;i++) {
+        for (int j = 0; j < oc[i];j++) {
+            o[cnt++] = i;
+        }
+    }
+
+    do {
+        int sum = 0;
+        if (o[0] == 0) sum += a[0] + a[1];
+        else if (o[0] == 1) sum += a[0] - a[1];
+        else if (o[0] == 2) sum += a[0] * a[1];
+        else if (o[0] == 3) sum += a[0] / a[1];
+
+        for (int i = 1; i < n - 1;i++) {
+            if (o[i] == 0) sum += a[i + 1];
+            else if (o[i] == 1) sum -= a[i + 1];
+            else if (o[i] == 2) sum *= a[i + 1];
+            else sum /= a[i + 1];
+        }
+        max_n = max(sum, max_n);
+        min_n = min(sum, min_n);
+    } while (next_permutation(o, o + n - 1));
+
+    cout << max_n << "\n";
+    cout << min_n << "\n";
+
+    return 0;
+}
+```
+
 # 실버2
 
 ## 14620 꽃길
