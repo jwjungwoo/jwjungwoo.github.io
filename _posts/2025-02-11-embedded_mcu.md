@@ -2765,11 +2765,15 @@ void initERU (void) {
 
 ## Dedug창이 안 보일땐?
 이제부터 Debug창을 많이 볼 것이다. 그전까진 Debug창을 볼 필요가 없어서 지워놨었는데 찾느라 고생했다...(사실 교수님께서 알려주셨다.)   
+   
 ✅ 우선 현재 디버그 중인 파일을 멈추기 위해 우측상단에 가장 오른쪽에 있는 버튼으로 들어가 중앙에서 좌측에 놓인 빨강네모로 디버그를 멈춘다.   
 <img src="https://github.com/user-attachments/assets/ee19064f-2fb0-4b60-b8b0-f222bbd017ba" width="350" height="250">   
+   
 ✅ Window -> Showview -> Expression에 들어가 우리가 보고싶은 adcResult를 검색한다. 이때 adcResult = Driver_Adc()_DataObtain(); 이 적힌 코드에 breakpoint를 걸어야한다. 그러면 
 값이 바뀔 때 마다 값이 바뀌는 것을 expression 창에서 볼 수 있다.   
 <img src="https://github.com/user-attachments/assets/ff4f4c1e-0705-4c72-8ec4-cb7b048e6682" width="350" height="250">   
+✅ 디버그 중인거 멈추려면 Window -> Show View -> Debug 하면된다.   
+   
 ✅ 소스 코드
 ```c
 // STM+FND
