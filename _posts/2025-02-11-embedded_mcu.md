@@ -11,7 +11,7 @@ sidebar:
 # 느낀점
 
 ✅ 회로: 회로를 어느정도 알아야한다는 강사님의 말씀이 인상 깊었다. 난 회로를 보면 눈 감아. 가 되면 안 된다고하셨다.   
-✅ 어려워: ShieldBuddy 메뉴얼 표를 찾아가며 프로그래밍하는 것이 처음이라 다소 어려웠다. 첫날엔 7시까지 남아서 공부를 하다 집에 와서 더 했다. 복습하며 새로운 것을 소화해서 뿌듯했다.   
+✅ 어려워: ShieldBuddy 메뉴얼 표를 찾아가며 프로그래밍하는 것이 처음이라 다소 어려웠다. 첫날엔 7시까지 남아서 공부를 하다 집에 와서 더 했다. 잘 배워야겠다 생각했다.   
 ✅ 팀워크: 팀원들과 모르는 부분을 서로 채워주어 이해하기 수월했다. 팀워크는 중요하고 소중하다는 것을 가장 많이 느꼈다...(매번 느끼는 중) 우리는 나보다 똑똑하다.   
 
 # 임베디드 시스템
@@ -20,13 +20,13 @@ sidebar:
 ✅ 임베디드 시스템   
 마이크로 컨트롤러가 있으면 임베디드 시스템이라고 생각하면된다. 컴퓨터와 소자 그 중간 어딘가.   
    
-✅ 마이크로프로세서(Microprocessor): 연산용   
+✅ 마이크로 프로세서(Microprocessor): 연산용   
 PC의 CPU   
 고속연산과 대용량 메모리 처리   
 인텔 펜티엄   
 MPU(Micro Processor Unit)   
    
-✅ 마이크로컨트롤러(Microcontroller)   
+✅ 마이크로 컨트롤러(Microcontroller)   
 기계나 장치를 제어하기 위해 사용하는 프로그램이 가능한 칩(chip)   
 CPU, 기본 메모리, I/O 포트, 타이머, 직렬통신 등의 기능을 하나의 칩에 내장   
 8051, AVR 등   
@@ -36,10 +36,10 @@ MCU(Micro Control Unit)
 보드 안에 디버거가 있냐 없냐에 따라 가격이 달라진다. 우리가 쓸 보드는 디버거가 내재돼있다.   
    
 ✅ 중요 부분   
-1.(DI/DO) GPIO(-> IDE, Interface, Editor). Digital In, Digital Out: 입력으로도 쓸 수 있고 출력으로도 쓸 수 있는 범용적인 핀   
-2. Preemptive Shield   
-3.(AI) ADC. Analog In   
-4.(유사AO) PWM. Analog Out   
+1. (DI/DO) GPIO(-> IDE, Interface, Editor). Digital In, Digital Out: 입력으로도 쓸 수 있고 출력으로도 쓸 수 있는 범용적인 핀   
+2. Preemptive Shiel
+3. (AI) ADC. Analog In   
+4. (유사AO) PWM. Analog Out   
    
 이 네 가지를 배울 것이다.   
 
