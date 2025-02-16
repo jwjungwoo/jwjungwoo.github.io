@@ -44,7 +44,7 @@ MCU(Micro Control Unit)
 이 네 가지를 배울 것이다.   
 
 ## 임베디드 개발을 위한 회로도  
-임베디드 개발자는 회로의 모든것을 다 알필요는 없다!   
+임베디드 개발자는 회로의 모든 것을 다 알필요는 없다!   
    
 회로도를 보고 내가 제어할 부품이 무엇인지? 어떻게 제어해야 할지   
 회로도 상의 부품을 실제 보드에서 찾을 수 있어야 함   
@@ -124,7 +124,6 @@ while(1) {
 
 ## ShieldBuddy 확인법
 1. ShieldBuddy p.44를 확인하여 Digital Pin 번호의 TC275T Pin Assignment를 확인한다.
-2. 
 
 # 실습
 ## 파란색 LED 점등 실습
@@ -206,8 +205,8 @@ int core0_main(void) {
 }
 
 void initLED(void) {
-    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
-    P02_IOCR0.U |= 0x02 << PCn_1_IDX;
+    P02_IOCR0.U &= ~(0x1F << PCn_1_IDX); 
+    P02_IOCR0.U |= 0x02 << PCn_1_IDX;  // 인풋이니까 10 아님. User Manual p.1089에 나옴
 
     P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
     P10_IOCR0.U |= 0x10 << PCn_2_IDX;
@@ -345,7 +344,7 @@ int core0_main(void) {
     unsigned char preSW = 1;
     unsigned char curSW;
     while(1) { // 1줄에 5클락,  대략 6줄 -> 30클락, 1 클락 200Mhz에 5nano초
-        curSW = P02_IN.U & (0x1 << P1_IDX); // 눌리면 P02_IN.U가 0
+        curSW = P02_IN.U & (0x1 << P1_IDX); // 눌리면 P02_IN.U가 0   User Manual p.1105
         if (preSW && !curSW) {
             P10_OMR.U = 0x20002;
         }
@@ -502,14 +501,18 @@ ex) 2번 인터럽트 발생
 ✅ 최적화 방지: ISR은 일반 함수와 달리 코드 내에서 명시적으로 호출하지 않음. 따라서 volatile 사용   
 
 ## ERU
-✅ ERU: External Request Unit
-IR(Interrupt Router): external request unit, internal request unit으로 구성   
+✅ ERU: External Request Unit   
+✅ IR(Interrupt Router): external request unit, internal request unit으로 구성   
 
 ## TS275 외부 인터럽트 사용
-✅ External Request Selection (ERS) Unit   
-Input channel에 연결된 4개의 pin 중 하나를 선택   
-Event Trigger Logic(ETL) Unit: 언제 이벤트 트리거를 발생시킬 것인가. input edge, rising edge selection, falling edge selection 등이 있다.   
-
+✅ External Request Selection Unit(ERS):   
+input channel에 연결된 4개의 pin 중 하나를 선택   
+✅ Event Trigger Logic Unit(ETL): 
+언제 이벤트 트리거를 발생시킬 것인가. input edge, rising edge selection, falling edge selection 등이 있다. EICR에 작성된 내용을 바탕으로 rising edge, falling edge를 선택하여 trigger 이벤트를 발생시킨다.   
+✅ Output Gating Unit(OGU):   
+input channel에서 생성된 trigger pulser를 조합하여 external request oupt을 생성한다.   
+✅ Control register:
+EICR 레지스터, IGCR 레지스터
 # 실습
 ## 누를 때 파란불 키기
 ```c
@@ -583,6 +586,7 @@ void initGPIO(void) {
 }
 
 void initERU (void) {
+    //EICR -> OGU -> IGCR -> ERU
     //set EICR: 외부 신호(버튼, 센서 등)를 감지하여 인터럽트를 발생시키도록 설정
     SCU_EICR1.U &= ~(0x7 << EXISO_IDX);
     SCU_EICR1.U |= 0x1 << EXISO_IDX; // 감지할 입력 신호 선택
@@ -591,11 +595,11 @@ void initERU (void) {
     // 떼는 동작은 rising egde
     SCU_EICR1.U |= 1 << EIENO_IDX;  
 
-    SCU_EICR1.U &= ~(0x7 << INP0_IDX);
+    SCU_EICR1.U &= ~(0x7 << INP0_IDX); // OGU0를 사용하기 위한 초기화이자 000 값 설정. 0x7 -> OGU, INP0_IDX -> ERS2 사용이랑 관련. 즉 SW랑 OGU랑 연관되는 부분
 
     //set IGCR: 감지된 신호가 인터럽트를 발생시키는 방식 결정
-    SCU_IGCR0.U &= ~(0x3 << IGP0_IDX);
-    SCU_IGCR0.U |= 0x1 << IGP0_IDX;
+    SCU_IGCR0.U &= ~(0x3 << IGP0_IDX); // IOUT으로 전달하기 위해 초기화.  OGU0 -> IOUT1 으로 추측
+    SCU_IGCR0.U |= 0x1 << IGP0_IDX; // 0b01로 설정
 
     //set SCUERU: 인터럽트 요청을 CPU로 전달하여 ISR 실행
     SRC_SCU_SCU_ERU0.U &= ~0xff;
@@ -638,8 +642,6 @@ void ISR0(void) {
     P10_OUT.U = 0x1 << P2_IDX;
 }
 
-void initLED(void); // 가독성 증가
-
 int core0_main(void) {
     IfxCpu_enableInterrupts();
     
@@ -648,24 +650,20 @@ int core0_main(void) {
     
     IfxCpu_emitEvent(&g_cpuSyncEvent);
     IfxCpu_waitEvent(&g_cpuSyncEvent,1);
-
-    initLED();
-    initGPIO();
-    initERU();
-    while(1) {
-    }
-    return(1);
-}
-
-void initLED(void) {
+    //initLED가 겹친다고 여기에 둠. 
     P02_IOCR0.U &= ~(0x1F << PCn_1_IDX);
-    P02_IOCR0.U |= 0x02 << PCn_2_IDX;
+    P02_IOCR0.U &= ~(0X10 << PCn_2_IDX);          // 이 부분만 바뀜
 
     P10_IOCR0.U &= ~(0x1F << PCn_1_IDX);
     P10_IOCR0.U |= 0x10 << PCn_1_IDX;
 
     P10_IOCR0.U &= ~(0x1F << PCn_2_IDX);
     P10_IOCR0.U |= 0x10 << PCn_2_IDX;
+    initGPIO();
+    initERU();
+    while(1) {
+    }
+    return(1);
 }
 
 void initGPIO(void) {
@@ -680,7 +678,7 @@ void initERU (void) {
     //set EICR: 외부 신호(버튼, 센서 등)를 감지하여 인터럽트를 발생시키도록 설정
     SCU_EICR1.U &= ~(0x7 << EXISO_IDX);
     SCU_EICR1.U |= 0x1 << EXISO_IDX; // 감지할 입력 신호 선택
-      
+
     SCU_EICR1.U |= 1 << RENO_IDX; // 떼는 동작은 rising egde
     SCU_EICR1.U |= 1 << EIENO_IDX;
 
@@ -739,7 +737,7 @@ void ISR0(void) {
     P10_OUT.U = 0x20002;
 }
 void ISR1(void) {
-    P10_OUT.U = 0x400004;
+    P10_OUT.U = 0x40004;
 }
 void initLED(void); // 가독성 증가
 
@@ -783,15 +781,15 @@ void initERU (void) {
     //EICR 설정(설정) -> OGU 설정(전달) ->  IGCR 값 설정(IOUT으로 전달하기 위해) -> SRC_SCU_SCU_ERU 설정
     //set EICR: 외부 신호(버튼, 센서 등)를 감지하여 인터럽트를 발생시키도록 설정
     SCU_EICR1.U &= ~(0x7 << EXISO_IDX | 0x7 << (EXISO_IDX + 16)); // 첫번째 레지스터에서 사용할 곳 초기화
-    SCU_EICR1.U |= 0x1 << EXISO_IDX; // 아랫버튼. 감지할 입력 신호 선택 001
-    SCU_EICR1.U |= 0x2 << (EXISO_IDX + 16); //윗버튼   010
+    SCU_EICR1.U |= 0x1 << EXISO_IDX; // 아래버튼. 감지할 입력 신호 선택 001
+    SCU_EICR1.U |= 0x2 << (EXISO_IDX + 16); // 윗버튼  010
 
     SCU_EICR1.U |= 1 << RENO_IDX; // 하강 엣지(신호가 HIGH에서 LOW로 변화할 때) 감지 활성화. 이 설정으로 신호가 하강 엣지에서 변할 때 인터럽트가 발생한다.
     SCU_EICR1.U |= 1 << EIENO_IDX;
     SCU_EICR1.U |= 1 << RENO_IDX1; // 사용하는 회로가 눌렸을때 1->0으로 변화하므로 falling edge로 하면 된다.
     SCU_EICR1.U |= 1 << EIENO_IDX1;
 
-    SCU_EICR1.U &= ~(0x7 << INP0_IDX); //여기서부터 OGU
+    SCU_EICR1.U &= ~(0x7 << INP0_IDX);  //007 -> OGU0, INP0_IDX -> ERS2(아래버튼)
     SCU_EICR1.U &= ~(0x7 << INP1_IDX);  //OGU1 사용하려고 초기화    OGU: ERU 결과를 특정 핀(GPIO)이나 PWM 등의 모듈에 전달
     SCU_EICR1.U |= 0x1 << INP1_IDX;     //OGU1 사용하려고 값 대입
 
@@ -942,7 +940,7 @@ void initERU (void) {
     SCU_EICR1.U |= 1 << RENO_IDX1; // 사용하는 회로가 눌렸을때 1->0으로 변화하므로 falling edge로 하면 된다.
     SCU_EICR1.U |= 1 << EIENO_IDX1;
 
-    SCU_EICR1.U &= ~(0x7 << INP0_IDX); //여기서부터 OGU
+    SCU_EICR1.U &= ~(0x7 << INP0_IDX);  //여기서부터 OGU
     SCU_EICR1.U &= ~(0x7 << INP1_IDX);  //OGU1 사용하려고 초기화    OGU: ERU 결과를 특정 핀(GPIO)이나 PWM 등의 모듈에 전달
     SCU_EICR1.U |= 0x1 << INP1_IDX;     //OGU1 사용하려고 값 대입
 
