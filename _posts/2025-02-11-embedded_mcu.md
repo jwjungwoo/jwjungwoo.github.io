@@ -5236,7 +5236,7 @@ void stopPWM (void){
 # DHT11
 ## 쉬는시간을 줘야해
 DHT11은 쉬는시간을 줘야한다. 1초정도 줬다.
-
+<img src="https://github.com/user-attachments/assets/b68607c0-139c-4b32-99de-2949857dee49" width="500" height="160">   
 # 실습
 ## 습도를 4FND에 출력
 ✅ 세팅   
