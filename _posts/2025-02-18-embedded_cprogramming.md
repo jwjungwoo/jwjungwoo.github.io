@@ -23,8 +23,8 @@ sidebar:
 명시적으로 할당해제 할 필요가 없다.   
    
 ✅ 메모리 구조 with code   
-<img src="KakaoTalk_20250218_163143211](https://github.com/user-attachments/assets/052b91ed-588c-4ff0-945a-215e23a66fda" width="500" height="360">   
-<img src="KakaoTalk_20250218_163528110](https://github.com/user-attachments/assets/0e29dae7-f9bc-470e-9f6b-19d5e1b350ca" width="500" height="330">   
+<img src="https://github.com/user-attachments/assets/052b91ed-588c-4ff0-945a-215e23a66fda" width="500" height="360">   
+<img src="https://github.com/user-attachments/assets/0e29dae7-f9bc-470e-9f6b-19d5e1b350ca" width="500" height="330">   
 
 
 ## 컴퓨터 구조
