@@ -25,7 +25,11 @@ sidebar:
 ✅ 메모리 구조 with code   
 <img src="https://github.com/user-attachments/assets/052b91ed-588c-4ff0-945a-215e23a66fda" width="500" height="360">   
 <img src="https://github.com/user-attachments/assets/0e29dae7-f9bc-470e-9f6b-19d5e1b350ca" width="500" height="330">   
-
+   
+✅ 물리적인 메모리 구조   
+<img src="https://github.com/user-attachments/assets/8ab8a7a6-dfa9-49fa-9839-b4ab3ce0cec1" width="500" height="270">   
+   
+✅ 메모리 리매핑   
 
 ## 컴퓨터 구조
 
