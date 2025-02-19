@@ -66,19 +66,12 @@ sidebar:
 
 ## 컴퓨터 구조
 ✅ 버스
-## ARM 임베디드 시스템의 메모리 구조
-
-
-
-## TC275 보드의 메모리 구조
+버스엔 CPU, Memory, 보조기억장치, I/O가 연결돼있다. CPU엔 ALU, 제어장치, Register, Cache로 구성된다. ALU(Arithmatic and Logical Unit. 알루)는 연산장치다. Register는 ALU와 제어장치 
+성능 향샹을 위해 사용되며, 범용레지스터와 용도지점레지스터로 구분된다. Cache는 메모리를 빨리 읽고 싶어서 local(CPU)로 가져온 것이다.
 
 # TC275 부트시퀀스
 ## ARM에서의 build, linker script
-✅ TC275 프로젝트 빌드 결과물   
-1. Makefile   
-2. .o 파일들   
-3. .hex, elf 파일들
-4.  
+<img src="https://github.com/user-attachments/assets/58f310cd-e9b1-435b-8dde-c97aca99bfd0" width="500" height="480">   
 
 # 코드 프로파일링
 ## Disassembly
@@ -105,18 +98,19 @@ API 사용보다 레지스터로의 직접 접근이 훨씬 빠르다!!!
 
 3. 0x0을 pos(#0x19 = 19)만큰 shift시키고, 5개 bit만큼 초기화
 
-4. d15에 저장된 값을 [a15]-0x4ff0에 저장한다. 
-```
+4. d15에 저장된 값을 [a15]-0x4ff0에 저장한다.
+```   
 <img src="https://github.com/user-attachments/assets/d123911d-cad1-4e31-a3a9-d0ba01213a74" width="500" height="70">   
+   
 ```c
 OMR을 했을 땐
 D[15] = M(A[15] - 0x4ffc)를 한다.
       = M(0xf003b004) 인데 이는 P10_OMR의 주소다.
 ctrl + h를 하고 0xf003b004를 하면
 ```
-✅ 상수 폴딩
+   
+✅ 상수 폴딩   
 ```c
 0x1 << 2 같은 경우는 컴파일러에서 바로 0x4로 넣어준다. "너도 알고 나도 알아." 이런건 코드에서 0x4로 한다해도 실행 속도엔 변화가 없으므로
 최적화가 아니다. 이렇게 바로 넣어주는걸 상수 폴딩이라한다.
-```
-
+```   
