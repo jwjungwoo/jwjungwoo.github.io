@@ -64,7 +64,7 @@ sidebar:
    
 ✅ 물리적인 메모리 구조   
 <img src="https://github.com/user-attachments/assets/8ab8a7a6-dfa9-49fa-9839-b4ab3ce0cec1" width="500" height="270">   
-   
+RAM과 ROM의 차이는, RAM은 힙 영역과 스택 영역이 있다는 것이다.ROM은 코드 영역과 데이터 영역 밖에 없다.
 ✅ 메모리 리매핑   
 
 ## 컴퓨터 구조
