@@ -22,13 +22,14 @@ sidebar:
 1. 코드 영역: 코드가 저장되는 영역, 텍스트 영역이라고도 부름. CPU는 코드 영역에 저장된 명령어를 하나씩 가져가서 처리하게 됨.   
 2. 데이터 영역: 전역 변수와 정적 변수가 저장되는 영역. 프로그램의 시작과 함께 할당. 프로그램이 종료되면 소멸. 프로그램이 load되면 바뀌지 않는 부분(assign되면 release되지 않는다.)   
 3. 힙 영역: 사용자가 직접 관리할 수 있는 메모리 영역. 사용자에 의해 메모리 공간이 동적으로 할당 및 해제. 메모리의 낮은 주소에서 높은 주소의 방향으로 할당. 상대적으로 느린 엑세스(왜냐하면 시작지점이 매번 달라지기 때문이다.)   
-4. 스택 영역: 지역변수와 매개변수가 저장되는 영역. 함수의 호출과 함께 할당, 함수의 호출이 완료되면 소멸. push, pop 동작(LIFO). 메모리의 높은 주소에서 낮은 주소의 방향으로 할당. 매우 빠른 엑세스(왜냐하면 시작주소가 정해져 있기 때문이다.). 변수를
+4. 스택 영역: 지역변수와 매개변수가 저장되는 영역. 함수의 호출과 함께 할당, 함수의 호출이 완료되면 소멸. push, pop 동작(LIFO). 메모리의 높은 주소에서 낮은 주소의 방향으로 할당. 매우 빠른 엑세스(왜냐하면 시작주소가 정해져 있기 때문이다.). 변수를 
 명시적으로 할당해제 할 필요가 없다.   
    
 ✅ 메모리 구조 with code   
 <img src="https://github.com/user-attachments/assets/052b91ed-588c-4ff0-945a-215e23a66fda" width="700" height="450">   
 <img src="https://github.com/user-attachments/assets/0e29dae7-f9bc-470e-9f6b-19d5e1b350ca" width="700" height="430">   
 RAM과 ROM의 차이는, RAM은 힙 영역과 스택 영역이 있다는 것이다.ROM은 코드 영역과 데이터 영역 밖에 없다.   
+ROM에 적힌 코드를 RAM이 읽어온다. ROM: flash   
    
 ✅ 물리적인 메모리 구조   
 <img src="https://github.com/user-attachments/assets/8ab8a7a6-dfa9-49fa-9839-b4ab3ce0cec1" width="500" height="270">   
@@ -204,7 +205,7 @@ store x, r1로 구성되는데,
 
 ##  ROM, RAM 관점에서 C코드 최적화
 ✅ ROM vs RAM   
-ROM은 코드 사이즈를 줄인다. RAM은 스택 사이즈를 줄인다.   
+ROM입장에선 코드 사이즈를 줄여줘야 부담이 적어지고. RAM은 스택 사이즈를 줄여주면 좋아한다.   
    
 ✅ ROM 최적화   
 프로그램 코드, 상수, 초기화된 전역 변수와 정적 변수
@@ -252,7 +253,7 @@ break point를 걸고 코드 창 오른쪽을 클릭하면 확인할 수 있다.
 ex) 변수 범위가 0에서 200 사이인 경우 unsigned char 유형의 변수를 사용해야함.   
    
 ✅ Avoid Type Conversion   
-타입 변환은 가능한 피해야함.(시스템 사이클이 낭비됨)   
+타입 변환은 가능한 피해야함.(시스템 사이클이 낭비됨)->비슷한 애들은 비슷한 애들끼리 놀게끔 사전에 조정하기   
    
 ✅ Signed & Unsigned 구분   
 Unsigned의 사용: 몫과 나머지, loop counter, 배열 indexing   
@@ -372,7 +373,7 @@ unsigned char myflags = 0;
 myflags |= option4;
 ```   
    
-✅ dimensional table   
+✅ 1 dimensional table   
 Char형 배열을 사용할 때, 일정한 길이를 가진 경우 2차원 테이블을 사용하기보다는 1차원 배열을 사용하는 것이 메모리 효율적이다.   
 <img src="https://github.com/user-attachments/assets/2a688646-76a6-40e2-ae53-ce031585162d" width="500" height="300">   
 
@@ -395,5 +396,133 @@ void main(void) {
 <img src="https://github.com/user-attachments/assets/a91782fb-422b-4f9d-aedb-d1039f4579f3" width="500" height="300">   
 
 ## Flow Control
+✅ if vs switch   
+가능한 하나의 변수만으로 판단하면 switch case문이 효율적이다.   
+if는 나오는 값에 따라 시간이 달라지지만, switch는 lookup table 방식을 채택한다.   
+<img src="https://github.com/user-attachments/assets/1944c83f-ca62-4514-8758-51f658c31ed2" width="700" height="300">   
+if문의 조건문 중 앞부분에 대부분 걸린다면 if else를 쓰자.   
+어셈블리어는 길이 차이가 거의 없다. 다만 실행시간은 차이 많음.   
+   
+✅ inline 코드 사용   
+함수가 자주 호출되지만 코드가 몇 줄만 포함된 경우에 가장 효과적   
+큰 함수를 인라인하면 실행 파일의 크기가 너무 커짐   
+inline을 안 쓰면 함수 위치가 정해져서 불러올 때 call 해야함.   
+근데 실습할 때 1년전과는 다르게 컴파일러가 업데이트 됐는지 inline을 해도 call을 한다. ㅋㅋㅋ   
+```c
+이렇게 선언하면 인라인이 된다.
+inline __attribute__((always_inline)) int doubleabs(int x) {
+    x = x << 2;
+    return (x < 0) ? -x : x;
+}
+```   
+   
+✅ Loop Hoisting   
+for문을 돌면서 계속 체크할 필요 없이 한번만 체크하고 for문 돌리게 하자. runtime시 실행시간에 영향을 준다.   
+<img src="https://github.com/user-attachments/assets/58da5cba-7450-4048-a328-448fc407d54a" width="500" height="300">   
+
+✅ Loop overhead   
+```c
+for (int i =0; i < 10; i++)보다
+for (int i = 10; i > 0; i--)가 더 빠르다.
+0이랑 비교하는 것이 더 빠르기 때문이다.   
+
+DEC R1
+CMP 10
+BNE L1 과
+
+DEC R1
+BNZ L1 의 차이
+```   
+✅ if-else   
+if 구문에서 else가 반드시 필요하지 않은 경우에는 생략   
+```c
+if(a==0) b = 0; else b = (a-c)*100;
+위를 아래처럼 바꾸면 좋다.
+b = 0; if(a) b = (a-c)*100;
+```
+   
+✅ 함수 인자의 개수 제한   
+시스템적으로 함수 인자는 4개 이하로 하는 것이 빠르다. 4개 이하로 하면 register를 사용하는데 나머지는 stack 영역에 할당되어, 느리게 load된다.   
 
 ## Others
+✅ 기존 연산자를 잘 활용하자   
+```c
+int n, flag;
+flag = (n > 10) ? 1 : 0;
+```   
+   
+✅ int 나눗셈은 곱셈으로   ㅇ
+정수 나눗셈은 모든 정수 산술 연산 중 가장 느림. 따라서 식에 여러 나눗셈이 있는 경우 정수 나눗셈을 곱셈으로 바꾸자.   
+   
+✅ 대수학적인 간소화   
+이미 컴파일러가 다 해줌. 따라서 gcc같은 성능좋은 컴파일러에선 신경 쓸 필욘 없을 듯하다.   
+```c
+z = x * a + x * b; 는 컴파일러가 알아서 z = x * (a + b)로 해줌
+
+for (int i = 0; i < 10; i ++)
+  printf("%d", i*10); 을 컴파일러는 이미 알아서
+for (int i = 0; i < 100; i+=10)
+  printf("%d,i);로 해주고 있다.
+```   
+   
+✅ inline assembly   
+```c
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+#include "Bsp.h"
+#include "IfxPort_pinMap.h"
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+typedef signed char int8_t;
+typedef unsigned char uint8_t;
+typedef signed short int16_t;
+typedef unsigned short uint16_t;
+typedef signed long int32_t;
+typedef unsigned long uint32_t;
+typedef float float32_t;
+typedef double float64_t;
+void core0_main(void)
+{
+    IfxCpu_enableInterrupts();
+    
+    /* !!WATCHDOG0 AND SAFETY WATCHDOG ARE DISABLED HERE!!
+     * Enable the watchdogs and service them periodically if it is required
+     */
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    /* Wait for CPU sync event */
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent, 1);
+
+//    P10_IOCR0.U &= ~(0x1f << 19);
+    __asm__("movh.a  a15,#0xF004\n\t"
+               "ld.w  d15,[a15]-0x4FF0\n\t"
+               "insert  d15,d15,#0x00,#0x13,#0x05\n\t"
+               "st.w  [a15]-0x4FF0,d15\n\t"
+               :
+               :
+               :"a15","d15"
+                );
+
+    P10_IOCR0.U |= 0x10 << 19;
+    while(1)
+    {
+//        P10_OMR.U = 0x60006;
+        P10_OUT.U = 0x4;
+//        P10_OUT.
+//        IfxPort_setPinHigh(IfxPort_P10_2.port, IfxPort_P10_2.pinIndex);
+    }
+}
+```   
+
+✅ 부동소수점 연산 제거   
+
+✅ 조건문 최적화   
+```c
+if( a==b && c==d && e==f )   ->   if( ((a-b) | (c-d) | (e-f)) == 0)
+if( x>=0 && x<8 && y >=0 && y <8 )  ->  if( ((unsigned)(x|y)) < 8 )
+if( (x==1) || (x==2) || (x==4) || (x==8) )  ->  if( x&(x-1)==0 && x!=0)
+```   
+   
+
