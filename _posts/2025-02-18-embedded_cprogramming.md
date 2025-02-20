@@ -10,7 +10,7 @@ sidebar:
 ---
 
 # 느낀점
-✅ 깊다.
+✅ 알뜰살뜰: 메모리 사용량을 알뜰살뜰 아끼자!   
 
 # 프로그래밍 실행을 위한 메모리 구조
 ## 힙과 스택
@@ -237,7 +237,6 @@ Stack의 사용량을 줄여라!
 <img src="https://github.com/user-attachments/assets/c9478884-0abb-444f-8234-94f6de0c7b34" width="500" height="350">   
 왼쪽은 code 사이즈는 크지만, 실행속도는 빠르다. 오른쪽은 반대다. 오른쪽은 메모리를 아끼는 것이다.   
 
-# 실습
 ## visual studio disassembly
 ✅ disassembly 코드 보는 법   
 break point를 걸고 코드 창 오른쪽을 클릭하면 확인할 수 있다. 또한 디버그->창->메모리로 가서 메모리 주소도 검색할 수 있다.   
@@ -245,3 +244,51 @@ break point를 걸고 코드 창 오른쪽을 클릭하면 확인할 수 있다.
    
 ✅ 코드 길이 2배 -> 어셈블리 2배   
 <img src="https://github.com/user-attachments/assets/8359dcd9-06a6-481c-8e1c-85c9dc81a733" width="300" height="70">   
+
+# 최적화영역
+## Data Handling
+✅ Data Type 사용   
+ex) 변수 범위가 0에서 200 사이인 경우 unsigned char 유형의 변수를 사용해야함.   
+   
+✅ Avoid Type Conversion   
+타입 변환은 가능한 피해야함.(시스템 사이클이 낭비됨)   
+   
+✅ Signed & Unsigned 구분   
+Unsigned의 사용: 몫과 나머지, loop counter, 배열 indexing   
+Signed의 사용: 사칙연산시   
+   
+✅ Floats & Doubles   
+float의 최대값 = 0x7f7f ffff   
+double의 최대값 = 0x7f7f ffff ffff ffff   
+불필요한 유형 변환이나 혼동을 피하기 위해, 숫자 값 뒤에 문자 'f'를 지정   
+ex) x = y + 0.2f; 괜히 컴파일러가 double로 오해하고 메모리 사이즈 사용량을 늘릴 수 있으니까      
+   
+✅ Constant & volatile   
+Constant:   
+1. 데이터를 상수로 정의하여 ROM 공간에 할당   
+2. 그렇지 않으면 RAM 공간도 이 데이터를 위해 예약됨   
+3. 상수 데이터는 읽기 전용이어야 하므로 이 작업은 불필요   
+   
+Volatile:   
+1. 컴파일러가 변수에 대한 최적화를 수행하지 못하도록 금지   
+2. 일반적으로 인터럽트에 의해 변경되는 IO 레지스터와 변수에 사용됨   
+3. 변수의 값은 synchronous하게 액세스할 수 있게 때문에 필요   
+   
+✅ Structure   
+예전에 배웠던 것이다. 구조체 선언할 때 앞의 변수들 크기에 따라 알맞게 배치하는 것이 중요하다. 또한 빈 공간은 작은 배열을 넣어주는 등 알뜰살뜰하게 사용하면 된다.   
+
+✅ Pass by Reference   
+```c
+total(long a, long b, long c, long d);를
+struct sum {
+long a;
+long b;
+long c;
+long d;
+} all;
+total(&all);로 넘기면 한번만 참조하므로 굉장히 효율적이다. ram입장에서도 stack에 push, pop되는 것을 아낄 수 있음.
+```   
+
+## Flow Control
+
+## Others
