@@ -33,6 +33,7 @@ RAM과 ROM의 차이는, RAM은 힙 영역과 스택 영역이 있다는 것이�
 ✅ 물리적인 메모리 구조   
 <img src="https://github.com/user-attachments/assets/8ab8a7a6-dfa9-49fa-9839-b4ab3ce0cec1" width="500" height="270">   
 <img src="https://github.com/user-attachments/assets/9298fb95-6fc7-4f10-a5a9-3282ac637eb2" width="500" height="270">   
+ROM은 usb나 ssd 같은거다.   
    
 ✅ 메모리 리매핑   
 <img src="https://github.com/user-attachments/assets/e8324847-8b34-4336-b3b6-7a1534521ce6" width="500" height="270">   
@@ -234,4 +235,13 @@ Stack의 사용량을 줄여라!
 5. 폴링방식 활용: 인터럽트 방식이 CPU 오버헤드가 많으므로 폴링이 효과적 (interrupt는 context switching이 길어서 CPU 오버헤드가 많음. 근데 버튼 event 같은 경우에는 interrupt 방식이 더 효율적...)   
 6. 정수 연산: 대부분의 부동소수점 연산은 정수(고정소수점)연산으로 대체 가능함   
 <img src="https://github.com/user-attachments/assets/c9478884-0abb-444f-8234-94f6de0c7b34" width="500" height="350">   
-왼쪽은 code 사이즈는 크지만, 실행속도는 빠르다. 오른쪽은 반대다. 오른쪽은 메모리를 아끼는 것이다. 
+왼쪽은 code 사이즈는 크지만, 실행속도는 빠르다. 오른쪽은 반대다. 오른쪽은 메모리를 아끼는 것이다.   
+
+# 실습
+## visual studio disassembly
+✅ disassembly 코드 보는 법   
+break point를 걸고 코드 창 오른쪽을 클릭하면 확인할 수 있다. 또한 디버그->창->메모리로 가서 메모리 주소도 검색할 수 있다.   
+<img src="https://github.com/user-attachments/assets/7c987ab1-1532-4bb2-8214-3cb0620ad267" width="500" height="270">   
+   
+✅ 코드 길이 2배 -> 어셈블리 2배   
+<img src="https://github.com/user-attachments/assets/8359dcd9-06a6-481c-8e1c-85c9dc81a733" width="300" height="70">   
