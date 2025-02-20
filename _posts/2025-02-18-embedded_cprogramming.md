@@ -47,7 +47,8 @@ ROM은 usb나 ssd 같은거다.
 1. 주소 버스 (단방향 버스)   
 2. 데이터 버스 (양방향 버스)   
 3. 제어 버스   
-버스들은 주기억장치와 연결돼있다. 주기억장치는 32bit 컴퓨터면 32bit이고, 64bit 컴퓨터면 64bit이다.   
+
+CPU, Memory 등이 버스에 연결된 것 처럼 버스들은 주기억장치와 연결돼있다. 주기억장치는 32bit 컴퓨터면 32bit이고, 64bit 컴퓨터면 64bit이다.   
    
 ✅ CISC vs RISC   
 Complex Instruction Set Computing: 일반 컴퓨터(64bit). 편리, 강력한 다수의 명령   
@@ -288,6 +289,110 @@ long d;
 } all;
 total(&all);로 넘기면 한번만 참조하므로 굉장히 효율적이다. ram입장에서도 stack에 push, pop되는 것을 아낄 수 있음.
 ```   
+   
+✅ Initialization   
+결론부터 말하면 뒤의 방식을 활용해야한다. 메모리가 엄청 줄어든다.   
+```c
+#include <stdio.h>
+
+typedef struct {
+	int element[3][3][3];
+}Three3DType;
+
+void main() {
+	int a[3][3][3];
+	int b[3][3][3];
+
+	for (int i = 0; i < 3;i++) {
+		for (int j = 0; j < 3;j++) {
+			for (int k = 0; k < 3;k++) {
+				a[i][j][k] = 1;
+				b[i][j][k] = a[i][j][k];
+			}
+		}
+	}
+
+
+	for (int i = 0; i < 3;i++)
+		for (int j = 0; j < 3;j++)
+			for (int k = 0; k < 3;k++)
+				a[i][j][k] = 0;
+
+	//b = a;  // 에러 뜸. "식이 수정할 수 있는 Ivalue여야 합니다."
+
+	for (int i = 0; i < 3;i++)
+		for (int j = 0; j < 3;j++)
+			for (int k = 0; k < 3;k++)
+				printf("%d", b[i][j][k]);
+
+	Three3DType aa, bb;
+
+	for (int i = 0; i < 3;i++) {
+		for (int j = 0; j < 3;j++) {
+			for (int k = 0; k < 3;k++) {
+				aa.element[i][j][k] = 1;
+				bb.element[i][j][k] = aa.element[i][j][k];
+			}
+		}
+	}
+
+	//for (int i = 0; i < 3;i++)
+	//	for (int j = 0; j < 3;j++)
+	//		for (int k = 0; k < 3;k++)
+	//			aa.element[i][j][k] = 0;
+	memset(aa.element, 0, sizeof(aa.element));
+
+	bb = aa; // 에러 안 뜨고 aa에 따라 bb도 값이 바뀜.
+
+	for (int i = 0; i < 3;i++)
+		for (int j = 0; j < 3;j++)
+			for (int k = 0; k < 3;k++)
+				printf("%d", bb.element[i][j][k]);
+}
+```
+
+✅ return   
+함수의 return 값은 레지스터에 저장됨.   
+return이 필요 없으면 return은 하지마라.   
+이 경우 함수의 추가 처리를 최소화하기 위해 함수를 "void"로 정의해야 함.   
+   
+✅ 비트 플래그 사용   
+```c
+const unsigned char option0 = 1 << 0; // 0000 0001
+const unsigned char option1 = 1 << 1; // 0000 0010
+const unsigned char option2 = 1 << 2; // 0000 0100
+const unsigned char option3 = 1 << 3; // 0000 1000
+const unsigned char option4 = 1 << 4;
+const unsigned char option5 = 1 << 5;
+const unsigned char option6 = 1 << 6;
+const unsigned char option7 = 1 << 7;
+
+예시
+unsigned char myflags = 0;
+myflags |= option4;
+```   
+   
+✅ dimensional table   
+Char형 배열을 사용할 때, 일정한 길이를 가진 경우 2차원 테이블을 사용하기보다는 1차원 배열을 사용하는 것이 메모리 효율적이다.   
+<img src="https://github.com/user-attachments/assets/2a688646-76a6-40e2-ae53-ce031585162d" width="500" height="300">   
+
+
+✅ trick) case insensitive   
+ASCII 코드의 특성을 이용해서 대소문자 구별없이 확인하는 것을 효율적으로 수행   
+```c
+#include <stdio.h>
+
+void main(void) {
+	int a = 10, b = 0;
+	char chx = 'A';
+	
+	chx = chx | 0x20;
+	if (chx == 'a') b = a + 5; // if (chx == 'a' || chx == 'A') b = a + 5; 대신
+
+	printf("%d", b);
+}
+```
+<img src="https://github.com/user-attachments/assets/a91782fb-422b-4f9d-aedb-d1039f4579f3" width="500" height="300">   
 
 ## Flow Control
 
