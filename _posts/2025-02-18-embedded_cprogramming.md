@@ -36,7 +36,7 @@ RAM과 ROM의 차이는, RAM은 힙 영역과 스택 영역이 있다는 것이�
 ROM은 usb나 ssd 같은거다.   
    
 ✅ 메모리 리매핑   
-<img src="https://github.com/user-attachments/assets/e8324847-8b34-4336-b3b6-7a1534521ce6" width="500" height="270">   
+<img src="https://github.com/user-attachments/assets/e8324847-8b34-4336-b3b6-7a1534521ce6" width="800" height="470">   
 
 ## 컴퓨터 구조
 ✅ 버스
