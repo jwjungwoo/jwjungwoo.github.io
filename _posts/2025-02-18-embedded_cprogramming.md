@@ -671,3 +671,26 @@ DHT11_START()
 왜냐면 MUL(a+b, c+d)를 하면 a+b*c+d가 되기 때문이다. 원하던 계산이 안 됨.
 근데 매크로 함수는 되도록 사용하지 말라네.
 ```
+
+```c
+22. naming
+i) 전역 변수는 'g'로 시작 (g_zero_offset)
+ii) pointer 변수, pointer to pointer 변수는 'p', 'pp'로 시작 (pp_vector_table)
+iii) boolean를 포함하는 모든 ㅂinterger 변수는 'b'로 시작
+```
+
+```c
+23. 초기화
+i) 모든 변수는 사용하기 전에 초기화해야함
+ii) 지역변수는 함수 맨 위에 모두 정의하는 것보다 필요할 때마다 정의하는 것이 좋음
+
+24. 변수 선언은 한 줄에 하나씩
+
+25. magic number 사용금지! for(;i< 100;)말고 for(;i<NUM_COLS;)로 하라. "변수 선인 해놔"
+
+26. Jumps
+goto, abort(), exit(), setjmp() 및 longjmp()는 사용하면 안 됨
+
+27. == 왼쪽에 상수 써야함
+if( NULL == p_object)
+```
