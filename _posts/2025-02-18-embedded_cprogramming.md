@@ -549,5 +549,69 @@ if
 7. 논리연산자(&&, ||)의 각 피연산자에 괄호 쓰자(귀찮아서 안 했던 그거)
 8. 약어는 일관 되게 이해되지 않는 한 일반적으로 피해야 함
 9. const: 되도록 사용, 숫자 상수에 대해 #define 대신 사용
-10. static: 선언된 모듈외부에 표시될 필요가 없는 모든 함수와 변수를 선언하는 데 사용해야 함
+10. static: 선언된 모듈외부에 표시라
+
+#include "Ifx_Types.h"
+#include "IfxCpu.h"
+#include "IfxScuWdt.h"
+#include "Bsp.h"
+#include "IfxPort_pinMap.h"
+IfxCpu_syncEvent g_cpuSyncEvent = 0;
+typedef signed char int8_t;
+typedef unsigned char uint8_t;
+typedef signed short int16_t;
+typedef unsigned short uint16_t;
+typedef signed long int32_t;
+typedef unsigned long uint32_t;
+typedef float float32_t;
+typedef double float64_t;
+
+#define ISOMR  1
+void core0_main(void)
+{
+    IfxCpu_enableInterrupts();
+    
+    /* !!WATCHDOG0 AND SAFETY WATCHDOG ARE DISABLED HERE!!
+     * Enable the watchdogs and service them periodically if it is required
+     */
+    IfxScuWdt_disableCpuWatchdog(IfxScuWdt_getCpuWatchdogPassword());
+    IfxScuWdt_disableSafetyWatchdog(IfxScuWdt_getSafetyWatchdogPassword());
+    
+    /* Wait for CPU sync event */
+    IfxCpu_emitEvent(&g_cpuSyncEvent);
+    IfxCpu_waitEvent(&g_cpuSyncEvent, 1);
+
+    P10_IOCR0.U &= ~(0x1f << 19);
+    P10_IOCR0.U |= 0x10 << 19;
+
+    while(1)
+    {
+
+#if ISOMR
+        P10_OUT.U ^= 0x4;
+#else   //여기서부터
+
+        P10_OMR.U = 0x40004;
+#endif  //여기까지 바탕이 회색임. 즉 실행 되는지 안 되는지 알 수 있음
+        waitTime(50000000);
+    }
+}
+
+# ifdef ISOMR  // 정의만 돼있으면
+# ifndef ISOMR // 정의가 안돼있으면
+# if 0         // 안락사   ->  이걸 주석으로 사용하라는 것 같음
+```
+
+```c
+12. 많이 사용되는 주석 키워드
+// WARNING
+이 코드를 변경하는 데 위험이 있음을 유지 관리자에게 경고함
+예를 들어 내가 시간을 계산해서 1초에 한번씩 돌게 loop를 1000만번 걸어놨는데 즉, 경험적으로
+최적화해놨는데 코드 수정할 때 조심해라. (보통 이 예시처럼 loop로 시간 세진 않음)
+
+// NOTE
+how와 why를 설명해줌
+
+// TODO 코드의 특정 영역이 아직 작성 중임을 나타내며 아직 완료되지 않은 작업을 설명함. 이니셜 ㄱㄱ
+BJW TODO: 
 ```
