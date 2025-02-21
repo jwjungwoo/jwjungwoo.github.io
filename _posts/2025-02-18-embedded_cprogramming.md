@@ -615,3 +615,59 @@ how와 why를 설명해줌
 // TODO 코드의 특정 영역이 아직 작성 중임을 나타내며 아직 완료되지 않은 작업을 설명함. 이니셜 ㄱㄱ
 BJW TODO: 
 ```
+
+```c
+13. 화이트 스페이스 (공백)
+i) 삼항 연산자를 구성하는 ? 및 : 문자는 항상 앞뒤에 공백이 하나씩 있어야 함
+ii) 괄호 안의 표현식은 왼쪽 및 오른쪽 괄호 문자와 인접하여 공백이 없어야 함
+iii) 전처리기 지시문의 #은 항상 한 줄의 시작 부분에 위치해야 하지만 지시문 자체는
+     #if 또는 #ifdef 시퀀스 내에 들여쓰기 할 수 있음
+#ifdef USE_UNICODE_STRINGS
+#  define BUFFER_BYTES  128
+#else
+#  define BUFFER_BYTES 64
+#endif 
+```
+
+```c
+14. Header Files
+i) 각 소스 파일에는 항상 정확히 하나의 헤더 파일이 있어야 하며, 헤더 파일은 항상 동일한 경로와 이름을 가져야 함
+ii) include, define 등을 순서대로 정의하기 위해 템플릿을 만들어라
+iii) public 헤더 파일에선 private 헤더 파일을 include 말고, private 헤더파일에서 public 헤더파일을 include 하는 방향으로 해라
+public 헤더파일: "Ifx_Types.h", "iostream" 일반적으로 존재하는 파일
+private 헤더파일: 내가 만든 파일
+캡슐화(+보안)적으로도 문제가 되고, 충돌이 날 수도 있다.
+```
+
+```c
+15. structures, unions, enumerations 등 모든 data types의 이름은 소문자와 밑줄로만 구성되어야 하며 '_t'로 끝나야 함.
+단, 밑줄로 시작하면 안됨.
+15-1. structures, unions, enumerations은 typedef 를 통해 이름을 지정해야 함
+15-2. 관련된 모듈의 이름을 적자.
+typdef struct
+{
+  uint16_t count;
+  uint16_t max_count;
+} timer_reg_t; // timer라고 모듈의 이름을 적어둠.
+```
+   
+16. fixed-width integers. 길이를 적어주자.   
+<img src="https://github.com/user-attachments/assets/383211b4-5331-4648-8c4e-bbd1703be8ec" width="500" height="260">   
+
+```c
+17. signed and unsigned integer
+비트 연산자는 signed integer 연산에 사용해서는 안 됨
+
+18. float 변수간의 == 는 사용하지 말고(부동소수점 이슈) "abs(b-c) < 0.00001" 이런식으로 하자.
+
+19. 함수 이름 선언시 함수의 이름만 보고도 무슨 기능인지 알 수 있도록 해줘라. 특히 동사를 사용하자
+DHT11_READ()
+DHT11_START()
+
+20. return은 한 곳에서만 하자.. if else문에 각각 return 하는건 좋은 습관이 아녀...
+
+21. 매크로 함수를 할 때 피연산자에 각각 괄호를 사용해주자
+#define MAX(A, B)  ((A) > (B) ? (A) : (B))
+왜냐면 MUL(a+b, c+d)를 하면 a+b*c+d가 되기 때문이다. 원하던 계산이 안 됨.
+근데 매크로 함수는 되도록 사용하지 말라네.
+```
