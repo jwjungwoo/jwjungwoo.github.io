@@ -75,6 +75,97 @@ reset 버튼을 누르면 맨처음에 Main Stack Point가 들어온다. 그 다
 Reset hanlder: SystemInit을 하고, 끝나면 main을 실행한다.
 
 ## 실습
-✅ 
-hal driver는 지금 안 쓸 것이다. 
-startup_stm32l073xx.s, main.c, system_stm32l0xx.c 만 냅두면 됨.
+✅ 기본 정보   
+hal driver는 지금 안 쓸 것이다.   
+startup_stm32l073xx.s, main.c, system_stm32l0xx.c 만 냅두면 됨.   
+RW-data: Read Write data, ZI-data: compiler가 써주는 data.   
+HD_01.hex: nucleo보드 실행 파일.   
+HD_01.sct: Rom, RAM 정보 적힘.   
+```c
+// volatile을 붙이면 컴파일러가 무시하지 않고 무조건 동작하게 한다.
+volatile int counter = 0;
+```
+
+# Digital Output
+## MCU Bring-up
+✅ MCU Bring-up   
+firmware 를 통해 MCU 가 기본적으로 동작하는 것을 의미햔다.(개발자들은 "눈뜬다"라고 표현)   
+   
+✅ Firmware   
+하드웨어와 밀접하게 관련되어 있는 sw   
+sw 위치: ROM/ RAM 등에 위치   
+기능이 바뀌면 통으로 바꿔야한다. 기본 hw를 동작시켜 MCU를 기본 동작이 가능하게 만드는 sw   
+   
+✅ pull up, pull down   
+pull up을 많이 쓰긴 한다.   
+
+✅ 출력   
+<img src="https://github.com/user-attachments/assets/28b7e732-8474-472c-9e74-d5eb340fafda" width="600" height="470">   
+예를들어 LED 같은 경우는 00으로 하면 된다.   
+   
+✅ 0X5000 0000: GPIOA의 시작 주소   
+<img src="https://github.com/user-attachments/assets/a72924e3-a4ea-48b4-8399-f403fca9095f" width="600" height="330">   
+
+# 실습
+## 불 키기
+```c
+int main (void)
+{
+	// RCC_GPIOA Clock En; RCC register begins from 0x4002 1000 
+	*((unsigned int*)0x4002102C) = (unsigned int)0x01; // 40021000 + 2C 
+
+	// GPIOA Register           
+	// moder. A-port begins from 0x5000 0000 
+	*((unsigned int*)0x50000000U) = 0xEBFFF4FF; // GPIO Output Mode setting register was initialed 0xEBFF FCFF; and it should be 0xEBFFF4FF
+	// OTYPER
+	*((unsigned int*)(0x50000000U + 0x00000004U)) = 0;
+	// OSPEEDR
+	*((unsigned int*)(0x50000000U + 0x00000008U)) = (unsigned int)0x0C000C00;
+	// pull up, pull down
+	*((unsigned int*)(0x50000000U + 0x0000000CU)) = (unsigned int)0x24000000;
+	
+	// LED2(PA5) on
+	// ODR
+	*((unsigned int*)(0x50000000U + 0x00000014U)) = (unsigned char) 0x20;
+	while(1) 
+	{
+		;
+	}
+}
+```
+
+## 불 깜빡이게 하기
+```c
+int counter = 0;
+int main (void)
+{
+	// RCC_GPIOA Clock En; RCC register begins from 0x4002 1000 
+	*((unsigned int*)0x4002102C) = (unsigned int)0x01; // 40021000 + 2C 
+
+	// GPIOA Register           
+	// moder. A-port begins from 0x5000 0000 
+	*((unsigned int*)0x50000000U) = 0xEBFFF4FF; // GPIO Output Mode setting register was initialed 0xEBFF FCFF; and it should be 0xEBFFF4FF
+	// OTYPER
+	*((unsigned int*)(0x50000000U + 0x00000004U)) = 0;
+	// OSPEEDR
+	*((unsigned int*)(0x50000000U + 0x00000008U)) = (unsigned int)0x0C000400; // speed
+	// pull up, pull down
+	*((unsigned int*)(0x50000000U + 0x0000000CU)) = (unsigned int)0x24000000;
+	volatile int counter = 0; // volatile을 붙여야한다.
+	while(1) 
+	{
+			// on ODR
+	  *((unsigned int*)(0x50000000U + 0x00000014U)) = (unsigned int) 0x20;
+		counter = 0;
+		while (counter < 0x20000) {
+			counter++;
+		}
+			// off ODR
+	  *((unsigned int*)(0x50000000U + 0x00000014U)) = (unsigned int) 0x0;
+		counter = 0;
+		while (counter < 0x20000) {
+			counter++;
+		}			
+	}
+}
+```
