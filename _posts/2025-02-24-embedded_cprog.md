@@ -20,7 +20,8 @@ GPU: Graphic Processing Unit (그래픽을 사용할 때 좌표점들을 색깔�
 미시 세계   
 MPU: Micro Processing Unit (CPU랑 하는 일이 똑같다. 연산처리, 중앙처리)   
 MCU: Micro Control Unit   
-   
+
+## ST
 ✅ ST사   
 수많은 MCU를 만듦. 우리가 쓸 보드는 NUCLEO 보드다. 임베디드는 현재는 8bit, 32bit MCU 보드가 있다. 64bit 부턴 M이 아니다. 요구사항에 따라 high performance냐 ultra-low power냐 선택해야한다. 성능 좋으면 전력소모가 크다. 각 회사는 자신만의 core를 개발한다.   
    
@@ -49,5 +50,20 @@ ARM 코어텍스는 4가지 시리즈로 나뉜다. A, R, M, X 시리즈이다. 
 ✅ Memory Map   
 <img src="https://github.com/user-attachments/assets/b4a7a51d-4361-4b96-baa9-d3cfcd7a1124" width="600" height="600">   
 Flash system memory(0x0800 0000)에서 많이 코딩할 것이다. 왜냐면 우리가 sd 카드를 꽂을건 아니니까.
-   
 
+# 개발 환경 이해 및 실습
+## Compile / Linking 이해
+✅ 프로그램이란?   
+순서 등을 미리 짜놓은 것   
+   
+✅ Compile / Linking   
+<img src="https://github.com/user-attachments/assets/67730cac-6098-4555-b66d-82f3587de2d7" width="600" height="470">   
+Object: CPU가 알아볼 수 있는 기계어   
+Linker: 호출한 애를 찾으려고 함   
+Compile 에러는 문법 에러고, linking 에러는 참조 에러다.   
+   
+어셈블리어 (.S), C 소스 (.c), C++ 소스 (.cpp)에 따라 각각 어셈블러, C컴파일러, C++컴파일러가 따로따로 있다.   
+(armasm, gas), (armcc, gcc), (armcpp, g++)   
+   
+✅ Cross Compile이란?   
+compile과 linking은 pc에서 하고 그 결과물인 executable을 embedded 시스템에서 동작할 수 있게 해주는 것이 Cross Compile이다.   
