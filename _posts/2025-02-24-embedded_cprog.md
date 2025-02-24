@@ -72,5 +72,9 @@ compile과 linking은 pc에서 하고 그 결과물인 executable을 embedded �
 reset 버튼(주소를 0번지로 간다.) -> Boot Loader -> Reset handler(하드웨어 초기화 작업) -> C start up code -> Application   
    
 reset 버튼을 누르면 맨처음에 Main Stack Point가 들어온다. 그 다음은 Reset vector가 들어간다.   
-Reset hanlder: SystemInit을 하고, 끝나면 main을 실행한다.   
+Reset hanlder: SystemInit을 하고, 끝나면 main을 실행한다.
 
+## 실습
+✅ 
+hal driver는 지금 안 쓸 것이다. 
+startup_stm32l073xx.s, main.c, system_stm32l0xx.c 만 냅두면 됨.
