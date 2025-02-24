@@ -5,7 +5,7 @@ categories: autoever
 tag:
 author_profile: false #true면 글 안에서 내 프로필 보여줌
 sidebar:
-    nav: "autoever"3
+    nav: "autoever"
 #search: false
 ---
 
