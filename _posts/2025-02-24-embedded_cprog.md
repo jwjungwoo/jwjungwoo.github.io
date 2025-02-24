@@ -67,3 +67,6 @@ Compile 에러는 문법 에러고, linking 에러는 참조 에러다.
    
 ✅ Cross Compile이란?   
 compile과 linking은 pc에서 하고 그 결과물인 executable을 embedded 시스템에서 동작할 수 있게 해주는 것이 Cross Compile이다.   
+   
+✅ ARM 부팅 시스템   
+reset 버튼(주소를 0번지로 간다.) -> Boot Loader -> Reset handler(하드웨어 초기화 작업) -> C start up code -> Application   
