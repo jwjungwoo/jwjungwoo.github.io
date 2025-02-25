@@ -117,6 +117,7 @@ GPIO 모드는 input, ouput, alternative 모드로 총 3 종류다.
 
 # 실습
 ## 불 키기
+<img src="https://github.com/user-attachments/assets/1556f8e2-d99b-4903-9be9-f9564b848ed6" width="600" height="550">   
 ```c
 int main (void)
 {
