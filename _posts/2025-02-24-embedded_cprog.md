@@ -126,7 +126,7 @@ int main (void)
 	*((unsigned int*)0x50000000U) = 0xEBFFF4FF; // GPIO Output Mode setting register was initialed 0xEBFF FCFF; and it should be 0xEBFFF4FF
 	// OTYPER:  output type register
 	*((unsigned int*)(0x50000000U + 0x00000004U)) = 0;
-	// OSPEEDR: output speed register
+	// OSPEEDR: output speed register   00: low, 01: medium, 10: high, 11: very high
 	*((unsigned int*)(0x50000000U + 0x00000008U)) = (unsigned int)0x0C000C00;
 	// pull up, pull down
 	*((unsigned int*)(0x50000000U + 0x0000000CU)) = (unsigned int)0x24000000;
@@ -232,6 +232,223 @@ int main(void)
 		{
 			counter++;
 		}
+	}
+}
+```
+
+## 불 깜빡이게 하기(PA5 레지만 변경)
+```c
+//Define
+//#define RCC_GPIOA (*((unsigned char*)0x4002102C))
+#define PERIPH_BASE       (0x40000000UL) /*!< Peripheral base address in the alias region */
+#define AHBPERIPH_BASE    (PERIPH_BASE + 0x00020000UL)
+#define RCC_BASE          (AHBPERIPH_BASE + 0x00001000UL)
+#define RCC_GPIOA 				*((volatile unsigned int*)(RCC_BASE + 0x0000002CUL))
+
+#define GPIO_PA5PIN_BASE (unsigned int)0x50000000U
+#define GPIO_PA5PIN_MODE 	(*((volatile unsigned int*)GPIO_PA5PIN_BASE))
+#define GPIO_PA5PIN_OTYPE (*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x00000004UL)))
+#define GPIO_PA5PIN_OSPEEDR (*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x00000008UL)))
+#define GPIO_PA5PIN_OPUPDR (*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x0000000CU)))
+#define GPIO_PA5PIN_IDR    (*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x00000010U)))
+#define GPIO_PA5PIN_ODR 	(*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x00000014UL)))
+
+#define GPIO_2BIT_POS_MASK    ((unsigned int)0x00000003U) // 2 bit를 움직일 거면 11을 shift 하고 00으로 반전 시킬거임
+#define GPIO_1BIT_POS_MASK		((unsigned int)0x00000001U) // U는 unsigned long 이다.
+
+#define GPIO_PIN_5_POS		5
+
+// delay function
+void delay(unsigned int delay_cnt)
+{
+		volatile int counter = 0;
+
+		while(counter < delay_cnt) //delay loop
+		{
+			counter++;
+		}
+}
+
+int main(void)
+{
+	unsigned int position = GPIO_PIN_5_POS; //Pin Position: PA5
+	unsigned int temp = 0x0U;
+	unsigned int mode = 0x0U;
+	unsigned int reg = 0x0U;
+	
+	//RCC-GPIOA
+	reg = RCC_GPIOA;
+	RCC_GPIOA = (unsigned int)(reg | 0x01U);
+
+  // mode, speed 는 2 bit이다.
+
+	// PA5 Mode
+	// GPIO_PA5PIN_MODE = (unsigned int)0xEBFFF4FF;
+	reg = GPIO_PA5PIN_MODE;
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF; 맨 처음에 11을 5개의 register만큼(5*2) shift했다. 그리고 반전 시키고..
+	reg &= temp; // 반전 시키고 & 연산 했다.
+	// GPO Mode: 01
+	mode = 0x01U << (position*2U) ;	// GPIO OutPut Mode - 2bit 0x00000400
+	reg |= mode;
+	GPIO_PA5PIN_MODE = reg;
+
+	//PA5 OTYPER
+	//GPIO_PA5PIN_OTYPE = 0;
+	reg = GPIO_PA5PIN_OTYPE;
+	temp = ~(GPIO_1BIT_POS_MASK << position);	//~0x20 ==> 0xFFFFFFDF
+	reg &= temp;
+	mode = 0x0U << position ;	//Output type - 1bit
+	reg |= mode;
+	GPIO_PA5PIN_OTYPE = reg;
+
+	//PA5 OSPEEDR
+	//GPIO_PA5PIN_OSPEEDR = (unsigned int)0x0C000C00;
+	reg = GPIO_PA5PIN_OSPEEDR;
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = 0x03U << (position*2U) ;	//Very High Mode - 2bit 0x00000C00
+	reg |= mode;
+	GPIO_PA5PIN_OSPEEDR = reg;
+	
+	//PULL UP/DOWN
+	//GPIO_PA5PIN_OPUPDR = (unsigned int)0x24000000;
+	reg = GPIO_PA5PIN_OPUPDR;
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = 0x0U << (position*2U) ;	//No Pull Up - Pull Down - 2bit 0x24000000
+	reg |= mode;
+	GPIO_PA5PIN_OPUPDR = reg;
+	
+	//ODR - 1bit
+	//GPIO_PA5PIN_ODR = (unsigned char)0x20;
+	reg = GPIO_PA5PIN_ODR;
+	temp = ~(GPIO_1BIT_POS_MASK << position);	//~0x20 ==> 0xFFFFFFDF
+	reg &= temp;
+
+	//LED On value
+	mode = 0x01 << position ;
+
+	GPIO_PA5PIN_ODR = reg | mode;
+
+		
+	while(1)
+	{
+		//ODR 
+		//LED Off value
+	 	mode = ~mode&(GPIO_1BIT_POS_MASK << position);
+		GPIO_PA5PIN_ODR = reg | mode;
+
+		delay(0x20000);
+
+	}
+}
+```
+
+## 불 깜빡이게 하기(구조체)
+```c
+//Structure & Array   구조체 선언할 때 변수들의 순서는 절대 바꾸면 안 된다. 순서대로 메모리 주소에 매핑되기 때문이다.
+typedef struct  
+{
+  volatile unsigned int MODER;        /*!< GPIO port mode register,                     Address offset: 0x00 */
+  volatile unsigned int OTYPER;       /*!< GPIO port output type register,              Address offset: 0x04 */
+  volatile unsigned int OSPEEDR;      /*!< GPIO port output speed register,             Address offset: 0x08 */
+  volatile unsigned int PUPDR;        /*!< GPIO port pull-up/pull-down register,        Address offset: 0x0C */
+  volatile unsigned int IDR;          /*!< GPIO port input data register,               Address offset: 0x10 */
+  volatile unsigned int ODR;          /*!< GPIO port output data register,              Address offset: 0x14 */
+  volatile unsigned int BSRR;         /*!< GPIO port bit set/reset registerBSRR,        Address offset: 0x18 */
+  volatile unsigned int LCKR;         /*!< GPIO port configuration lock register,       Address offset: 0x1C */
+  volatile unsigned int AFR[2];       /*!< GPIO alternate function register,            Address offset: 0x20-0x24 */
+  volatile unsigned int BRR;          /*!< GPIO bit reset register,                     Address offset: 0x28 */
+}GPIO_TypeDef;
+
+#define PERIPH_BASE       (0x40000000UL) /*!< Peripheral base address in the alias region */
+#define AHBPERIPH_BASE    (PERIPH_BASE + 0x00020000UL)
+#define RCC_BASE          (AHBPERIPH_BASE + 0x00001000UL)
+#define RCC_IOPENR		*((volatile unsigned int*)(RCC_BASE + 0x0000002CUL))
+#define RCC_GPIOA_EN			((unsigned int)0x00000001U)
+
+//#define GPIO_PA5PIN_BASE    (unsigned int)0x50000000UL
+#define GPIOA_BASE		     ((unsigned int)0x50000000UL)
+#define GPIOA			     (GPIO_TypeDef *) GPIOA_BASE         // start address
+#define GPIO_PIN_5_POS				5
+
+#define GPIO_2BIT_POS_MASK    ((unsigned int)0x00000003U)
+#define GPIO_1BIT_POS_MASK    ((unsigned int)0x00000001U)
+
+#define GPIO_MODE_OUTPUT      			((unsigned int)0x00000001U)   /*!< GPIO OutPut Mode                 */
+#define GPIO_OUTPUT_TYPE_0      		((unsigned int)0x00000000U)		/* PushPull */
+#define GPIO_NOPUPD				((unsigned int)0x00000000U)		/* No Pull up / down */
+#define GPIO_SPEED_FREQ_VERY_HIGH   	((unsigned int)0x00000003U)  /*!< range  10 MHz to 35 MHz, please refer to the product datasheet */
+
+#define LED2_ON					((unsigned int)0x00000001U)
+#define LED2_OFF					((unsigned int)0x00000000U)	
+
+void delay(unsigned int delay_cnt)
+{
+		volatile int counter = 0;
+
+		while(counter < delay_cnt) //delay loop
+		{
+			counter++;
+		}
+}
+
+int main()
+{
+	unsigned int position = GPIO_PIN_5_POS; //Pin Position: PA5
+	unsigned int temp = 0x0U;
+	unsigned int mode = 0x0U;
+	unsigned int reg = 0x0U;
+	GPIO_TypeDef *GPIOA_reg = GPIOA;
+	
+	//RCC-GPIOA
+	RCC_IOPENR |= RCC_GPIOA_EN;
+	
+	//PA5 Mode
+	reg = GPIOA_reg->MODER;	//GPIO_PA5PIN_MODE
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = GPIO_MODE_OUTPUT << (position*2U) ;	// GPO Mode - 2bit 0x00000400
+	reg |= mode;
+	GPIOA_reg->MODER = reg;
+
+	//OTYPER
+	reg = GPIOA_reg->OTYPER;	//GPIO_PA5PIN_OTYPE
+	temp = ~(GPIO_1BIT_POS_MASK << position);	//~0x20 ==> 0xFFFFFFDF
+	reg &= temp;
+	mode = GPIO_OUTPUT_TYPE_0 << position ;	//PP Output type - 1bit
+	reg |= mode;
+	GPIOA_reg->OTYPER = reg;
+
+	//OSPEEDR
+	reg = GPIOA_reg->OSPEEDR;	//GPIO_PA5PIN_OSPEEDR
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = GPIO_SPEED_FREQ_VERY_HIGH << (position*2U) ;	//Very High Mode - 2bit 0x00000C00
+	reg |= mode;
+	GPIOA_reg->OSPEEDR = reg;
+	
+	//OPUPDR
+	reg = GPIOA_reg->PUPDR;
+	temp = ~(0x03U << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = 0x0U << (position*2U) ;	//No Pull Up - Pull Down - 2bit 0x24000000
+	reg |= mode;
+	GPIOA_reg->PUPDR = reg;
+
+	//ODR
+	reg = GPIOA_reg->ODR;	//GPIO_PA5PIN_ODR
+	temp = ~(GPIO_1BIT_POS_MASK << position);	//~0x20 ==> 0xFFFFFFDF
+	reg &= temp;
+
+	mode = LED2_ON << position ;	
+	GPIOA_reg->ODR = reg | mode;
+
+	while(1)
+	{
+		delay(0x20000);
+		mode = ~mode&(GPIO_1BIT_POS_MASK << position);
+		GPIOA_reg->ODR = reg | mode;
 	}
 }
 ```
