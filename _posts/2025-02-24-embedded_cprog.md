@@ -15,7 +15,7 @@ sidebar:
 ✅ CPU / GPU /  MPU / MCU   
 거시 세계   
 CPU: Central Processing Unit   
-GPU: Graphic Processing Unit (그래픽을 사용할 때 좌표점들을 색깔별로 다 구분해줌. 행렬 연산으로 +,-을 빠르게 해줌)   
+GPU: Graphic Processing Unit (그래픽을 사용할 때 좌표점들을 색깔별로 다 구분해줌. 행렬 연산으로 +,- 빠르게 해줌)   
    
 미시 세계   
 MPU: Micro Processing Unit (CPU랑 하는 일이 똑같다. 연산처리, 중앙처리)   
