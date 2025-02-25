@@ -69,8 +69,11 @@ Compile 에러는 문법 에러고, linking 에러는 참조 에러다.
 compile과 linking은 pc에서 하고 그 결과물인 executable을 embedded 시스템에서 동작할 수 있게 해주는 것이 Cross Compile이다.   
    
 ✅ ARM 부팅 시스템(Cortex-M0 시작 순서)   
+<img src="https://github.com/user-attachments/assets/b6f55246-f974-4ba0-88d0-ed65965f2f2a" width="600" height="450">   
 reset 버튼(주소를 0번지로 간다.) -> Boot Loader -> Reset handler(하드웨어 초기화 작업) -> C start up code -> Application   
    
+✅ reset   
+<img src="https://github.com/user-attachments/assets/0405445c-bd24-4525-8ffd-8d1882c02e56" width="600" height="450">   
 reset 버튼을 누르면 맨처음에 Main Stack Point가 들어온다. 그 다음은 Reset vector가 들어간다.   
 Reset hanlder: SystemInit을 하고, 끝나면 main을 실행한다.
 
