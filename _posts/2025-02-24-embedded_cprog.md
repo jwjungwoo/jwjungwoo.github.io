@@ -793,6 +793,8 @@ void GPIO_Toggle_Pin(GPIO_TypeDef* pGPIO_Type, unsigned short GPIO_Pin)
 ✅ HAL   
 Hardware Abstraction Layer: 레지스터를 직접 다루지 않고도 쉽게 하드웨어를 제어할 수 있도록 도와준다. 
 직접 HAL을 사용하면서 시행착오(Try & Error)를 겪다 보면 HAL이 가진 제한점이나 한계를 자연스럽게 알게 된다.(우리가 건들 일 없다. 일반화가 잘 돼있기에 건들 일 없다.)   
+<img src="https://github.com/user-attachments/assets/b9feaa1e-0361-400d-9d4f-bd9a1e079c98" width="600" height="450">   
+hal.h에 hal init 함수가 있음.   
    
 ✅ CMSIS   
 ARM Cortex Microcontroller Software Interface Standard: ARM Cortex-M 기반 마이크로컨트롤러(예: STM32, NXP, TI 등)에서 코드를 표준화하고, 효율적으로 하드웨어를 제어할 수 있도록 만든 소프트웨어 프레임워크(우리가 건들 일 없다.)   
