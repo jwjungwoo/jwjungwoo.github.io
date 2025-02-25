@@ -455,3 +455,151 @@ int main()
 	}
 }
 ```
+
+## D13(초록LED), D7
+<img src="https://github.com/user-attachments/assets/47f6822e-ec1a-4d66-b64e-db3bb2281d01" width="300" height="520">   
+<img src="https://github.com/user-attachments/assets/eef64d05-d1d8-461d-af59-e4ec6c439434" width="300" height="520">   
+```c
+typedef struct
+{
+  volatile unsigned int MODER;        /*!< GPIO pGPIO_Type mode register,                     Address offset: 0x00 */
+  volatile unsigned int OTYPER;       /*!< GPIO pGPIO_Type output type register,              Address offset: 0x04 */
+  volatile unsigned int OSPEEDR;      /*!< GPIO pGPIO_Type output speed register,             Address offset: 0x08 */
+  volatile unsigned int PUPDR;        /*!< GPIO pGPIO_Type pull-up/pull-down register,        Address offset: 0x0C */
+  volatile unsigned int IDR;          /*!< GPIO pGPIO_Type input data register,               Address offset: 0x10 */
+  volatile unsigned int ODR;          /*!< GPIO pGPIO_Type output data register,              Address offset: 0x14 */
+  volatile unsigned int BSRR;         /*!< GPIO pGPIO_Type bit set/reset registerBSRR,        Address offset: 0x18 */
+  volatile unsigned int LCKR;         /*!< GPIO pGPIO_Type configuration lock register,       Address offset: 0x1C */
+  volatile unsigned int AFR[2];       /*!< GPIO alternate function register,            Address offset: 0x20-0x24 */
+  volatile unsigned int BRR;          /*!< GPIO bit reset register,                     Address offset: 0x28 */
+}GPIO_TypeDef;
+
+typedef enum
+{
+  GPIO_PIN_RESET = 0U,
+  GPIO_PIN_SET
+} GPIO_PinState;
+
+#define PERIPH_BASE       	(0x40000000UL) /*!< Peripheral base address in the alias region */
+#define AHBPERIPH_BASE    (PERIPH_BASE + 0x00020000UL)
+#define RCC_BASE          	(AHBPERIPH_BASE + 0x00001000UL)
+#define RCC_IOPENR		*((volatile unsigned int*)(RCC_BASE + 0x0000002CUL))
+#define RCC_GPIOA_EN	((unsigned int)0x00000001U)
+
+//#define GPIO_PA5PIN_BASE    (unsigned int)0x50000000UL
+#define GPIOA_BASE		     ((unsigned int)0x50000000UL)
+#define GPIOA			     (GPIO_TypeDef *) GPIOA_BASE
+
+#define GPIO_2BIT_POS_MASK    ((unsigned int)0x00000003U)
+#define GPIO_1BIT_POS_MASK    ((unsigned int)0x00000001U)
+
+#define GPIO_MODE_OUTPUT      			((unsigned int)0x00000001U)   /*!< GPIO OutPut Mode                 */
+#define GPIO_OUTPUT_TYPE_0      		((unsigned int)0x00000000U)		/* PushPull */
+#define GPIO_NOPUPD				((unsigned int)0x00000000U)		/* No Pull up / down */
+#define GPIO_SPEED_FREQ_VERY_HIGH   	((unsigned int)0x00000003U)  /*!< range  10 MHz to 35 MHz, please refer to the product datasheet */
+
+#define LED2_ON					((unsigned int)0x00000001U)
+#define LED2_OFF					((unsigned int)0x00000000U)	
+
+#define GPIO_PIN_5_POS				5
+#define GPIO_PIN_8_POS				8
+
+void delay(unsigned int delay_cnt)
+{
+		volatile int counter = 0;
+
+		while(counter < delay_cnt) //delay loop
+		{
+			counter++;
+		}
+}
+
+void GPIO_Init(GPIO_TypeDef *pGPIO_Type, unsigned short pin, GPIO_TypeDef *initVal)
+{
+	unsigned int position = pin; //Pin Position: PA5
+	unsigned int temp = 0x0U;
+	unsigned int mode = 0x0U;
+	unsigned int reg = 0x0U;
+	
+		//PA5 Mode
+	reg = pGPIO_Type->MODER;	//GPIO_PA5PIN_MODE
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = initVal->MODER << (position*2U) ;	// GPO Mode - 2bit 0x00000400
+	reg |= mode;
+	pGPIO_Type->MODER = reg;
+
+	//OTYPER
+	reg = pGPIO_Type->OTYPER;	//GPIO_PA5PIN_OTYPE
+	temp = ~(GPIO_1BIT_POS_MASK << position);	//~0x20 ==> 0xFFFFFFDF
+	reg &= temp;
+	mode = initVal->OTYPER << position ;	//PP Output type - 1bit
+	reg |= mode;
+	pGPIO_Type->OTYPER = reg;
+
+	//OSPEEDR
+	reg = pGPIO_Type->OSPEEDR;	//GPIO_PA5PIN_OSPEEDR
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = initVal->OSPEEDR << (position*2U) ;	//Very High Mode - 2bit 0x00000C00
+	reg |= mode;
+	pGPIO_Type->OSPEEDR = reg;
+	
+	//OPUPDR
+	reg = pGPIO_Type->PUPDR;
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = initVal->PUPDR << (position*2U) ;	//No Pull Up - Pull Down - 2bit 0x24000000
+	reg |= mode;
+	pGPIO_Type->PUPDR = reg;
+}
+
+void GPIO_Write_Pin(GPIO_TypeDef *pGPIO_Type, unsigned short pin, GPIO_PinState state)
+{
+	unsigned int temp = 0x0U;
+	unsigned int mode = 0x0U;
+	unsigned int reg = 0x0U;
+	
+		//ODR
+	reg = pGPIO_Type->ODR;	//GPIO_PA5PIN_ODR
+	temp = ~(GPIO_1BIT_POS_MASK << pin);	//~0x20 ==> 0xFFFFFFDF
+	reg &= temp;
+	mode = state << pin ;	
+	pGPIO_Type->ODR = reg | mode;
+}
+	
+int main()
+{
+	GPIO_TypeDef initVal;
+	GPIO_PinState pin_state = GPIO_PIN_RESET;
+	
+	//RCC-GPIOA
+	RCC_IOPENR |= RCC_GPIOA_EN;
+	
+	initVal.MODER = GPIO_MODE_OUTPUT;
+	initVal.OTYPER = GPIO_OUTPUT_TYPE_0;
+	initVal.OSPEEDR = GPIO_SPEED_FREQ_VERY_HIGH;
+	initVal.PUPDR = GPIO_NOPUPD;
+	
+//	GPIO_Init(GPIOA, GPIO_PIN_5_POS, &initVal);
+	
+	//ODR
+//	GPIO_Write_Pin(GPIOA, GPIO_PIN_5_POS, pin_state);
+
+	// LED2
+	GPIO_Init(GPIOA, GPIO_PIN_5_POS, &initVal);
+	GPIO_Write_Pin(GPIOA, GPIO_PIN_5_POS, pin_state);
+	
+	//UserLED1
+	GPIO_Init(GPIOA, GPIO_PIN_8_POS, &initVal);
+	GPIO_Write_Pin(GPIOA, GPIO_PIN_8_POS, (GPIO_PinState)!pin_state);
+
+	while(1)
+	{
+		delay(0x20000);
+		pin_state = (GPIO_PinState)(!pin_state);
+		GPIO_Write_Pin(GPIOA, GPIO_PIN_5_POS, pin_state);
+		GPIO_Write_Pin(GPIOA, GPIO_PIN_8_POS, (GPIO_PinState)!pin_state);
+	}
+}
+```
