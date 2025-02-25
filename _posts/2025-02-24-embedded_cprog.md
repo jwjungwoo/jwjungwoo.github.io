@@ -106,6 +106,10 @@ pull up을 많이 쓰긴 한다.
 ✅ 0X5000 0000: GPIOA의 시작 주소   
 <img src="https://github.com/user-attachments/assets/a72924e3-a4ea-48b4-8399-f403fca9095f" width="600" height="330">   
 
+## GPIO
+✅ GPIO 가능 모드   
+GPIO 모드는 input, ouput, alternative 모드로 총 3 종류다.   
+
 # 실습
 ## 불 키기
 ```c
@@ -115,11 +119,11 @@ int main (void)
 	*((unsigned int*)0x4002102C) = (unsigned int)0x01; // 40021000 + 2C 
 
 	// GPIOA Register           
-	// moder. A-port begins from 0x5000 0000 
+	// moder. A-port begins from 0x5000 0000. 주소의 시작번지가 mode임.
 	*((unsigned int*)0x50000000U) = 0xEBFFF4FF; // GPIO Output Mode setting register was initialed 0xEBFF FCFF; and it should be 0xEBFFF4FF
-	// OTYPER
+	// OTYPER:  output type register
 	*((unsigned int*)(0x50000000U + 0x00000004U)) = 0;
-	// OSPEEDR
+	// OSPEEDR: output speed register
 	*((unsigned int*)(0x50000000U + 0x00000008U)) = (unsigned int)0x0C000C00;
 	// pull up, pull down
 	*((unsigned int*)(0x50000000U + 0x0000000CU)) = (unsigned int)0x24000000;
@@ -136,7 +140,6 @@ int main (void)
 
 ## 불 깜빡이게 하기
 ```c
-int counter = 0;
 int main (void)
 {
 	// RCC_GPIOA Clock En; RCC register begins from 0x4002 1000 
@@ -144,7 +147,7 @@ int main (void)
 
 	// GPIOA Register           
 	// moder. A-port begins from 0x5000 0000 
-	*((unsigned int*)0x50000000U) = 0xEBFFF4FF; // GPIO Output Mode setting register was initialed 0xEBFF FCFF; and it should be 0xEBFFF4FF
+	*((unsigned int*)0x50000000U) = 0xEBFFF4FF; // GPIO Output Mode setting register was initialed 0xEBFF FCFF; and it should be 0xEBFF F4FF
 	// OTYPER
 	*((unsigned int*)(0x50000000U + 0x00000004U)) = 0;
 	// OSPEEDR
@@ -166,6 +169,66 @@ int main (void)
 		while (counter < 0x20000) {
 			counter++;
 		}			
+	}
+}
+```
+
+## 불 깜빡이게 하기(define사용)
+```c
+//Define
+//#define RCC_GPIOA (*((unsigned char*)0x4002102C))
+#define PERIPH_BASE       (0x40000000UL) /*!< Peripheral base address in the alias region */
+#define AHBPERIPH_BASE    (PERIPH_BASE + 0x00020000UL)
+#define RCC_BASE          (AHBPERIPH_BASE + 0x00001000UL)
+#define RCC_GPIOA 				*((volatile unsigned int*)(RCC_BASE + 0x0000002CUL))
+
+#define GPIO_PA5PIN_BASE (unsigned int)0x50000000U
+#define GPIO_PA5PIN_MODE 	(*((volatile unsigned int*)GPIO_PA5PIN_BASE))
+#define GPIO_PA5PIN_OTYPE (*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x00000004UL)))
+#define GPIO_PA5PIN_OSPEEDR (*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x00000008UL)))
+#define GPIO_PA5PIN_OPUPDR (*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x0000000CU)))
+#define GPIO_PA5PIN_IDR    (*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x00000010U)))
+#define GPIO_PA5PIN_ODR 	(*((volatile unsigned int*)(GPIO_PA5PIN_BASE+0x00000014UL)))
+
+int main(void)
+{
+	volatile int counter = 0;
+
+	//RCC-GPIOA
+	RCC_GPIOA = (unsigned int)0x01;
+	
+	//GPIOA-Reg
+	// Mode
+	GPIO_PA5PIN_MODE = (unsigned int)0xEBFFF4FF;
+
+	//OTYPER
+	GPIO_PA5PIN_OTYPE = 0;
+
+	//OSPEEDR
+	GPIO_PA5PIN_OSPEEDR = (unsigned int)0x0C000C00;
+	
+	//PULL UP/DOWN
+	GPIO_PA5PIN_OPUPDR = (unsigned int)0x24000000;
+
+	while(1)
+	{	
+		//ODR 
+	 	GPIO_PA5PIN_ODR = (unsigned int)0x20;
+		
+		counter = 0;
+		while(counter < 0x20000) //delay loop
+		{
+			counter++;
+		}
+		
+		//ODR 
+	  	GPIO_PA5PIN_ODR = (unsigned int)0x0;	
+		
+		counter = 0;
+		while(counter < 0x20000U) //delay loop
+		{
+			counter++;
+		}
 	}
 }
 ```
