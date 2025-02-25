@@ -49,7 +49,8 @@ ARM 코어텍스는 4가지 시리즈로 나뉜다. A, R, M, X 시리즈이다. 
    
 ✅ Memory Map   
 <img src="https://github.com/user-attachments/assets/b4a7a51d-4361-4b96-baa9-d3cfcd7a1124" width="600" height="600">   
-(0x0000 0000)에서 많이 코딩할 것이다. 왜냐면 우리가 sd 카드를 꽂을건 아니니까.
+(0x0000 0000)에서 많이 코딩할 것이다. 왜냐면 우리가 sd 카드를 꽂을건 아니니까.   
+<img src="https://github.com/user-attachments/assets/a8ce6305-f854-4e54-bc5a-26b3bac3d9a6" width="600" height="600">   
 
 # 개발 환경 이해 및 실습
 ## Compile / Linking 이해
@@ -88,6 +89,7 @@ HD_01.sct: Rom, RAM 정보 적힘.
 // volatile을 붙이면 컴파일러가 무시하지 않고 무조건 동작하게 한다.
 volatile int counter = 0;
 ```
+<img src="https://github.com/user-attachments/assets/aefd1f35-a59f-456b-a1d9-f0b46433274a" width="600" height="460">   
 
 # Digital Output
 ## MCU Bring-up
