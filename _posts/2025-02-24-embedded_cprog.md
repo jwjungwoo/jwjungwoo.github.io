@@ -604,7 +604,7 @@ int main()
 }
 ```
 
-##
+## 위에꺼에서 BRR, BSRR 사용하고 토클
 ```c
 typedef struct
 {
