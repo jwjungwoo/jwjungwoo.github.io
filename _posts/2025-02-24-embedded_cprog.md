@@ -788,6 +788,205 @@ void GPIO_Toggle_Pin(GPIO_TypeDef* pGPIO_Type, unsigned short GPIO_Pin)
 }
 ```
 
+## 혼자 가지고 놀기
+<img src="https://github.com/user-attachments/assets/0fa5d924-9a7c-4099-a1d5-62a4b1a366fb" width="350" height="300">   
+<img src="https://github.com/user-attachments/assets/94c00ec2-4210-48ac-99a4-e2fe828c8d73" width="350" height="300">   
+```c
+typedef struct
+{
+  volatile unsigned int MODER;        /*!< GPIO port mode register,                     Address offset: 0x00 */
+  volatile unsigned int OTYPER;       /*!< GPIO port output type register,              Address offset: 0x04 */
+  volatile unsigned int OSPEEDR;      /*!< GPIO port output speed register,             Address offset: 0x08 */
+  volatile unsigned int PUPDR;        /*!< GPIO port pull-up/pull-down register,        Address offset: 0x0C */
+  volatile unsigned int IDR;          /*!< GPIO port input data register,               Address offset: 0x10 */
+  volatile unsigned int ODR;          /*!< GPIO port output data register,              Address offset: 0x14 */
+  volatile unsigned int BSRR;         /*!< GPIO port bit set/reset registerBSRR,        Address offset: 0x18 */
+  volatile unsigned int LCKR;         /*!< GPIO port configuration lock register,       Address offset: 0x1C */
+  volatile unsigned int AFR[2];       /*!< GPIO alternate function register,            Address offset: 0x20-0x24 */
+  volatile unsigned int BRR;          /*!< GPIO bit reset register,                     Address offset: 0x28 */
+}GPIO_TypeDef;
+
+typedef enum
+{
+  GPIO_PIN_RESET = 0U,
+  GPIO_PIN_SET
+} GPIO_PinState;
+
+typedef enum 
+{
+  LED2 = 0,
+	LED3 = 1,
+	LED4 = 2,
+  USER_LED1,
+} Led_TypeDef;
+
+#define PERIPH_BASE       	(0x40000000UL) /*!< Peripheral base address in the alias region */
+#define AHBPERIPH_BASE    (PERIPH_BASE + 0x00020000UL)
+#define RCC_BASE          	(AHBPERIPH_BASE + 0x00001000UL)
+#define RCC_IOPENR		*((volatile unsigned int*)(RCC_BASE + 0x0000002CUL))
+#define RCC_GPIOA_EN	((unsigned int)0x00000001U)
+
+//#define GPIO_PA5PIN_BASE    (unsigned int)0x50000000UL
+#define GPIOA_BASE		     ((unsigned int)0x50000000UL)
+#define GPIOA			     (GPIO_TypeDef *) GPIOA_BASE
+
+#define GPIO_NUMBER           (16U)
+#define GPIO_2BIT_POS_MASK    ((unsigned int)0x00000003U)
+#define GPIO_1BIT_POS_MASK    ((unsigned int)0x00000001U)
+
+#define GPIO_MODE_OUTPUT      			((unsigned int)0x00000001U)   /*!< GPIO OutPut Mode                 */
+#define GPIO_OUTPUT_TYPE_0      		((unsigned int)0x00000000U)		/* PushPull */
+#define GPIO_NOPUPD				((unsigned int)0x00000000U)		/* No Pull up / down */
+#define GPIO_SPEED_FREQ_VERY_HIGH   	((unsigned int)0x00000003U)  /*!< range  10 MHz to 35 MHz, please refer to the product datasheet */
+
+#define LED2_ON					((unsigned int)0x00000001U)
+#define LED2_OFF					((unsigned int)0x00000000U)	
+	
+#define LEDn									4
+#define GPIO_PIN_5_POS				5
+#define GPIO_PIN_6_POS				6
+#define GPIO_PIN_7_POS				7
+#define GPIO_PIN_8_POS				8
+
+GPIO_TypeDef* LED_PORT[LEDn] = {GPIOA, GPIOA, GPIOA, GPIOA};
+unsigned short LED_PIN[LEDn] = {GPIO_PIN_5_POS, GPIO_PIN_6_POS, GPIO_PIN_7_POS, GPIO_PIN_8_POS};
+
+void delay(unsigned int delay_cnt);
+void GPIO_Init(GPIO_TypeDef *pGPIO_Type, unsigned short pin, GPIO_TypeDef *initVal);
+void GPIO_Write_Pin(GPIO_TypeDef *pGPIO_Type, unsigned short pin, GPIO_PinState state);
+void GPIO_Toggle_Pin(GPIO_TypeDef* pGPIO_Type, unsigned short GPIO_Pin);
+
+int main()
+{
+	GPIO_TypeDef initVal;
+	GPIO_PinState pin_state = GPIO_PIN_RESET;
+	
+	//RCC-GPIOA
+	RCC_IOPENR |= RCC_GPIOA_EN;
+	
+	initVal.MODER = GPIO_MODE_OUTPUT;
+	initVal.OTYPER = GPIO_OUTPUT_TYPE_0;
+	initVal.OSPEEDR = GPIO_SPEED_FREQ_VERY_HIGH;
+	initVal.PUPDR = GPIO_NOPUPD;
+	
+	// LED2
+	GPIO_Init(LED_PORT[LED2], LED_PIN[LED2], &initVal);
+	GPIO_Write_Pin(LED_PORT[LED2], LED_PIN[LED2], pin_state);
+	
+	//UserLED1
+	GPIO_Init(LED_PORT[USER_LED1], LED_PIN[USER_LED1], &initVal);
+	GPIO_Write_Pin(LED_PORT[USER_LED1], LED_PIN[USER_LED1], (GPIO_PinState)!pin_state);
+	
+	// LED3
+	GPIO_Init(LED_PORT[LED3], LED_PIN[LED3], &initVal);
+	GPIO_Write_Pin(LED_PORT[LED3], LED_PIN[LED3], pin_state);
+	
+	// LED4
+	GPIO_Init(LED_PORT[LED4], LED_PIN[LED4], &initVal);
+	GPIO_Write_Pin(LED_PORT[LED4], LED_PIN[LED4], pin_state);
+	while(1)
+	{
+		delay(0x20000);
+		GPIO_Toggle_Pin(LED_PORT[LED2], LED_PIN[LED2]);
+		GPIO_Toggle_Pin(LED_PORT[USER_LED1], LED_PIN[USER_LED1]);
+		GPIO_Toggle_Pin(LED_PORT[LED3], LED_PIN[LED3]);
+		GPIO_Toggle_Pin(LED_PORT[LED4], LED_PIN[LED4]);		
+	}
+
+}
+
+void delay(unsigned int delay_cnt)
+{
+		volatile int counter = 0;
+
+		while(counter < delay_cnt) //delay loop
+		{
+			counter++;
+		}
+}
+
+void GPIO_Init(GPIO_TypeDef *pGPIO_Type, unsigned short pin, GPIO_TypeDef *initVal)
+{
+	unsigned int position = pin; //Pin Position: PA5
+	unsigned int temp = 0x0U;
+	unsigned int mode = 0x0U;
+	unsigned int reg = 0x0U;
+	
+	// GPIO Mode
+	reg = pGPIO_Type->MODER;	//GPIO_PA5PIN_MODE
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = initVal->MODER << (position*2U) ;	// GPO Mode - 2bit 0x00000400
+	reg |= mode;
+	pGPIO_Type->MODER = reg;
+
+	//OTYPER
+	reg = pGPIO_Type->OTYPER;	//GPIO_PA5PIN_OTYPE
+	temp = ~(GPIO_1BIT_POS_MASK << position);	//~0x20 ==> 0xFFFFFFDF
+	reg &= temp;
+	mode = initVal->OTYPER << position ;	//PP Output type - 1bit
+	reg |= mode;
+	pGPIO_Type->OTYPER = reg;
+
+	//OSPEEDR
+	reg = pGPIO_Type->OSPEEDR;	//GPIO_PA5PIN_OSPEEDR
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = initVal->OSPEEDR << (position*2U) ;	//Very High Mode - 2bit 0x00000C00
+	reg |= mode;
+	pGPIO_Type->OSPEEDR = reg;
+	
+	//OPUPDR
+	reg = pGPIO_Type->PUPDR;
+	temp = ~(GPIO_2BIT_POS_MASK << (position*2U)); //0xFFFFF3FF
+	reg &= temp;
+	mode = initVal->PUPDR << (position*2U) ;	//No Pull Up - Pull Down - 2bit 0x24000000
+	reg |= mode;
+	pGPIO_Type->PUPDR = reg;
+}
+
+#if 0
+void GPIO_Write_Pin(GPIO_TypeDef *pGPIO_Type, unsigned short pin, GPIO_PinState state)
+{
+	unsigned int temp = 0x0U;
+	unsigned int mode = 0x0U;
+	unsigned int reg = 0x0U;
+	
+	//ODR
+	reg = pGPIO_Type->ODR;
+	temp = ~(GPIO_1BIT_POS_MASK << pin);
+	reg &= temp;
+	mode = state << pin ;	
+	port->ODR = reg | mode;
+}
+#else
+void GPIO_Write_Pin(GPIO_TypeDef *pGPIO_Type, unsigned short GPIO_Pin, GPIO_PinState PinState)
+{
+	unsigned int position = 0;
+	position = GPIO_1BIT_POS_MASK << (GPIO_Pin);
+  if (PinState != GPIO_PIN_RESET)
+  {
+    pGPIO_Type->BSRR = position;
+  }
+  else // PinState == GPIO_PIN_RESET
+  {
+    pGPIO_Type->BRR = position ;
+  }
+}
+#endif
+void GPIO_Toggle_Pin(GPIO_TypeDef* pGPIO_Type, unsigned short GPIO_Pin)
+{
+	unsigned int position = 0;
+	position = GPIO_1BIT_POS_MASK << (GPIO_Pin);
+	unsigned int odr; // we should read odr value
+  /* get current Output Data Register value */
+  odr = pGPIO_Type->ODR;
+
+  /* Set selected pins that were at low level, and reset ones that were high */
+  pGPIO_Type->BSRR = ((odr & position) << GPIO_NUMBER) | (~odr & position);
+}
+```
+
 # HAL
 ## STM32 HAL이란?
 ✅ HAL   
