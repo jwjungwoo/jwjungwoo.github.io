@@ -33,10 +33,17 @@ Frame 위에 Body를 얹다란 뜻이다. 최근 도심형 SUV, RV 차량이 주
 강성에 대한 단점을 보강하기 위한 방법들   
 <img src="https://github.com/user-attachments/assets/a2da0fed-89cd-4da5-b6ac-65427d4ab128" width="400" height="300">   
 ✅ 강성에 대한 단점을 보강하기 위해 crumble zone(충격 흡수 부분)과 safety zone의 재질을 다르게 하고있다.   
+   
 ✅ 사이드 맴버: 좌우 측면 철판을 접어서 기둥 모양으로 만든 뼈대. 철을 접음으로써 강성을 높이는 원리이다.   
+<img src="https://github.com/user-attachments/assets/80b18ae4-b4ec-40aa-9d7a-f3d76b27f652" width="400" height="300">   
+   
 ✅ 크로스 맴버: 사이드 멤버 앞뒤에 가로로 덧댄 뼈대 (옆으로의 충격도 보강)   
+<img src="https://github.com/user-attachments/assets/e0078063-eb92-4c8e-aa50-5da1b24c9fa7" width="300" height="400">   
+   
 ✅ 서브프레임: 강성에 대한 단점을 보강하기 위해 차량 하부에 사이드 맴버와 크로스 맴버를 보강하는 장치이다. 모양에 따라 정자 서브 프레임, I자 서브 프레임(H자 서브 프레임)이라고 한다. 정자 프레임은 모양이 
 우물 정자고 I자 프레임은 모양이 H자 이다. 가운데 I가 들어간대서 I라고 이름붙였다. 엔진과 변속기 밑에 들어간다. 아반떼나 소형 suv엔 넣을 공간이 안 나온다.   
+<img src="https://github.com/user-attachments/assets/528f3a33-b532-4854-9126-12d21e0808e0" width="600" height="230">   
+   
 ✅ 패널: 사이 사이에 철판(=벽)을 세운다. 엔진과 운전자 사이에 들어가는 패널을 대시패널이라 한다. 이외에도 리어 패널, 트렁크 패널, 카울 패널 등이 있다.   
    
 바디는 크게 프론트바디, 사이드바디, 리어바디로 구분된다. 각각은 다양한 종류의 맴버, 패널, 서포트, 필러 등이 들어간다. 
