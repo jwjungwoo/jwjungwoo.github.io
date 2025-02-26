@@ -1898,7 +1898,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 ## polling vs interrupt
 ✅ polling은 loop에서 계속 도는거고 interrupt는 trigger해준다.   
 # 실습
-## 누르면 LED2, LED3 불 키기(BSP)
+## 누르면 LED2, LED3 불 키기(BSP, polling)
 <img src="https://github.com/user-attachments/assets/1556f8e2-d99b-4903-9be9-f9564b848ed6" width="600" height="550">   
 파란색 버튼은 PA13번이다. PA13번을 외부 LED에 연결하면 버튼이 안 눌릴 때 불이 들어오고 누르면 꺼진다. 즉, Pull-Up 구조인 것이다.   
 <img src="https://github.com/user-attachments/assets/34191d0d-4081-42a2-ae25-359b269fe6fa" width="300" height="400">   
@@ -2125,4 +2125,36 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 ```
+
+## 누르면 LED2, LED3 불 키기(Interrupt)
+✅ 작동 순서   
+<img src="https://github.com/user-attachments/assets/9f9c78ba-a839-486e-9533-61dde1494cb0" width="600" height="380">   
+   
+✅ stm32l0xx_it.c 일부분   
+```c
+/* USER CODE BEGIN 1 */
+void EXTI4_15_IRQHandler(void) 
+{
+	// USER_BUTTON_PIN
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_13);
+}
+/* USER CODE END 1 */
+```
+   
+✅ stm32l0xx_hal_gpio.c 일부분   
+```c
+__weak void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  /* Prevent unused argument(s) compilation warning */
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_8);
+
+  /* NOTE: This function Should not be modified, when the callback is needed,
+           the HAL_GPIO_EXTI_Callback could be implemented in the user file
+   */
+}
+```
+
+✅ main.c   
+main.c 에선 BSP_PB_Init(BUTTON_USER, BUTTON_MODE_EXTI);로 모드만 바꿔주고 while문은 아무것도 안 적으면 된다.   
 
