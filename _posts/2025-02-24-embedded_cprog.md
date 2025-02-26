@@ -1,4 +1,4 @@
-![KakaoTalk_20250226_145313966](https://github.com/user-attachments/assets/1ce8ca97-592f-44c5-9991-17d09abf55e9)---
+---
 layout: single
 title:  "임베디드 C 프로그래밍 기초"
 categories: autoever
