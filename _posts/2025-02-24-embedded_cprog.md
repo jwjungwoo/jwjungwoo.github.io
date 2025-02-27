@@ -2631,7 +2631,11 @@ void assert_failed(uint8_t *file, uint32_t line)
    
 ## TIM3를 써서 PWM mode 1 을 사용해서 LED 밝기 바꾸기
 ✅ 결과   
-
+<img src="https://github.com/user-attachments/assets/013b20ef-2303-4361-9585-90b27333bed2" width="300" height="340">   
+<img src="https://github.com/user-attachments/assets/981d37cc-2e1e-4150-a435-5fe76d114bf1" width="300" height="340">   
+<img src="https://github.com/user-attachments/assets/3299db35-7d5a-4f7d-98ff-96b6e0e6f353" width="300" height="340">   
+<img src="https://github.com/user-attachments/assets/3d2b2504-2829-4f0c-a79e-7b8bccc931c9" width="300" height="340">   
+<img src="https://github.com/user-attachments/assets/92b61fb2-d50f-4f86-acf1-f7435786abe4" width="300" height="340">   
    
 ✅ 세팅   
 <img src="https://github.com/user-attachments/assets/d8ecaccd-d563-4488-b418-9641b17aacac" width="600" height="1100">   
@@ -3006,3 +3010,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 ```   
+
+# 초음파 센서 HC-SR04
+## 초음파 센서
+✅ 
