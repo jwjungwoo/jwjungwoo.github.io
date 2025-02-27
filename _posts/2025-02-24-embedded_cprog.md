@@ -2218,3 +2218,30 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 ```
+
+# Clock  이해 및 Timer 활용
+## Clock
+✅ Clocks   
+HSI16 (High Speed Internal) oscillator clock   
+HSE16 (High Speed External) oscillator clock (micro second 까지 측정하려면 외부에서 좋은 oscillator clock 을 사오면 된다.)   
+
+## Timer 주요 정보
+✅ AHB   
+AHB: 중앙에서 총괄하는 버스. AHB 가 Clock 정보를 전달한다.   
+   
+✅ RM0367 Timer   
+ITR0, ITR1, ITR2, ITR3가 있는데 여기서 signal이 오면 그때부터 시간을 잰다.   
+   
+✅ Timer 주요 레지스터 정보   
+PSC: Prescaler   
+CNT: Counter   
+ARR: Auto Reload Register   
+CCR: Capture/Compare Register   
+   
+PSC, CNT, ARR이 중요하다. PSC 와 ARR 값은 같이 바꾼다보면된다.   
+Reload Value를 만나면 Counter overflow를 띄우고, event를 띄운다. 또한 Interrupt Flag를 띄운다.   
+<img src="https://github.com/user-attachments/assets/3305a94a-db42-4057-ba70-d60a300b84fd" width="600" height="440">   
+
+## PWM
+✅ PWM이란?   
+Pulse Width Modulation: 진동 폭 변조   
