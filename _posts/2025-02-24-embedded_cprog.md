@@ -3013,4 +3013,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 # 초음파 센서 HC-SR04
 ## 초음파 센서
-✅ 
+✅ timer6 추가했더니 SYS warning 이 떴다.   
+이유인즉슨 P13 과 충돌이 일어난다는데 아무런 선과 연결하고 있지않아서 뭔가싶었다. 근데 보니까 blue button이 P13인데 아직 blue button을 사용하고 있기 때문이었다.
+
+## 
