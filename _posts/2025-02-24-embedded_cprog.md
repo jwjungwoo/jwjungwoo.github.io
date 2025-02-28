@@ -6217,3 +6217,1039 @@ void assert_failed(uint8_t *file, uint32_t line)
 #endif /* USE_FULL_ASSERT */
 ```
 
+## AT 로 LED 제어하기
+✅ 세팅   
+<img src="https://github.com/user-attachments/assets/0f7fe49c-9b21-47cd-9056-f1abfb97c396" width="600" height="340">   
+   
+✅ main.c   
+```c
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "stm32l0xx_nucleo.h"
+#include "stdio.h"
+#include "string.h"
+#include "hw_vcom.h"
+#include "command.h"
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+#define BUFSIZE 128
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim6;
+TIM_HandleTypeDef htim7;
+
+UART_HandleTypeDef huart2;
+
+/* USER CODE BEGIN PV */
+volatile uint32_t nVibCnt = 0;
+volatile uint8_t bVib = 0;
+volatile uint8_t ir_1sec = 0;
+
+//for Ultra Sonic Sensor
+volatile uint8_t bCalculatedDistance = 0;
+volatile uint32_t IC_Val1 = 0;
+volatile uint32_t IC_Val2 = 0;
+volatile uint32_t Difference = 0;
+volatile uint8_t Is_First_Captured = 0;  // is the first value captured ?
+volatile float Distance  = 0;
+uint8_t uart_rcvbuf;
+volatile uint8_t bUART_RX = 0;
+// for uart
+static uint8_t buff[BUFSIZE]="Hello Nucleo-L073RZ\r\n"; // array should not be used with volatile keyword
+
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_TIM7_Init(void);
+static void MX_TIM3_Init(void);
+static void MX_TIM6_Init(void);
+static void MX_USART2_UART_Init(void);
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+void delay(unsigned int delay_cnt)
+{
+		volatile int counter = 0;
+
+		while(counter < delay_cnt) //delay loop
+		{
+			counter++;
+		}
+}
+
+void delay_us (uint16_t us)
+{
+  __HAL_TIM_SET_COUNTER(&htim6, 0);
+  while (__HAL_TIM_GET_COUNTER (&htim6) < us);
+}
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)     // it works when rising edge triggered
+{
+	if(htim->Instance != htim3.Instance)
+		return;
+	
+	if (htim->Channel == HAL_TIM_ACTIVE_CHANNEL_1)  // if the interrupt source is channel1
+	{
+		if (Is_First_Captured==0) // if the first value is not captured
+		{
+			IC_Val1 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1); // read the first value
+			Is_First_Captured = 1;  // set the first captured as true
+			__HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_FALLING); 	// Now change the polarity to falling edge
+		}
+		else if (Is_First_Captured==1)   // if the first is already captured
+		{
+			IC_Val2 = HAL_TIM_ReadCapturedValue(htim, TIM_CHANNEL_1);  // read second value
+			__HAL_TIM_SET_COUNTER(htim, 0);  // reset the counter
+
+			if (IC_Val2 > IC_Val1)
+			{
+				Difference = IC_Val2-IC_Val1;
+			}
+
+			else if (IC_Val1 > IC_Val2)
+			{
+				Difference = (0xffff - IC_Val1) + IC_Val2;
+			}
+
+			Distance = Difference * 0.034/2;
+			Is_First_Captured = 0; // set it back to false			
+			bCalculatedDistance = 1;
+			__HAL_TIM_SET_COUNTER(htim, 0); // reset the counter
+			// set polarity to rising edge
+			__HAL_TIM_SET_CAPTUREPOLARITY(htim, TIM_CHANNEL_1, TIM_INPUTCHANNELPOLARITY_RISING);
+			HAL_TIM_IC_Stop_IT(&htim3,TIM_CHANNEL_1);
+		}
+	}
+}
+
+void HCSR04_Read (void)
+{
+	HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_SET);  // pull the TRIG pin HIGH
+	delay_us(10);  // wait for 10 us
+	HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_RESET);  // pull the TRIG pin low
+
+	HAL_TIM_IC_Start_IT(&htim3, TIM_CHANNEL_1);
+}
+
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if(htim->Instance == TIM7)
+  {   
+		ir_1sec = 1;
+  }
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) // when receive, board sets bUART_RX = 1
+{
+ // bUART_RX =1;
+	if(huart->Instance == huart2.Instance)
+	{
+		HW_VCOM_RxCpltCallback(huart);
+	}
+}
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+
+  /* USER CODE BEGIN 1 */
+//	uint16_t oc_pulse = 0;
+//	uint16_t oc_level = 0;
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_TIM7_Init();
+  MX_TIM3_Init();
+  MX_TIM6_Init();
+  MX_USART2_UART_Init();
+  /* USER CODE BEGIN 2 */
+
+//	HAL_UART_Transmit(&huart2, buff, strlen((const char *)buff), 100);	
+//	HAL_UART_Receive_IT(&huart2, &uart_rcvbuf, 1);
+	HAL_TIM_Base_Start_IT(&htim7);
+	HAL_TIM_Base_Start(&htim6);	
+	Printf("%d\r\n",1234567890); // to check ATZ works
+	CMD_Init();
+//	// LED Light Level
+//	oc_level = (htim3.Init.Period / 4);
+//	HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);
+
+  /* USER CODE END 2 */
+	
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+    /* USER CODE END WHILE */
+		/*
+		if (bUART_RX) 
+		{
+			bUART_RX = 0;
+			HAL_UART_Transmit(&huart2, &uart_rcvbuf, 1, 300);
+			HAL_UART_Receive_IT(&huart2, &uart_rcvbuf, 1); // 1 is size. when board receive 1bit it interrupts
+		}
+		*/
+
+		CMD_Process();
+		if(ir_1sec)
+		{
+			ir_1sec = 0;
+			if(bCalculatedDistance && Distance > 30)
+			{
+				bCalculatedDistance = 0;	
+				Printf("%.3f\r\n",Distance);
+			}
+			HCSR04_Read();
+		}
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
+}
+
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+
+  /** Configure the main internal regulator output voltage
+  */
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSE;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+  PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief TIM3 Initialization Function
+  * @param None
+  * @retval None
+  */
+
+static void MX_TIM3_Init(void)
+{
+
+  /* USER CODE BEGIN TIM3_Init 0 */
+
+  /* USER CODE END TIM3_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_IC_InitTypeDef sConfigIC = {0};
+
+  /* USER CODE BEGIN TIM3_Init 1 */
+
+  /* USER CODE END TIM3_Init 1 */
+  htim3.Instance = TIM3;
+  htim3.Init.Prescaler = 8-1;
+  htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim3.Init.Period = 65535;
+  htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_IC_Init(&htim3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_RISING;
+  sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
+  sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
+  sConfigIC.ICFilter = 0;
+  if (HAL_TIM_IC_ConfigChannel(&htim3, &sConfigIC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIMEx_RemapConfig(&htim3, TIM3_TI1_GPIO) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM3_Init 2 */
+
+  /* USER CODE END TIM3_Init 2 */
+
+}
+
+/**
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
+
+  /* USER CODE BEGIN TIM6_Init 0 */
+
+  /* USER CODE END TIM6_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM6_Init 1 */
+
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 8 - 1;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 65535;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
+
+  /* USER CODE END TIM6_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 8000-1;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 1000-1;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
+
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+	HW_VCOM_Init(&huart2);
+#if 0
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 9600;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+#endif
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(TRIG_GPIO_Port, TRIG_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : TRIG_Pin */
+  GPIO_InitStruct.Pin = TRIG_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(TRIG_GPIO_Port, &GPIO_InitStruct);
+
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+	BSP_LED_Init(LED2);
+/* USER CODE END MX_GPIO_Init_2 */
+}
+
+/* USER CODE BEGIN 4 */
+
+/* USER CODE END 4 */
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
+}
+
+#ifdef  USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t *file, uint32_t line)
+{
+  /* USER CODE BEGIN 6 */
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* USER CODE END 6 */
+}
+#endif /* USE_FULL_ASSERT */
+```
+   
+✅ at.c   
+```c
+/*******************************************************************************
+ * @file    at.c
+ * @author  MCD Application Team
+ * @version V1.1.2
+ * @date    08-September-2017
+ * @brief   at command API
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics International N.V.
+ * All rights reserved.</center></h2>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted, provided that the following conditions are met:
+ *
+ * 1. Redistribution of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name of STMicroelectronics nor the names of other
+ *    contributors to this software may be used to endorse or promote products
+ *    derived from this software without specific written permission.
+ * 4. This software, including modifications and/or derivative works of this
+ *    software, must execute solely and exclusively on microcontroller or
+ *    microprocessor devices manufactured by or for STMicroelectronics.
+ * 5. Redistribution and use of this software other than as permitted under
+ *    this license is void and will automatically terminate your rights under
+ *    this license.
+ *
+ * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+ * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT
+ * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ ******************************************************************************
+ */
+
+/* Includes ------------------------------------------------------------------*/
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
+#include "at.h"
+
+/* External variables --------------------------------------------------------*/
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/**
+ * @brief Max size of the data that can be received
+ */
+#define MAX_RECEIVED_DATA 255
+
+/* Private macro -------------------------------------------------------------*/
+/**
+ * @brief Macro to return when an error occurs
+ */
+#define CHECK_STATUS(status) do {                    \
+    ATEerror_t at_status = translate_status(status); \
+    if (at_status != AT_OK) { return at_status; }    \
+  } while (0)
+
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+
+/* Exported functions ------------------------------------------------------- */
+ATEerror_t at_return_ok(const char *param)
+{
+  return AT_OK;
+}
+
+ATEerror_t at_return_error(const char *param)
+{
+  return AT_ERROR;
+}
+
+ATEerror_t at_reset(const char * param)
+{
+	NVIC_SystemReset();
+	return AT_OK;
+}
+ATEerror_t at_set_led(const char *param) {
+	switch(param[0])
+	{
+		case '0':
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+			break;
+		case '1':
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);			
+			break;
+		default:
+			break;
+	}
+	return AT_OK;
+}
+```
+   
+✅ at.h   
+```c
+/*******************************************************************************
+ * @file    at.h
+ * @author  MCD Application Team
+ * @version V1.1.2
+ * @date    08-September-2017
+ * @brief   Header for driver at.c module
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics International N.V.
+ * All rights reserved.</center></h2>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted, provided that the following conditions are met:
+ *
+ * 1. Redistribution of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name of STMicroelectronics nor the names of other
+ *    contributors to this software may be used to endorse or promote products
+ *    derived from this software without specific written permission.
+ * 4. This software, including modifications and/or derivative works of this
+ *    software, must execute solely and exclusively on microcontroller or
+ *    microprocessor devices manufactured by or for STMicroelectronics.
+ * 5. Redistribution and use of this software other than as permitted under
+ *    this license is void and will automatically terminate your rights under
+ *    this license.
+ *
+ * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+ * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT
+ * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ ******************************************************************************
+ */
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __AT_H__
+#define __AT_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
+#include <string.h>
+#include "main.h"
+	
+/* Exported types ------------------------------------------------------------*/
+/*
+ * AT Command Id errors. Note that they are in sync with ATError_description static array
+ * in command.c
+ */
+typedef enum eATEerror
+{
+  AT_OK = 0,
+  AT_ERROR,
+  AT_PARAM_ERROR,
+  AT_BUSY_ERROR,
+  AT_TEST_PARAM_OVERFLOW,
+  AT_RX_ERROR,
+  AT_MAX,
+} ATEerror_t;
+
+/* Exported constants --------------------------------------------------------*/
+/* External variables --------------------------------------------------------*/
+/* Exported macros -----------------------------------------------------------*/
+/* AT Command strings. Commands start with AT */
+#define ATZ_XXX      "+XXX"
+#define AT_RESET     "Z"
+#define AT_LED2CON	 "+LED2CON"
+#define AT_US				 "+US"   // we can controll US by our decision... ultra sonic
+ATEerror_t at_set_led(const char *param);
+
+ATEerror_t at_reset(const char *param);
+/* Exported functions ------------------------------------------------------- */
+/**
+ * @brief  Return AT_OK in all cases
+ * @param  Param string of the AT command - unused
+ * @retval AT_OK
+ */
+ATEerror_t at_return_ok(const char *param);
+
+/**
+ * @brief  Return AT_ERROR in all cases
+ * @param  Param string of the AT command - unused
+ * @retval AT_ERROR
+ */
+ATEerror_t at_return_error(const char *param);
+  
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __AT_H__ */
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+```
+   
+✅ command.c   
+```c
+/*******************************************************************************
+ * @file    command.c
+ * @author  MCD Application Team
+ * @version V1.1.2
+ * @date    08-September-2017
+ * @brief   main command driver dedicated to command AT
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; Copyright (c) 2017 STMicroelectronics International N.V.
+ * All rights reserved.</center></h2>
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted, provided that the following conditions are met:
+ *
+ * 1. Redistribution of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 3. Neither the name of STMicroelectronics nor the names of other
+ *    contributors to this software may be used to endorse or promote products
+ *    derived from this software without specific written permission.
+ * 4. This software, including modifications and/or derivative works of this
+ *    software, must execute solely and exclusively on microcontroller or
+ *    microprocessor devices manufactured by or for STMicroelectronics.
+ * 5. Redistribution and use of this software other than as permitted under
+ *    this license is void and will automatically terminate your rights under
+ *    this license.
+ *
+ * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+ * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT
+ * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ ******************************************************************************
+ */
+
+/* Includes ------------------------------------------------------------------*/
+#include <stdlib.h>
+#include "at.h"
+#include "command.h"
+#include "hw_vcom.h"
+
+/* comment the following to have help message */
+/* #define NO_HELP */
+
+/* Private typedef -----------------------------------------------------------*/
+/**
+ * @brief  Structure defining an AT Command
+ */
+struct ATCommand_s {
+  const char *string;                       /*< command string, after the "AT" */
+  const int size_string;                    /*< size of the command string, not including the final \0 */
+  ATEerror_t (*get)(const char *param);     /*< =? after the string to get the current value*/
+  ATEerror_t (*set)(const char *param);     /*< = (but not =?\0) after the string to set a value */
+  ATEerror_t (*run)(const char *param);     /*< \0 after the string - run the command */
+#if !defined(NO_HELP)
+  const char *help_string;                  /*< to be printed when ? after the string */
+#endif
+};
+
+/* Private define ------------------------------------------------------------*/
+#define CMD_SIZE 128
+
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+static const char *const ATError_description[] =
+{
+  "\r\nOK\r\n",                     /* AT_OK */
+  "\r\nAT_ERROR\r\n",               /* AT_ERROR */
+  "\r\nAT_PARAM_ERROR\r\n",         /* AT_PARAM_ERROR */
+  "\r\nAT_BUSY_ERROR\r\n",          /* AT_BUSY_ERROR */
+  "\r\nAT_TEST_PARAM_OVERFLOW\r\n", /* AT_TEST_PARAM_OVERFLOW */
+  "\r\nAT_NO_NETWORK_JOINED\r\n",   /* AT_NO_NET_JOINED */
+  "\r\nAT_RX_ERROR\r\n",            /* AT_RX_ERROR */
+  "\r\nerror unknown\r\n",          /* AT_MAX */
+};
+
+/**
+ * @brief  Array of all supported AT Commands
+ */
+static const struct ATCommand_s ATCommand[] =
+{
+  {
+    .string = AT_RESET,
+    .size_string = sizeof(AT_RESET) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_RESET ": Trig a reset of the MCU\r\n",
+#endif
+    .get = at_return_error,
+    .set = at_return_error,
+    .run = at_reset,
+  },
+	{
+		.string = AT_LED2CON,
+		.size_string = sizeof(AT_LED2CON) - 1,
+#ifndef NO_HELP
+    .help_string = "AT"AT_LED2CON ": Control LED2\r\n",
+#endif
+    .get = at_return_error,
+    .set = at_set_led,
+    .run = at_return_error,		
+	}
+};
+
+
+/* Private function prototypes -----------------------------------------------*/
+
+/**
+ * @brief  Print a string corresponding to an ATEerror_t
+ * @param  The AT error code
+ * @retval None
+ */
+static void com_error(ATEerror_t error_type);
+
+
+/**
+ * @brief  Parse a command and process it
+ * @param  The command
+ * @retval None
+ */
+static void parse_cmd(const char *cmd);
+
+/* Exported functions ---------------------------------------------------------*/
+
+void CMD_Init(void)
+{
+
+}
+
+void CMD_Process(void)
+{
+  static char command[CMD_SIZE];
+  static unsigned i = 0;
+
+  /* Process all commands */
+  while (IsNewCharReceived() == SET)
+  {
+    command[i] = GetNewChar();
+
+    Printf("%c", command[i]);
+
+    if (command[i] == AT_ERROR_RX_CHAR)
+    {
+      i = 0;
+      com_error(AT_RX_ERROR);
+      break;
+    }
+    else
+    if ((command[i] == '\r') || (command[i] == '\n'))
+    {
+      if (i != 0)
+      {
+        command[i] = '\0';
+        parse_cmd(command);
+        i = 0;
+      }
+    }
+    else
+    if (i == (CMD_SIZE - 1))
+    {
+      i = 0;
+      com_error(AT_TEST_PARAM_OVERFLOW);
+    }
+    else
+    {
+      i++;
+    }
+  }
+}
+
+/* Private functions ---------------------------------------------------------*/
+static void com_error(ATEerror_t error_type)
+{
+  if (error_type > AT_MAX)
+  {
+    error_type = AT_MAX;
+  }
+  Printf(ATError_description[error_type]);
+}
+
+static void parse_cmd(const char *cmd)
+{
+  ATEerror_t status = AT_OK;
+  const struct ATCommand_s *Current_ATCommand;
+  int i;
+
+  if ((cmd[0] != 'A') || (cmd[1] != 'T'))
+  {
+    status = AT_ERROR;
+  }
+  else
+  if (cmd[2] == '\0')
+  {
+    /* status = AT_OK; */
+  }
+  else
+  if (cmd[2] == '?')
+  {
+#ifdef NO_HELP
+#else
+    Printf("AT+<CMD>?        : Help on <CMD>\r\n"
+              "AT+<CMD>         : Run <CMD>\r\n"
+              "AT+<CMD>=<value> : Set the value\r\n"
+              "AT+<CMD>=?       : Get the value\r\n");
+    for (i = 0; i < (sizeof(ATCommand) / sizeof(struct ATCommand_s)); i++)
+    {
+      Printf(ATCommand[i].help_string);
+    }
+#endif
+  }
+  else
+  {
+    /* point to the start of the command, excluding AT */
+    status = AT_ERROR;
+    cmd += 2;
+    for (i = 0; i < (sizeof(ATCommand) / sizeof(struct ATCommand_s)); i++)
+    {
+      if (strncmp(cmd, ATCommand[i].string, ATCommand[i].size_string) == 0)
+      {
+        Current_ATCommand = &(ATCommand[i]);
+        /* point to the string after the command to parse it */
+        cmd += Current_ATCommand->size_string;
+
+        /* parse after the command */
+        switch (cmd[0])
+        {
+          case '\0':    /* nothing after the command */
+            status = Current_ATCommand->run(cmd);
+            break;
+          case '=':
+            if ((cmd[1] == '?') && (cmd[2] == '\0'))
+            {
+              status = Current_ATCommand->get(cmd + 1);
+            }
+            else
+            {
+              status = Current_ATCommand->set(cmd + 1);
+            }
+            break;
+          case '?':
+#ifndef NO_HELP
+            Printf(Current_ATCommand->help_string);
+#endif
+            status = AT_OK;
+            break;
+          default:
+            /* not recognized */
+            break;
+        }
+
+        /* we end the loop as the command was found */
+        break;
+      }
+    }
+  }
+
+  com_error(status);
+}
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+```
+
+##
