@@ -4603,13 +4603,13 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 ```
-## Callback 사용해서 main문엔 printf만 사용
+## printf관련함수들이 구현된 hw_vcom.c
 ✅ hw_vcom.c, hw_vcom.h 추가   
 <img src="https://github.com/user-attachments/assets/485fdd63-36c9-4cf2-802b-42b9885e049e" width="600" height="350">   
 <img src="https://github.com/user-attachments/assets/5c14435e-a0bd-4afe-a755-ade0fa4d9fa2" width="600" height="350">   
-```c
-https://github.com/sjmun96/stm32_lib/tree/main 에서 추가
-```
+
+<https://github.com/sjmun96/stm32_lib/tree/main> 에서 추가
+
    
 ✅ 결과   
 <img src="https://github.com/user-attachments/assets/83a0eb10-75b8-4a0b-af8c-1f2c11d02663" width="600" height="350">   
@@ -5137,3 +5137,6 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 ```
+
+# AT Command 추가
+## AT Command란?
