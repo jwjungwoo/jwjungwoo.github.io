@@ -1,7 +1,7 @@
 ---
 layout: single
 title:  "졸업 프로젝트(개요)"
-categories: project
+categories: ai
 tag: 
 author_profile: false #true면 글 안에서 내 프로필 보여줌
 sidebar:
