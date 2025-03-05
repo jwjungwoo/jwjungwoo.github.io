@@ -136,9 +136,20 @@ Frame 위에 Body를 얹다란 뜻이다. 최근 도심형 SUV, RV 차량이 주
 
 ✅ 현가 장치 종류
 1. 일체 차축 현가장치: 프레임 바디에 스프링 및 쇽 업쇼바가 설치됨. 차량 전체가 같이 움직인다.   
-2. 독립 현가장치: 유니바디에 스프링 및 쇽 업쇼바가 각각 설치됨   
-
-
+2. 독립 현가장치: 유니바디에 스프링 및 쇽 업쇼바가 각각 설치됨. 위시본타입, 멀티링크타입, 맥퍼슨타입, 트레일링 암((토션빔)타입   
+<img src="https://github.com/user-attachments/assets/6bda5698-f151-4458-bd97-469c20231e5f" width="600" height="700">   
+   
+✅ 첨단 현가장치   
+전자제어 현가장치 (ECS: Electronic Control Suspension)   
+쇽 업쇼버와 높낮이 및 스프링강성 즉, 승차감을 컴퓨터로 조절하는 것이 ECS이다.   
 ### 조향장치
+<img src="https://github.com/user-attachments/assets/6bda5698-f151-4458-bd97-469c20231e5f" width="600" height="700">   
+![KakaoTalk_20250305_110839688](https://github.com/user-attachments/assets/c6bfd40e-5867-4367-a1b5-dca8688b6c12)
+![KakaoTalk_20250305_110839688_01](https://github.com/user-attachments/assets/ee5722b5-6a34-4216-ae01-aad146c3d0aa)
+![KakaoTalk_20250305_110839688_02](https://github.com/user-attachments/assets/a479a10a-1715-4c46-baf5-29bd1066cc61)
+![KakaoTalk_20250305_110839688_03](https://github.com/user-attachments/assets/3087eaf2-9655-4209-bde8-d2aadab1077b)
+
+
+
 ### 제동장치(브레이크)
 ## 구동
