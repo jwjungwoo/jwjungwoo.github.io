@@ -15,6 +15,9 @@ sidebar:
 ✅ 난?: 고객의 니즈를 만족하는 자동차 개발자가 되기 위해 난 어떤 마음가짐을 지녀야할까라는 생각을 많이 했다. 성실함은 기본이다. 혁신적인 생각을 할 수 있게 사고를 넓혀야겠다.   
 
 # 친해지는 시간
+✅ 팀원들과 친해지는 시간을 가졌다. 좋은 ice breaking이었다. 돌아가며 자기소개도 하고 재밌었다.   
+<img src="https://github.com/user-attachments/assets/a428b38f-6171-4a3e-99ca-444faebb85ef" width="600" height="430">   
+<img src="https://github.com/user-attachments/assets/c2ea6318-0164-4222-9020-803c77407b61" width="600" height="800">   
 # 자동차 산업의 변화
 ## 제조 -> 서비스
 "자동차 제조사에서 네트워크 모빌리티 서비스 제공자로 변화하겠다.", 디터 제체(다임러 회장 in 2015)   
