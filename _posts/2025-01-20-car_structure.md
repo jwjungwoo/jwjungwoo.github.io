@@ -143,13 +143,24 @@ Frame 위에 Body를 얹다란 뜻이다. 최근 도심형 SUV, RV 차량이 주
 전자제어 현가장치 (ECS: Electronic Control Suspension)   
 쇽 업쇼버와 높낮이 및 스프링강성 즉, 승차감을 컴퓨터로 조절하는 것이 ECS이다.   
 ### 조향장치
-<img src="https://github.com/user-attachments/assets/6bda5698-f151-4458-bd97-469c20231e5f" width="600" height="700">   
-![KakaoTalk_20250305_110839688](https://github.com/user-attachments/assets/c6bfd40e-5867-4367-a1b5-dca8688b6c12)
-![KakaoTalk_20250305_110839688_01](https://github.com/user-attachments/assets/ee5722b5-6a34-4216-ae01-aad146c3d0aa)
-![KakaoTalk_20250305_110839688_02](https://github.com/user-attachments/assets/a479a10a-1715-4c46-baf5-29bd1066cc61)
-![KakaoTalk_20250305_110839688_03](https://github.com/user-attachments/assets/3087eaf2-9655-4209-bde8-d2aadab1077b)
-
-
+<img src="https://github.com/user-attachments/assets/c6bfd40e-5867-4367-a1b5-dca8688b6c12" width="800" height="350">   
+<img src="https://github.com/user-attachments/assets/ee5722b5-6a34-4216-ae01-aad146c3d0aa" width="800" height="1400">   
 
 ### 제동장치(브레이크)
+✅ 제동장치의 종류: 유압식, 공기, 주차, 감속(엔진, 배기, 리타더) 브레이크   
+엔진 브레이크: 바퀴와 엔진을 연결함. 엔진속도와 바퀴제어 속도가 비례함   
+배기 브레이크: 배기 시 머플러 닫아서 흡입압축폭발배기의 속도를 늦춤   
+   
+✅ 파스칼의 원리   
+밀폐된 액체의 일부(단면적)에 작용하는 힘은, 모든 방향에 동일한 압력(유압)으로 작용한다.   
+<img src="https://github.com/user-attachments/assets/a479a10a-1715-4c46-baf5-29bd1066cc61" width="800" height="400">   
+   
+✅ 디스크 브레이크   
+<img src="https://github.com/user-attachments/assets/3087eaf2-9655-4209-bde8-d2aadab1077b" width="800" height="350">   
+실제로 차량 디스크 브레이크를 뜯어봤다. 우리가 만지기엔 엄청 단단했는데 실제로는 잘 갈린다하셨다. 
+이 부분이 일정부분 이상 갈리면 소리가 난다고 갈아야한다셨다. 건강에 무지 안좋아보였는데 그렇다하셨다.   
+<img src="https://github.com/user-attachments/assets/453b9aac-be7a-4e53-a248-375ca58b7b9c" width="800" height="450">   
+   
+✅ 전자제어 브레이크 장치   
+<img src="https://github.com/user-attachments/assets/d696e75c-d60f-478f-986d-d4dd59b4aa72" width="800" height="450">   
 ## 구동
