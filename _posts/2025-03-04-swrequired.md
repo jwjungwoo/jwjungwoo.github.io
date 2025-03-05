@@ -66,7 +66,17 @@ why(추상화) -> what(가시화) ->, behavior(정형화)
 Scope-> Goal -> Stakeholders -> Scope...   
 
 # 이해관계자 중심 요구사항 추출
-## 이해관계자 관리
-1. 이해관계자 정하기
-2. 
+## 이해관계자 요구사항 추출
+✅ 스님들에게 빗을 팔라고??   
+-> 스님의 이해관계를 찾아낸 경우   
+-> 스님의 이해관계자의 이해를 찾아낸 경우   
+
+## 이해관계자 요구사항 추출 방법론
+✅ 전통적 요구사항 추출 기법
+1. interview   
+2. brainstroming   
+3. survey/questionnare   
+개방형 및 폐쇄형 질문 목록   
+4. observation
+5. 
 
