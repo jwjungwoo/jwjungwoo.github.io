@@ -51,24 +51,94 @@ Frame 위에 Body를 얹다란 뜻이다. 최근 도심형 SUV, RV 차량이 주
 ### 외장
 외장은 전면, 상부, 측면, 후면으로 나뉜다.   
 ✅ 전면   
-
+<img src="https://github.com/user-attachments/assets/9d467031-3c5b-48f9-83b8-9b831ec2b523" width="600" height="500">   
+1. Front Bumper   
+2. Radiator Grill   
+3. Lower Grill   
+4. Front Combi Lamp; Head Lamp, DRL(주간주행등); sequential turn signal(띠리릭)   
+5. Fog Lamp   
+6. Hood/ Bonnet   
+7. Fender   
+8. 초음파 센서   
+   
 ✅ 상부   
+1. Cowl-카울탑   
+2. Front Wiper   
+3. Front Wind Shield   
+4. Roof; sun roof, roof rail, 샤크핀 안테나(gps, dms, 라디오, 디지털신호들)   
+   
 ✅ 측면   
+<img src="https://github.com/user-attachments/assets/b18f6dc0-172f-4ede-8ee4-15bc2e33a835" width="600" height="300">   
+1. Fender   
+2. Side View Mirror   
+3. DLO(Day Light Opening); Weather Strip(문열면 있는 고무)   
+4.5. Front/Rear Door   
+6. Quarter Panel; 연료주입구   
+7. 캐릭터 라인   
+8. 벨트 라인   
+9. Rocker Panel Line   
+10. Rocker Panel/Side Step
+11. 휠 베이스   
+12. 프론트 오버행   
+13. 리어 오버행   
+   
 ✅ 후면   
-
-### 내장
+<img src="https://github.com/user-attachments/assets/4ceca0a7-830a-485b-a989-2b901f7d3541" width="600" height="250">   
+1. Rear Combi Lamp   
+2. Reflector(반사판)   
+3. CHMSL(보조제동등): 한국 3배, 미국 5배   
+4. Trunk Lid-승용차, Tail Gate-SUV   
+5. Tail Pipe + 머플러   
+6. Spoiler(바람지나가는거)   
+7. Rear Bumper   
+   
+### 내장   
 내장은 전면, 중앙, 시트, 도어, 기타로 나뉜다.   
 ✅ 전면   
+1. Dash Board = instrument panel (계기판+버튼+ambient light)   
+2. Center Fascia (대시보드에서 가운데 화면)   
+3. Cluster(계기판)   
+4. Steering Wheel   
+5. Steering Column(핸들 뒷부분 덮개. 핸들 위치 조정가능); tilt(위아래) & telescopic(앞뒤) lever   
+6. Glove Box
+7. Overhead Console(Map등, 선루프 스위치, 선글라스 보관함) 실내등은 차 가운데   
+8. Sun Visor(햇빛 가릴 때 쓰는거. 조명, 화장거울)   
+9. Rear View Mirror   
+   
 ✅ 중앙   
-✅ 시트   
-✅ 도어   
-✅ 기타   
-
+1. Center Console   
+2. Gear Lever   
+3. Hand Break   
+   
+✅ 시트&도어   
+1. Head Rest
+2. Side Bolster(의자에서 사이드 지지해주는 튀어나온 부분)   
+3. Assis Grip(위에 손 잡는거)   
+4. Seat Belt   
+5. Seat Back Pocket   
+   
 ## 전기배선
-### 하네스
+✅ 하네스   
 하네스란 배선뭉치를 뜻한다. 종류로는 메인, 프런트, 에어백, 컨트롤, 플로어/루프/리어 하네스가 있다. 각각의 시스템으로 신호와 전력을 전달하는 신경망이다. 
-길이는 차 크게에 따라 1대당 2~3km이며 중량은 30~50kg이다. 최근 유선(광통신) 또는 무선 통신의 증가로 많이 감소되고 있는 경향이 있다. 
+길이는 차 크게에 따라 1대당 2~3km이며 중량은 30~50kg이다. 최근 유선(광통신) 또는 무선 통신의 증가로 많이 감소되고 있는 경향이 있다.   
+   
+✅ 전구   
+전구에도 H4, H1, HB4, HB3 등 여러 종류가 있다.   
+
 # 섀시
-## 구동
-### 
 ## 주행
+### 현가장치(서스펜션)
+✅ 스프링, 쇽 업쇼버, 암, 고무 부싱   
+✅ 스프링: 코일스프링, Leaf스프링(보통 트럭에), 에어스프링(보통 버스, 대형트럭, 고급차)   
+✅ 쇽 업쇼버: 스프링의 진동을 줄여주는 장치. 안에 액체가 있음. 누를 땐 구멍 2개(편함), 올릴 땐 구멍 1개(힘듦)   
+✅ 암 = 링크: 스프링과 쇽 업쇼버를 연결해주는 장치   
+✅ 고무 부싱: 차와 암 사이에 들어감(철과 철끼리 만나면 깨질 수 있기 때문)   
+
+✅ 현가 장치 종류
+1. 일체 차축 현가장치: 프레임 바디에 스프링 및 쇽 업쇼바가 설치됨. 차량 전체가 같이 움직인다.   
+2. 독립 현가장치: 유니바디에 스프링 및 쇽 업쇼바가 각각 설치됨   
+
+
+### 조향장치
+### 제동장치(브레이크)
+## 구동
