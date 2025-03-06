@@ -83,4 +83,11 @@ Scope-> Goal -> Stakeholders -> Scope...
 ## 가치 기반 요구공학 (KANO) 실습
 <img src="https://github.com/user-attachments/assets/d06cb593-a64a-4094-ba80-443f13b5aaa3" width="600" height="510">   
 
+## 요구사항 모델 유형
+✅ UML 같은 툴을 사용할 때 사용자는 복잡한 Diagrams를 이해 못한다. 이는 Communication을 방해한다. 따라서 SW-based model을 사용하는 것 보다, User-based model을 사용하는 것이 좋다. 
 
+## 깨비책방 관리
+<img src="https://github.com/user-attachments/assets/273ee74b-d836-4d3b-9d5d-fea2d8c510e9" width="400" height="1050">   
+
+## 제대로 기록하자
+대기업, 중소기업들의 인력은 계속 바뀌는데 뭔가 제대로 기록된건 없으니 다시 추출.. 추출은 잘 하는데 정작 기록을 제대로 안 함.ㅌ
