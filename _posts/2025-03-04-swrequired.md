@@ -78,5 +78,9 @@ Scope-> Goal -> Stakeholders -> Scope...
 3. survey/questionnare   
 개방형 및 폐쇄형 질문 목록   
 4. observation
-5. 
+
+# 가치 기반 요구사항 분석
+## 가치 기반 요구공학 (KANO) 실습
+<img src="https://github.com/user-attachments/assets/d06cb593-a64a-4094-ba80-443f13b5aaa3" width="600" height="510">   
+
 
