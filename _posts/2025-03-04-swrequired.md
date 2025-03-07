@@ -104,4 +104,5 @@ Scope-> Goal -> Stakeholders -> Scope...
 ✅ 우리팀이 받은 피드백 일부   
 <img src="https://github.com/user-attachments/assets/bad23c85-de6b-42e6-808b-2e09b05ae186" width="600" height="700">   
 
-
+✅ 서비스 처리 순서??
+<img src="https://github.com/user-attachments/assets/c7a8b90d-cb60-40a3-b1a6-3fc5f4555cc8" width="500" height="1000">   
