@@ -10,7 +10,8 @@ sidebar:
 ---
 
 # 느낀점
-✅ 요구사항: 앞으로있을 프로젝트에 기능적인 측면도 중요하지만 요구사항도 잘 분석하자.. 중요하다. 
+✅ 요구사항: 앞으로있을 프로젝트에 기능적인 측면도 중요하지만 요구사항도 잘 분석하자.. 중요하다.   
+✅ 회사의 수준: 회사의 수준이 업그레이드됨에 따라 sw 요구사항을 정확하게 파악하려한다.
 
 # 소프트웨어 개발과 요구사항
 ## 요구사항 개요
@@ -90,4 +91,17 @@ Scope-> Goal -> Stakeholders -> Scope...
 <img src="https://github.com/user-attachments/assets/273ee74b-d836-4d3b-9d5d-fea2d8c510e9" width="400" height="1050">   
 
 ## 제대로 기록하자
-대기업, 중소기업들의 인력은 계속 바뀌는데 뭔가 제대로 기록된건 없으니 다시 추출.. 추출은 잘 하는데 정작 기록을 제대로 안 함.ㅌ
+대기업, 중소기업들의 인력은 계속 바뀌는데 뭔가 제대로 기록된건 없으니 다시 추출.. 추출은 잘 하는데 정작 기록을 제대로 안 함.
+
+# 유스케이스
+## 깨비책방 유스케이스
+✅유스케이스 일부   
+<img src="https://github.com/user-attachments/assets/2f600996-dba6-4f8c-a8b2-fa84c71e595f" width="600" height="600">   
+   
+✅ 우리팀이 준 피드백 일부   
+<img src="https://github.com/user-attachments/assets/461062c6-29e9-4256-b8c7-1d7e3d12bcf4" width="600" height="700">   
+   
+✅ 우리팀이 받은 피드백 일부   
+<img src="https://github.com/user-attachments/assets/bad23c85-de6b-42e6-808b-2e09b05ae186" width="600" height="700">   
+
+
