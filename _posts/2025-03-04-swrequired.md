@@ -11,7 +11,8 @@ sidebar:
 
 # 느낀점
 ✅ 요구사항: 앞으로있을 프로젝트에 기능적인 측면도 중요하지만 요구사항도 잘 분석하자.. 중요하다.   
-✅ 회사의 수준: 회사의 수준이 업그레이드됨에 따라 sw 요구사항을 정확하게 파악하려한다.
+✅ 회사의 수준: 회사의 수준이 업그레이드됨에 따라 sw 요구사항을 정확하게 파악하려한다.   
+✅ 
 
 # 소프트웨어 개발과 요구사항
 ## 요구사항 개요
@@ -125,3 +126,5 @@ Scope-> Goal -> Stakeholders -> Scope...
    
 ✅ formal specification   
 Z, VDM (뭔지는 잘 모르겠다!!)   
+   
+<img src="https://github.com/user-attachments/assets/3cca3ba7-2f22-419f-ad00-c88c72afb308" width="600" height="400">   
