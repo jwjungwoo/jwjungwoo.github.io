@@ -93,6 +93,12 @@ Scope-> Goal -> Stakeholders -> Scope...
 ## 제대로 기록하자
 대기업, 중소기업들의 인력은 계속 바뀌는데 뭔가 제대로 기록된건 없으니 다시 추출.. 추출은 잘 하는데 정작 기록을 제대로 안 함.
 
+## 요구사항 우선순위화
+✅ VOP 기법   
+각각의 요구사항에 대해 5개 정도의 V(가치) 각각을 측정한 합을 수치화하여 요구사항을 우선순위 메길수 있다.   
+<img src="https://github.com/user-attachments/assets/d5e57393-d6d6-4ff7-b123-50d15eaee86c" width="1000" height="400">   
+판매, 소비자만족도, 마케팅, 전략, 무결성이 V 기준들이다.   
+
 # 유스케이스
 ## 깨비책방 유스케이스
 ✅유스케이스 일부   
@@ -103,6 +109,9 @@ Scope-> Goal -> Stakeholders -> Scope...
    
 ✅ 우리팀이 받은 피드백 일부   
 <img src="https://github.com/user-attachments/assets/bad23c85-de6b-42e6-808b-2e09b05ae186" width="600" height="700">   
+   
+✅ 서비스 처리 순서   
+<img src="https://github.com/user-attachments/assets/c7a8b90d-cb60-40a3-b1a6-3fc5f4555cc8" width="600" height="1000">   
+<img src="https://github.com/user-attachments/assets/a81b45a9-01f6-4022-ab23-f4e02d38fa38" width="600" height="750">   
 
-✅ 서비스 처리 순서??
-<img src="https://github.com/user-attachments/assets/c7a8b90d-cb60-40a3-b1a6-3fc5f4555cc8" width="500" height="1000">   
+# 요
