@@ -103,6 +103,7 @@ Scope-> Goal -> Stakeholders -> Scope...
 ## 깨비책방 유스케이스
 ✅유스케이스 일부   
 <img src="https://github.com/user-attachments/assets/2f600996-dba6-4f8c-a8b2-fa84c71e595f" width="600" height="600">   
+
    
 ✅ 우리팀이 준 피드백 일부   
 <img src="https://github.com/user-attachments/assets/461062c6-29e9-4256-b8c7-1d7e3d12bcf4" width="600" height="700">   
@@ -114,4 +115,13 @@ Scope-> Goal -> Stakeholders -> Scope...
 <img src="https://github.com/user-attachments/assets/c7a8b90d-cb60-40a3-b1a6-3fc5f4555cc8" width="600" height="1000">   
 <img src="https://github.com/user-attachments/assets/a81b45a9-01f6-4022-ab23-f4e02d38fa38" width="600" height="750">   
 
-# 요
+# 요구사항 명세 유형
+✅ informal specification   
+자연어 기반의 서술, 작업흐름도 등의 그림 중심 작성   
+불충분, 일관성 결여, 내용의 모호성   
+   
+✅ semi-formal specification   
+우리가 한 UML이 여기에 속한다. 이외에도 여러 명세법들이 존재한다.   
+   
+✅ formal specification   
+Z, VDM (뭔지는 잘 모르겠다!!)   
