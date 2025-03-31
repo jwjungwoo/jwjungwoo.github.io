@@ -52,7 +52,8 @@ end-node(데이터를 생산하고 소비하는 장치): ECU, (네트워크장�
 event-driven: 아무때나 메시지 보낼 수 있음(비동기 직렬 통신)   
 time-synchronous: 시간 동기화   
 master-slave: master 가 물어보면 대답함   
-token passing: 토큰을 받아야 메시지 보낼 수 있음   
+token passing: 토큰을 받아야 메시지 보낼 수 있음. 노드끼리 서로 token 을 주고 받을수있다. 수건돌리기 게임처럼.   
+CAN 통신은 라디오처럼 송수신자에 대한 정보가 없다. sender 에게 동기화 된다는 것은 master-slave, token passing 처럼 마스터에 맞추고, token 에 맞추는 것 처럼 sender에 맞춘다는 의미이다.   
    
 ✅   
 <img src="https://github.com/user-attachments/assets/657ed93d-a98b-471a-be95-3e671e72595e" width="800" height="640">   
