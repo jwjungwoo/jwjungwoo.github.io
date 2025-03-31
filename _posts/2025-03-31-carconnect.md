@@ -68,3 +68,22 @@ CAN FD 는 데이터 전송 속도를 설정할 수 있음. 15Mbit/s 도 가능�
 
 ✅ Gateway   
 <img src="https://github.com/user-attachments/assets/83cdc36c-d8eb-4cbd-96a1-90267f3631fb" width="800" height="640">   
+
+# CAN
+
+## controller, transceiver
+
+controller: Data Link Layer   
+transceiver: Physical Layer( (controller 사이에서) bit 변환, (Bus에서의) 신호 송수신만 신경쓰면 된다)   
+
+## Tx, Rx
+
+CAN 은 기본적으로 2.5V 의 전압이 유지된다.   
+   
+✅ Translation   
+<img src="https://github.com/user-attachments/assets/254e6689-2dc0-4834-bcdb-8ddd486779d3" width="800" height="600">   
+Tx 는 현재 전압(노이즈 크게 안 끼면 2.5V)이 어떻든 전압차만 잘 보내면 된다.   
+   
+✅ Receive   
+차이가 난 볼티지 값만 중요하다.   
+
