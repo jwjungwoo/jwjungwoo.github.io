@@ -82,8 +82,62 @@ CAN 은 기본적으로 2.5V 의 전압이 유지된다.
    
 ✅ Translation   
 <img src="https://github.com/user-attachments/assets/254e6689-2dc0-4834-bcdb-8ddd486779d3" width="800" height="600">   
-Tx 는 현재 전압(노이즈 크게 안 끼면 2.5V)이 어떻든 전압차만 잘 보내면 된다.   
-   
+Tx 는 현재 전압(노이즈 크게 안 끼면 2.5V)이 어떻든 전압차만 잘 보내면 된다.      
 ✅ Receive   
 차이가 난 볼티지 값만 중요하다.   
+
+## Gateway
+
+CAN 은 송신자가 수신자를 지정하지 않는다. 그래섵` gateway 는 있지만 스위치, 라우터, 허브는 없다. Gateway가 보고 전달해준다. Gateway 는 2개 이상의 port 가 있다. Gateway 를 통해 eth, can, flexlay 등이 연결될 수 
+있다.
+
+# CAN FD
+
+## flexible datarate
+
+✅ 가변의 속도   
+2개의 속도를 가진다. 하나는 500kbps, 나머지 하나는 가변이다.   
+   
+✅ 64bytes   
+한 메세지를 보낼 때 기존의 8배인 데이터를 보낼 수 있지만 속도는 동일하다.   
+```c
+CAN    CANFD    ETH
+8       64      1500
+
+CAN
+108bits/msg(메시지)
+64bits = data
+약 60%/msg
+
+CANFD
+71bytes/msg
+64bytes
+약 90%/msg  -> 메시지 당 데이터의 효율을 엄청나게 높인 프로토콜이다.
+
+ETH
+1570bytes/msg
+1500bytes
+약 95%/msg
+```   
+   
+✅ 한번에 보내는 이점   
+```c
+APP 입장에선 8개로 쪼개서 보내는게 절대 좋은게 아닌게
+단순히 8배가 아니라 arbitration 에서 메세지 중간에 다른 메시지가 낄 수도있어서
+데이터 전송 속도가 8배보다 훨씬 길어질 수 있다.
+```   
+   
+✅ reserve   
+reserve 는 동기화를 한번 맞추라고 있는 비트다.   
+<img src="https://github.com/user-attachments/assets/0cd08099-8562-405f-b41d-876117851eb4" width="800" height="300">   
+앞에서 오류가 생기면 뒤에 오류가 누적돼기 때문에 동기화를 맞추라는 것이다.   
+   
+✅ 48-> 49   
+48바이트를 보내면 48바이트를 보내는데 49바이트부턴 64바이트를 보낸다.   
+<img src="https://github.com/user-attachments/assets/60b6e352-527b-4e62-aa62-6c9e6b613fd0" width="800" height="650">   
+   
+✅ CRC 만 잘 들어   
+Data Field 값은 빠르게 듣고, CRC 는 잘 들어야함. CRC17 or CRC21   
+   
+
 
