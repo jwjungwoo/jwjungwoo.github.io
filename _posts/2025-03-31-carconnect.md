@@ -139,5 +139,23 @@ reserve 는 동기화를 한번 맞추라고 있는 비트다.
 ✅ CRC 만 잘 들어   
 Data Field 값은 빠르게 듣고, CRC 는 잘 들어야함. CRC17 or CRC21   
    
+# TOOLS
+
+## CAN 친구들
+
+```c
+CANape: ECU Calibration
+CANoe, CANalyzer: 네트워크 툴
+
+케노, 케놀라이저, 카나페
 
 
+CANalyzer 는 V 모델의 오른쪽 가장 끝자락에서만 사용한다. 따라서 simulation 에 제한이 된다.
+반면 CANoe 는 V 모델 전반에서 사용가능하다.
+```
+
+## CAN network description
+
+# 실습
+## 예시
+<img src="https://github.com/user-attachments/assets/a2861bb8-3b45-43a1-bd19-816ebbf88abf" width="800" height="500">   
