@@ -149,13 +149,43 @@ CANoe, CANalyzer: 네트워크 툴
 
 케노, 케놀라이저, 카나페
 
-
+CANalyzer 와 CANoe 는 simulation 과 test 에서 차이가 난다.
 CANalyzer 는 V 모델의 오른쪽 가장 끝자락에서만 사용한다. 따라서 simulation 에 제한이 된다.
-반면 CANoe 는 V 모델 전반에서 사용가능하다.
+반면 CANoe 는 V 모델 전반에서 사용가능하다. 또한 CANoe 는 Test 가 가능하다.
 ```
+<img src="https://github.com/user-attachments/assets/7131cc7e-5c91-40d1-82b6-e13098b63d25" width="800" height="600">   
+
+## 단위
+
+메시지 단위: frame   
+값 단위: signal   
+네트워크 단위: bus   
 
 ## CAN network description
 
+
+
 # 실습
+
 ## 예시
+
 <img src="https://github.com/user-attachments/assets/a2861bb8-3b45-43a1-bd19-816ebbf88abf" width="800" height="500">   
+
+## Analysis Window
+
+이더넷은 A,B 중간에 계측할 때 중간선에 구리선을 연결하면 A 와 B 가 보내는 데이터가 두 개 합쳐진 값이라 계측이 힘들지만, CAN 은 그냥 가져와진다. 이 데이터는 DB 를 이용해서 알아낼 수 있다.   
+   
+1. Trace Window   
+fixed position: ID 맨 마지막을 보여줌(ID 들어온적 있나?를 확인해줌)   
+chronological: 분석   
+   
+✅ Msg 검사   
+Analysis -> Trace -> CAN Settings 해서 하나 만들면 메세지 받는거 볼 수 있음   
+<img src="https://github.com/user-attachments/assets/c898d1f4-18f4-406a-abfe-e4e6e4647146" width="800" height="500">   
+   
+✅ filter   
+<img src="https://github.com/user-attachments/assets/6ce4d7fa-8e9e-4e2e-b9d3-f80c9013eee4" width="800" height="550">   
+   
+✅ Graphics window p.180   
+stress no, a, b, a+b 에 따라 데이터 전송량이 는 것을 확인할 수 있다.   
+<img src="https://github.com/user-attachments/assets/5f1f5645-3bdb-4753-bfaf-30a4e59a5b5a" width="800" height="550">   
