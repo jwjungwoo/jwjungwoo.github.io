@@ -189,3 +189,20 @@ Analysis -> Trace -> CAN Settings 해서 하나 만들면 메세지 받는거 �
 ✅ Graphics window p.180   
 stress no, a, b, a+b 에 따라 데이터 전송량이 는 것을 확인할 수 있다.   
 <img src="https://github.com/user-attachments/assets/5f1f5645-3bdb-4753-bfaf-30a4e59a5b5a" width="800" height="550">   
+
+## send
+
+✅ lamp1 초마다 깜빡이게하기   
+<img src="https://github.com/user-attachments/assets/e788faf1-6293-4dc6-a888-b77ec02cdf77" width="800" height="400">   
+   
+<img src="https://github.com/user-attachments/assets/6ec60147-67e1-4274-9a73-fad13cba0254" width="800" height="400">   
+
+
+## visual sequence
+
+<img src="https://github.com/user-attachments/assets/358c8503-4ddb-4aba-b624-a517c6bcdeb1" width="800" height="400">   
+
+## signal count 계속 증가??
+
+첨엔 아무것도 안 했는데 signal count 가 계속 증가해서 뭐지 싶었다. 근데 알고보니 CANister 코딩자체가 계속 보내고 있는거였다. 실제 장치도 그렇다고한다.   
+<img src="https://github.com/user-attachments/assets/5c67605b-6b7b-49ce-8ef7-accc8f3fd372" width="800" height="440">   
