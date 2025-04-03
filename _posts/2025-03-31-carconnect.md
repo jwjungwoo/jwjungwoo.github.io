@@ -1,4 +1,4 @@
----
+![image](https://github.com/user-attachments/assets/35317de3-fade-4e4a-9d2f-bc48859afe87)![image](https://github.com/user-attachments/assets/74dc19ad-45f2-4122-8609-dfda17f74f27)![image](https://github.com/user-attachments/assets/cc4a7028-95bb-4ed8-b934-baeb693d8d67)---
 layout: single
 title:  "차량용 통신 시스템"
 categories: autoever
@@ -206,3 +206,449 @@ stress no, a, b, a+b 에 따라 데이터 전송량이 는 것을 확인할 수 
 
 첨엔 아무것도 안 했는데 signal count 가 계속 증가해서 뭐지 싶었다. 근데 알고보니 CANister 코딩자체가 계속 보내고 있는거였다. 실제 장치도 그렇다고한다.   
 <img src="https://github.com/user-attachments/assets/5c67605b-6b7b-49ce-8ef7-accc8f3fd372" width="800" height="440">   
+
+# Mypanel 만들기 실습
+
+## Mypanel 추가 p.245
+
+✅ p.245 처럼 하고 메인프로젝트에서 추가하기   
+<img src="https://github.com/user-attachments/assets/424cae1b-dc47-4c9f-861b-9f228ba532a8" width="800" height="440">   
+   
+✅ 끄기   
+<img src="https://github.com/user-attachments/assets/dd0ad093-1079-46ba-9d55-24e48a501a25" width="800" height="440">   
+   
+✅ 켜기   
+<img src="https://github.com/user-attachments/assets/c4b8dfb2-7ed7-41b1-83e4-767e39878a31" width="800" height="440">   
+   
+✅ 시스템변수 만들기   
+<img src="https://github.com/user-attachments/assets/501f7345-8a2b-4ed0-9d6e-6ceda7f7f7f5" width="800" height="440">   
+   
+✅ sw2도 만듦   
+<img src="https://github.com/user-attachments/assets/e4d94320-ff78-4c30-a088-a54549164d1a" width="800" height="440">   
+   
+✅ visual sequence   
+<img src="https://github.com/user-attachments/assets/a738bd99-9333-413f-9d14-da8b1e178935" width="800" height="440">   
+
+## 새로운거
+
+✅ 노드 만들기(insert network node)   
+   
+✅ configuration 설정해서 CCU 라고 설정   
+   
+✅ iLconfiguration 설정. db 설정은 최대한 지양한다. 따라서 CANoe 에서 iLconfiguration 으로 설정한다.   
+<img src="https://github.com/user-attachments/assets/b5e53aca-fbcc-44d5-9628-2c6abb815ffa" width="800" height="440">   
+   
+✅ GWC 를 설정해서 iLconfiguration 에서 뭐 하나 클릭하고 확인하면 trace 에서 msg 를 보내는 것을 확인할 수 있다.   
+<img src="https://github.com/user-attachments/assets/97f7b60d-978c-4e2d-bc75-515ee76f663a" width="800" height="440">   
+   
+## IL
+
+✅ signalgeneration   
+<img src="https://github.com/user-attachments/assets/4a151b6f-ad73-4436-b71c-5c35d281bd69" width="800" height="440">   
+
+✅ LED1 1,0 반복   
+<img src="https://github.com/user-attachments/assets/96ae089b-4683-4864-84ce-2a747102289b" width="800" height="440">   
+
+## CAPL
+
+✅ p.276   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  int gCount = 0; // 전역변수는 한번이니까 이렇게 초기화해도됨.
+}
+
+on key 'h'
+{
+  int a;
+  a = 11; // 지역변수는 이렇게 초기화해야됨.
+  write("hello world %d", a);
+  
+  gCount = gCount + 1;
+  if(gCount == 5)
+  {
+    stop();
+  }
+}
+
+on stopMeasurement
+{
+  write("Good-bye!");
+}
+```   
+<img src="https://github.com/user-attachments/assets/ec065967-0a0b-4d61-8439-2292ec3b7c11" width="800" height="460">   
+   
+```c
+preStart -> Start ................. preStop -> StopMeasurement
+              |...............................|
+```
+
+✅ preStop 써보기   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  int gCount = 0; // 전역변수는 한번이니까 이렇게 초기화해도됨.
+}
+
+on key 'h'
+{
+  int a;
+  a = 11; // 지역변수는 이렇게 초기화해야됨.
+  write("hello world %d", a);
+  
+  gCount = gCount + 1;
+  if(gCount == 5)
+  {
+    stop();
+  }
+}
+
+on preStop
+{
+  write("goodbye1");
+  deferStop(1); // 1ms 뒤에 stopMeasurement 실행. 종료를 미룰 때 쓴다.
+}
+
+on stopMeasurement
+{
+  write("Good-bye2");
+}
+```   
+   
+✅ p.285   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+//sigKey2 는 sigKey3 와 달리 두 개가 있어서 namespace 까지 적어줘야한다.
+on signal frmStatus::sigKey2
+{
+  if($frmStatus::sigKey2 == 1)
+  {
+    $sigLED2 = 1;
+  }
+  else
+  {
+    $sigLED2 = 0;
+  }
+}
+
+on signal sigKey3 // 변경됐을때
+{ // 0 -> 1, 1 -> 0
+  if(getSignal(sigKey3) == 1) // $sigKey3 == 1 만 써도 됨. RxSig 값을 갖고옴
+  {
+    $sigLED3 = 1; //setSignal(sigLED3, 1); TxSig -> IL Msg. TxSig 값을 바꿈
+  }
+  else
+  {
+    $sigLED3 = 0;
+  }
+}
+```   
+<img src="https://github.com/user-attachments/assets/9f748a7b-fee8-40fc-83a5-2cfbdcf0bd2b" width="800" height="470">   
+   
+✅ T3 눌렀을 때 LED3 계속 켜짐   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  int cnt2 = 0;
+}
+
+//sigKey2 는 sigKey3 와 달리 두 개가 있어서 namespace 까지 적어줘야한다.
+on signal frmStatus::sigKey2
+{
+  if($frmStatus::sigKey2 == 1)
+  {
+    $sigLED2 = 1;
+  }
+  else
+  {
+    $sigLED2 = 0;
+  }
+}
+
+on signal sigKey3 // 변경됐을때
+{ // 0 -> 1, 1 -> 0
+  if(getSignal(sigKey3) == 1) // $sigKey3 == 1 만 써도 됨. RxSig 값을 갖고옴
+  {
+    $sigLED3 = !$sigLED3;
+  }
+}
+```
+   
+✅ Key4 누르면 LED4,5,6 켜지기   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  int cnt2 = 0;
+}
+
+//sigKey2 는 sigKey3 와 달리 두 개가 있어서 namespace 까지 적어줘야한다.
+on signal frmStatus::sigKey2
+{
+  if($frmStatus::sigKey2 == 1)
+  {
+    $sigLED2 = 1;
+  }
+  else
+  {
+    $sigLED2 = 0;
+  }
+}
+
+on signal sigKey3 // 변경됐을때
+{ // 0 -> 1, 1 -> 0
+  if(getSignal(sigKey3) == 1) // $sigKey3 == 1 만 써도 됨. RxSig 값을 갖고옴
+  {
+    $sigLED3 = !$sigLED3;
+  }
+}
+
+on signal sigKey4
+{
+  if($sigKey4 == 1)
+  {
+    Toggle(sigLED4);
+    Toggle(sigLED5);
+    Toggle(sigLED6);
+  }
+}
+
+void Toggle(signal * symbol)
+{
+  if($symbol == 1)
+  {
+    $symbol = 0;
+  }
+  else
+  {
+    $symbol = 1;
+  }
+}
+```
+   
+✅ clock 사용   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  msTimer tmrCycle;
+  int gCounter;
+}
+
+on key 'a'
+{
+  setTimerCyclic(tmrCycle, 1000);
+}
+
+on timer tmrCycle
+{
+  gCounter++;
+  write("%d. execution", gCounter);
+}
+```   
+   
+✅ p.292 첫번째 문제   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  msTimer loop;
+}
+
+on start
+{
+  setTimerCyclic(loop,200);
+}
+
+on timer loop
+{
+  $sigSensorValue = (($sigSensorA1 /10 + $sigSensorA2 /10 + $sigSensorB1 /10 + $sigSensorB2 /10) / 4);
+}
+```   
+![sig1234평균](https://github.com/user-attachments/assets/2d641a49-e019-470e-b082-8d650b8f0a18)   
+   
+위에꺼에서 IL 을 설정하여 메세지 주기를 낮춰서 좀 더 완만한 그래프를 그린다.   
+![100ms](https://github.com/user-attachments/assets/fb05aa0d-c5b2-4dcf-8455-82688fa77d03)   
+   
+✅ p.300 문제   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+on message frmStatus
+{
+  if(this.sigKey8.phys == 1)
+  {
+    write("both key pressed");
+    stop();
+  }
+  output(this); // 이거 안 쓰면 Trace 에 아무것도 안 들어감.
+}
+```   
+![300](https://github.com/user-attachments/assets/c9699b6f-b42c-450f-bb4e-d8b99565f635)   
+   
+근데 현재는 filter 로 인해 하나만 들어온다. 10개 모두 들어오게 하고싶으면   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  
+}
+
+on message frmStatus
+{
+  if(this.sigKey8.phys == 1)
+  {
+    write("both key pressed");
+    stop();
+  }
+  output(this);
+}
+
+on message * {
+  output(this);
+}
+```   
+   
+✅ button + counter 로 sigCounter 늘리기   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  msTimer loop;
+  int gCount = 0;
+}
+
+on start
+{
+  setTimerCyclic(loop, 200);
+}
+
+on timer loop
+{
+  sendMsg();
+}
+
+void sendMsg ()
+{
+  message frmStatus msg;
+  msg.sigCounter.phys = gCount;
+  gCount++;
+  if(gCount > 255)
+  {
+    gCount = 0;
+  }
+  output(msg);
+}
+
+on sysvar sysvar::My::btn
+{
+  if(@sysvar::My::btn == 1)
+  {
+    sendMsg();
+//    message 0x1A1 msg;
+//    msg.dlc = 4;
+//    msg.byte(0) = 0x13;
+//    msg.can = 1; // channel은 1
+//    output(msg);
+  }
+}
+```   
+![button+clock 으로 sigCount 늘리기](https://github.com/user-attachments/assets/a73a37c6-ca05-413c-b9ec-5aee71f2c7fd)   
+   
+✅ can1 에서 받은걸 can2 에서도 출력하기   
+```c
+/*@!Encoding:65001*/
+includes
+{
+  
+}
+
+variables
+{
+  msTimer loop;
+}
+
+on start
+{
+  setTimerCyclic(loop,200);
+}
+
+on timer loop
+{
+  $sigSensorValue = (($sigSensorA1 /10 + $sigSensorA2 /10 + $sigSensorB1 /10 + $sigSensorB2 /10) / 4);
+}
+
+on message can1.* //can 1(recv) -> can 2(recv) .. can1의 모든 수신 메세지
+{
+  message * gw;
+  gw = this; // 현재 여기선 gw.can = 1 이다 (channel 1)
+  gw.can = 2;
+  output(gw);
+}
+```
+can1   
+![can1](https://github.com/user-attachments/assets/1fbd9f39-bfca-4706-8fa1-c8d2e8a08346)   
+can2   
+![can2](https://github.com/user-attachments/assets/157c490d-6fca-4a64-9454-83794b48f2ad)   
