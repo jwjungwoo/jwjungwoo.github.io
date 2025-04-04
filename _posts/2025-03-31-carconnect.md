@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/35317de3-fade-4e4a-9d2f-bc48859afe87)![image](https://github.com/user-attachments/assets/74dc19ad-45f2-4122-8609-dfda17f74f27)![image](https://github.com/user-attachments/assets/cc4a7028-95bb-4ed8-b934-baeb693d8d67)---
+---
 layout: single
 title:  "차량용 통신 시스템"
 categories: autoever
