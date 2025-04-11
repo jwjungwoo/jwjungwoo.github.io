@@ -13,8 +13,8 @@ sidebar:
 
 ✅ Shift Left!!: 앞단에서부터 SW Testing 을 진행하면서 버그를 잡자!   
 ✅ 외우자   
-<img src="https://github.com/user-attachments/assets/651799ec-8967-4c53-803b-5621380f5ba1" width="800" height="500">   
-
+<img src="https://github.com/user-attachments/assets/4de5ca6e-a06e-42d1-830d-9cfd35dff201" width="800" height="500">   
+✅ 
 
 # 개요
 
@@ -158,4 +158,42 @@ ISO 26262 에선 MBD 를 하라고 권고한다. 현대자동차에서도 2년�
 
 ## A-SPICE 3.1 vs 4.0
 
+<img src="https://github.com/user-attachments/assets/58b3f0d0-4bef-4f2e-8756-0911d1edb3f7" width="800" height="800">   
 
+## Archi, Compo, Unit
+
+Architecture = ECU 위에 올라가는 SW = (Integrated) SW = Embedded SW   
+Unit = 하나의 파일 혹은 하나의 함수 = 모듈   
+<img src="https://github.com/user-attachments/assets/04aa9d3d-02ac-4807-8c89-d314211d88d5" width="900" height="300">   
+
+## Host, Target, in-the-loop tests
+
+Host: 컴퓨터   
+Target: 보드   
+   
+VIL: Vehicle. (나뿐만 아니라 나머지도 진짜)   
+HIL: HW. 실제 올려라.(ECU, Sensor, Actuator 는 진짜. 다만 나빼고 나머지는 가짜)   
+PIL: Processor. 실제 ECU 에 올릴 수 있겠냐.(ECU 는 진짜고 Sensor, Activator 는 가짜)   
+SIL: SW. Target 까진 어렵고 Host 에서 돌린다. 가상으로   
+MIL: Model   
+   
+# TEST
+
+## Unit Test
+
+개발자(본인)가 수행하는 단계이다.   
+확인할 것: 기능(알고리즘), 경계조건(유닛과 유닛과의 관계_input 과 output)   
+   
+✅ 하기 위한 환경을 꾸며줘야함   
+<img src="https://github.com/user-attachments/assets/0d8c71ea-b31f-4a6a-bdf6-ae4c3e3d1793" width="900" height="500">   
+스텁: Unit 안에서 다른 함수를 호출하면 그 함수를 가짜로 만든다.   
+테스팅 드라이버: 나를 호출시킨 다른 Unit. 
+```c
+int jw(int idx) {
+  int num = sum(1, 2);
+  return num; 
+}
+jw 입장에선 sum 이 스텁, sum 입장에선 jw 가 테스팅 드라이버
+```
+   
+✅ 
