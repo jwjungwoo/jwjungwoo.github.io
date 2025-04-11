@@ -176,7 +176,7 @@ HIL: HW. 실제 올려라.(ECU, Sensor, Actuator 는 진짜. 다만 나빼고 �
 PIL: Processor. 실제 ECU 에 올릴 수 있겠냐.(ECU 는 진짜고 Sensor, Activator 는 가짜)   
 SIL: SW. Target 까진 어렵고 Host 에서 돌린다. 가상으로   
 MIL: Model   
-   
+
 # TEST
 
 ## Unit Test
@@ -194,6 +194,101 @@ int jw(int idx) {
   return num; 
 }
 jw 입장에선 sum 이 스텁, sum 입장에선 jw 가 테스팅 드라이버
+```   
+   
+## Integration Test
+
+단위와 단위간의 통합, 컴포넌트와 컴포넌트간의 통합을 본다.   
+쪼개진 것들을 통합하면서 연결된 부위들이 문제 없는지를 보겠다.   
+모듈1,2,3 를 통합 SW 로 합치는 과정이다. 빅뱅, 하향식, 상향식, 그리고 CI   
+   
+1. 빅뱅 통합   
+그냥 한번에 합쳐버림. 어디서 오류났는지 확인하기 힘들어서 요즘엔 잘 안 씀.   
+<img src="https://github.com/user-attachments/assets/158b2d72-705f-48e4-98e8-d965eab35d0a" width="900" height="500">   
+   
+2. Top-Down 통합   
+<img src="https://github.com/user-attachments/assets/2f8a96b5-4502-41d1-b55c-155980c77d96" width="900" height="500">   
+   
+3. Down-Top 통합   
+<img src="https://github.com/user-attachments/assets/66dc3e79-5787-44f9-b7ac-369acc1e97f3" width="900" height="500">   
+   
+4. CI (Continuous Integration)   
+마지막에 몰아서 합치지말고 시작부터 지속적 통합을 적용하자.   
+   
+✅ 참고   
+정적 아키텍처, 동적 아키텍처. 여기서 정적 아키텍처는 코드 구성표를 의미하고, 동적 아키텍처는 코드간 흐름, 어떤 함수가 오가는지 등을 표현한다.   
+   
+## System Test
+
+System Test: 통합된 SW 가 요구사항과 동일하냐?   
+   
+수행주체: 테스터(제 3자)   
+테스트 대상: 요구사항 명세서를 기초로 하여 기능 요구사항. 보안, 성능, 신뢰성, UX 등의 비기능 요구사항. 기능 안전 요구사항   
+   
+기능 테스트: 기능이 잘 작동하는지, 수행함에 있어서 defact 는 없는지.   
+비기능 테스트: 성능 테스트, 사용성 테스트가 여기에 포함된다. ex) 12시간 돌렸을 때 정상동작 하는가. 메모리, ecu, resource 등에 문제가 없는지.   
+   
+```c
+(비기능 테스트 예시)
+사용자가 해당 기능을 요청하면, 네이게이션 시스템은 3초 이내에 처리해야한다. 단, 대량의 BATCH 성 처리 작업은 배제한다.
 ```
    
-✅ 
+또한 테스트의 형상을 고정하고 테스트를 진행해야한다. (소스코드의 버전을 고정해놓고 하라)   
+   
+✅ ISO 26262의 SW 테스팅 수행 환경   
+최소 HIL 이상의 테스트 환경을 요구. 즉, Host 말고 Target 에서 해야한다. Lab car, Mule, Rest of bus 등. Lab car 는 굴러가진 않는 
+자동차, Mule 은 굴러다니는 차, Rest of bus 는 CANoe 같이 ECU 말고 나머지 장치들을 가상으로 만들어주는 것이다.
+
+## Acceptance Testing
+
+실제 사용자가 운영하는 환경에서 실시.   
+실제 도로, 날씨 등을 구축해야한다. 예를들면 모라이 같은 것이 있다.   
+   
+```c
+(대표적인 인수 테스트)
+알파 테스트: 회사 내부 사람들이 "우리 제품 잘 돌아가나?" 하고 테스트해보는 단계
+베타 테스트: 외부 사용자(일반 유저나 특정 고객)한테 써보게 하면서 피드백 받는 단계
+```   
+     
+Test Bench, Test Track, validation on public roads, field use by end users.   
+
+End-to-End 시나리오: 처음부터 끝까지의 모든 과정의 시나리오를 짜서 테스트해본다.
+
+# 동적 테스트
+
+## 대표적인 방법
+
+(스펙기반)   
+명세기반 테스트: black box test   
+구조기반 테스트: white box test   
+(경험기반)   
+경험기반 테스트: 테스터의 경험 혹은 과거의 경험을 기반으로 테스팅. 하지만 ISO26262 는 입증할 수 있어야한다. 증명을 할 수 있어야하며 문서가 있어야한다. 따라서 경험기반 테스트는 잘 안 쓴다.   
+   
+## 테스트의 목적
+
+가성비 있는 테스트 케이스를 찾아야한다.
+
+## 테스팅 vs 디버깅
+
+테스팅: 결함 발견하기위한 행위   
+디버깅: 결함 수정하기위한 행위   
+둘은 세트다.   
+<img src="https://github.com/user-attachments/assets/122c0b3e-196c-455b-a96e-b3fea5859ede" width="900" height="550">   
+
+## 재테스팅(Re-Testing)
+
+목적: 발견된 결함이 정상적으로 조치되었는지 확인하는 행위   
+수행: 결함 발견자(테스팅 담당자)   
+수행 시기: 개발자가 결함이 조치되었다고 전달할 때   
+수행 방법: Regression Test(얌생이마냥 그 부분만 하지말고, 전체 다 해라 ㅋㅋ_ISO26262. 근데 너무 힘들면 중요도 상중하 나눠서 상만 하던가 그렇게해.. 근데 전체 다 하는게 좋지.)   
+
+## Risk Based Testing
+
+테스트 대상에 비해서 테스트 자윈이 부족할 경우, 우선순위를 나눠서 시간을 할당한다.   
+```c
+우선순위   40일중할당일수
+상         20일
+중          5일
+하          5일
+그리고 버퍼 5일
+```
