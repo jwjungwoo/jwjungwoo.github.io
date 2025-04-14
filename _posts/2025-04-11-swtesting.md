@@ -373,6 +373,21 @@ SW 측면에서 결함 주입의 2가지 방법
 같은 결과값을 출력하는 입력값을 분류하고, 대표값으로만 테스트하는 방법. 즉, 아웃풋을 기준으로 입력값을 나눈다. 그리고 나눠진 그룹 중 각각 1개씩 정한다. 중앙값, 최빈값 등 정하면된다. 근데 중앙값이나 최빈값에서 오류가 
 검출될 확률은 극히 낮다. 경계값을 이용하면 되는데 예를들어 0~30, 31~60, 61~100 이라면 29, 30, 31 같은 경계값을 사용하면된다. 
 
+## 테케 실습
 
+<img src="https://github.com/user-attachments/assets/3b767acd-6f3e-46c6-8a2f-8d14a80b7279" width="900" height="550">   
+<img src="https://github.com/user-attachments/assets/328c4dba-e938-438c-bee3-f3acec8864d2" width="900" height="400">   
+
+형식은 각자 다르게 할 수 있다. 
+
+## 페어와이즈(Pairwise)
+
+<img src="https://github.com/user-attachments/assets/cb9e2d5d-48b2-4e64-a20c-5907ee9d0295" width="900" height="450">   
+여기서 <https://github.com/microsoft/pict/releases/tag/v3.7.4> pick.exe 를 다운받고 C에 PICK 란 파일을 만들고 거기에 picK, cmd 를 실행하면 된다. 그럼 테스트 케이스 조합을 뽑을 수 있다.   
+```c
+pict data.txt
+pict data.txt > result.xls             이건 조합으로 테케 뽑아줌
+pict data.txt /o:max > result_max.xls  이건 전수조사 
+```
 
 
