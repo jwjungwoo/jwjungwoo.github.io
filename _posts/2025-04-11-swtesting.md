@@ -422,5 +422,20 @@ void api1(int i) {
 i 가 0 이면 statement coverage 는 1/3
 i 가 -1 이면 statement coverage 는 3/3 (100퍼센트)
 ```   
+   
+<img src="https://github.com/user-attachments/assets/d14fb8fa-ed7b-452e-a9d5-ee1e7d413d62" width="900" height="500">   
 
+## 결정 커버리지
+
+Branch 커버리지라고도 부르는데 요샌 거의 다 Branch 커버리지라고 부른다. 
+
+```c
+if(a > 0)
+  ...
+  if(a == 1)
+
+만약 a를 0으로 테스트 한 경우: 50 퍼센트
+만약 a를 1로 테스트 한 경우: 50 퍼센트
+T, F 와 T, F 로 봐야함.
+```
 
