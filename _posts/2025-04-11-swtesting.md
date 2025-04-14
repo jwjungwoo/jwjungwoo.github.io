@@ -390,4 +390,37 @@ pict data.txt > result.xls             이건 조합으로 테케 뽑아줌
 pict data.txt /o:max > result_max.xls  이건 전수조사 
 ```
 
+# 커버리지
+
+## 함수 커버리지
+
+통합 테스트에서 요구하는 커버리지다.   
+<img src="https://github.com/user-attachments/assets/306de0ba-38cd-4f77-8172-c1f02c7b131a" width="900" height="400">   
+```c
+int is_positive(int a);
+
+int add() {
+  is_positive();
+}
+라 했을 때 add만 테스트 하면
+함수 커버리지는 100퍼센트다.
+```
+
+## 구문 커버리지
+
+```c
+구문(Statement): ';' 로 끝나는 명령 라인
+
+void api1(int i) {
+  printf("...\n");
+  if(i < 0) {
+    printf("...\n);
+    printf("...\n);
+  }
+}
+
+i 가 0 이면 statement coverage 는 1/3
+i 가 -1 이면 statement coverage 는 3/3 (100퍼센트)
+```   
+
 
