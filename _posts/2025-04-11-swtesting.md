@@ -439,3 +439,8 @@ if(a > 0)
 T, F 와 T, F 로 봐야함.
 ```
 
+# 화이트박스 테스팅 종류
+
+## TDD
+
+Test Driven Development: 테스트 주도 개발   
