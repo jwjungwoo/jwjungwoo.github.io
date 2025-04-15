@@ -445,7 +445,7 @@ T, F 와 T, F 로 봐야함.
 
 파일은 바탕화면에 저장해놨다.
 
-## google test
+## google test 실습1
 
 파일은 바탕화면에 저장해놨다.
 
@@ -461,3 +461,139 @@ sws_req_ID:
 ```
 
 Test Driven Development: 테스트 주도 개발   
+
+## google test 실습2
+
+1. 테스트로 오류잡기, 2. 도달할 수 없는 함수 발견
+
+우선 yellow 부분이 이상이 아니라 초과로 되어있다는 것을 테스트 돌린 결과 알았다. 그리고 도달할 수 없는 함수의 발견은 아무리 돌려도 97퍼만큼밖에 커버가 안돼서 가능했다.   
+<img src="https://github.com/user-attachments/assets/c7fc63f8-1186-4e74-8a6b-b96a4342625f" width="900" height="500">   
+
+✅ hiker.c   
+```c
+#include "hiker.h"
+#include <stdio.h>
+#include <stdbool.h>
+
+#define HIGH_MIN 80
+#define HIGH_MAX 110
+#define LOW_MIN 50
+#define LOW_MAX 80
+
+bool isInRange(float value, float min, float max) {
+    return value >= min && value <= max;
+}
+
+// 상한 조건 확인
+bool checkHigh(float high) {
+    return isInRange(high, HIGH_MIN, HIGH_MAX);
+}
+
+// 하한 조건 확인
+bool checkLow(float low) {
+    return isInRange(low, LOW_MIN, LOW_MAX);
+}
+// 현재 속도 조건 확인
+bool checkSpeed(float speed) {
+    return speed >= 0;
+}
+
+// 차량 속도에 따른 상태 표시
+const char *displayStatus(float high, float low, float speed) {
+    // 상한/하한/현재 속도 값 모두 유효할 때
+    if (checkHigh(high) && checkLow(low) && checkSpeed(speed)) {
+        if (speed > high) {
+            return "red";
+        }
+        else if (speed > high * 0.9 && speed <= high) {
+            return "yellow";
+        }
+        else if (speed >= low && speed <= high * 0.9) {
+            return "green";
+        }
+        else if (speed < low) {
+            return "gray";
+        }
+        else {
+            return "err_msg";
+        }
+    } else {
+        return "err_msg";
+    }
+}
+```
+
+✅ hiker.h   
+```c
+#ifndef HIKER_INCLUDED
+#define HIKER_INCLUDED
+
+#include <stdbool.h>
+
+bool isInRange(float, float, float);
+bool checkHigh(float);
+bool checkLow(float);
+bool checkSpeed(float);
+const char* displayStatus(float, float, float);
+
+#endif
+```
+
+✅ hiker.tests.cpp   
+```c
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+#include <string>
+
+extern "C"
+{
+#include "hiker.h"
+}
+
+using namespace ::testing;
+
+TEST(DisplayStatusTest, SpeedAboveHigh)
+{
+    ASSERT_STREQ(displayStatus(100,60,120), "red");
+}
+
+TEST(DisplayStatusTest, SpeedInYellow)
+{
+    ASSERT_STREQ(displayStatus(100,60,91), "yellow");
+}
+
+TEST(DisplayStatusTest, SpeedInGreen)
+{
+    ASSERT_STREQ(displayStatus(100,60,80), "green");
+}
+
+TEST(DisplayStatusTest, SpeedInLow)
+{
+    ASSERT_STREQ(displayStatus(100,60,30), "gray");
+}
+
+
+TEST(checkHighTest, InRange)
+{
+    ASSERT_TRUE(checkHigh(80));
+    ASSERT_TRUE(checkHigh(110));
+    ASSERT_TRUE(checkHigh(90));
+}
+
+TEST(checkTest, OutOfRange)
+{
+    ASSERT_FALSE(checkHigh(79));
+    ASSERT_FALSE(checkHigh(111));
+}
+
+TEST(checkTest, checkSpeedTest)
+{
+    ASSERT_EQ(checkSpeed(-1),0);
+    ASSERT_EQ(checkSpeed(0),1);
+    ASSERT_EQ(checkSpeed(1),1);    
+}
+```
+
+# 정적 테스트
+
+## 
