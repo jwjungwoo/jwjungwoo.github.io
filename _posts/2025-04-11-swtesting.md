@@ -633,3 +633,6 @@ save 누르고 다음과 같이 설정. docs 에 보통 결과물을 저장한�
 진입함수 기준으로 관리하면 된다. 만약 서클 그리는게 있으면 유지보수의 대상이다.   
 ![doxygen5](https://github.com/user-attachments/assets/4cef7b2c-3cce-4530-8f0b-8ebc29b1b9d1)   
 
+## 복잡도
+
+p.146 참조해서 ppt 꾸미자.
