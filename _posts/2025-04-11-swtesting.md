@@ -596,4 +596,43 @@ TEST(checkTest, checkSpeedTest)
 
 # 정적 테스트
 
-## 
+## inspection 과 walkthrough
+
+동료에게 원시 코드나 여러 가지 산출물을 검토부탁함. 동적은 TestCase, 정적은 체크리스트 활용(p.116)   
+후속 조치: 시정 조치, 조치 보고
+인스펙션 VS 워크쓰루: P.125   
+
+인스펙션: 진행자, 작성자(최종 산출물의 작성자. 시정조치 수행), 제출자(객관성을 확보하기 위해 산출물을 제출할 사람. 작성자가 나쁜 마음 먹었을수도 있기에 존재한다. 보통 PM이 함), 
+검토자(웬만하면 전문가 선정해서 검토), 기록자   
+
+## CppCheck
+
+include path 클릭하면 여기서 내가 사용하지 않는데 추가한 library 도 찾아준다.
+![스크린샷 2025-04-16 101907](https://github.com/user-attachments/assets/1a68bd69-55f9-4abf-80f9-94e0ccadf61c)   
+근데 속도가 너무 느려서 설정에서 스레드를 4로 바꿔줬다.   
+![스크린샷 2025-04-16 102130](https://github.com/user-attachments/assets/dcc08365-cca5-42d8-b4b6-69a18d2564d0)   
+그리고 빗자루 표시를 눌러서 이전 기록을 삭제하고 다시 분석했다.   
+   
+그리고 misra 기준을 적용했다. misra txt 파일은 강사님 깃헙에서 다운받았다.   
+![misra_1](https://github.com/user-attachments/assets/327fcc1b-7d16-4d3b-b97e-dc2aa1cc4d94)   
+![misra_0](https://github.com/user-attachments/assets/95d2c43f-69c9-47c4-9840-6fccb6e819bf)   
+   
+## Doxyfile
+
+각각의 계층, 파일, 함수간 의존관계가 적절한지 볼 때 사용. C/C++ 외 java, PHP 등 지원   
+save 누르고 다음과 같이 설정. docs 에 보통 결과물을 저장한다. 우린 curl-master 안에 doxygen 이란 파일을 만들었다.   
+
+아래에선 하지 않았는데 output 에서 'with search function' 도 해주면 검색기능이 생긴다.
+   
+![doxygen](https://github.com/user-attachments/assets/a377e2ef-5129-45d8-866b-7f342e83be74)   
+![doxygen1](https://github.com/user-attachments/assets/f5d40e3b-56f7-4cbb-a60d-578e7ed25122)   
+![doxygen2](https://github.com/user-attachments/assets/8bb7e3d4-18c5-4117-927c-0ff5914f9ff1)   
+![doxygen3](https://github.com/user-attachments/assets/920a9f62-0a07-48e1-a326-488512aadb61)   
+![doxygen4](https://github.com/user-attachments/assets/3707eb47-c750-49cc-8a13-29b91559583a)   
+   
+진입함수 기준으로 관리하면 된다. 만약 서클 그리는게 있으면 유지보수의 대상이다.   
+![doxygen5](https://github.com/user-attachments/assets/4cef7b2c-3cce-4530-8f0b-8ebc29b1b9d1)   
+
+
+
+
