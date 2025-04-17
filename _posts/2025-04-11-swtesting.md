@@ -14,7 +14,6 @@ sidebar:
 ✅ Shift Left!!: 앞단에서부터 SW Testing 을 진행하면서 버그를 잡자!   
 ✅ 외우자   
 <img src="https://github.com/user-attachments/assets/4de5ca6e-a06e-42d1-830d-9cfd35dff201" width="800" height="500">   
-✅ 
 
 # 개요
 
