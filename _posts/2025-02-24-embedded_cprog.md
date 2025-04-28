@@ -3545,8 +3545,10 @@ master(MCU) 하나에 온도계, 습도계, 마이크를 달아서 I2C 통신을
 ✅ UART 는 serial 통신을 한다.   
 
 # UART 실습
+
 ## 세팅
->>>>>>>>>>>>>>>>>> 강의록 ppt 파일들로 정리하기   
+
+강의록 ppt 파일들로 정리하기   
 아래의 사진처럼 serial 이라고 먼저 눌러놓고 왼쪽의 serial 창을 설정하면 된다. Putty의 검은색 창이 뜨는데 이건 보드에서 뜨는거라서 여기다가는 타자를 못 친다. 또한 코드를 로드하면 reset버튼을 누르면 된다.   
 <img src="https://github.com/user-attachments/assets/e09817bb-0398-4039-912e-d378c5fca6a6" width="300" height="300">   
 ## 
