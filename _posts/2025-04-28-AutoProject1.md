@@ -469,3 +469,15 @@ uint8_t GetNewChar(void)
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 ```
 
+# 진단기
+
+## 라즈베리파이 명령어
+
+```python
+$cd Desktop
+$mkdir embedded3
+$cd embedded3
+$vi cluster.py
+$
+
+```
