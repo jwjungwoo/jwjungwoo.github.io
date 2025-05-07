@@ -474,10 +474,11 @@ uint8_t GetNewChar(void)
 ## 라즈베리파이 명령어
 
 ```python
+이전에 VNC 연결, 설치해야하는 라이브러리들은 설치해야한다.
 $cd Desktop
 $mkdir embedded3
 $cd embedded3
 $vi cluster.py
-$
 
+진단기는 터미널을 누르면 나오도록했다.
 ```
