@@ -481,4 +481,6 @@ $cd embedded3
 $vi cluster.py
 
 진단기는 터미널을 누르면 나오도록했다.
+
+또한 음악재생 코드인 v.py 코드를 라즈베리파이 부팅시 자동 시작되도록 ~/.config/autostart dir을 만들어서 거기서 v.desktop 이란 파일에 설정해놨다.
 ```
