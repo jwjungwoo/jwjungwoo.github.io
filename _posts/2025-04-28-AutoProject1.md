@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "어린이 차 남김 사고 예방 시스템"
+title:  "어린이 차 방치 사고 예방 시스템"
 categories: autoever
 tag: 
 author_profile: false #true면 글 안에서 내 프로필 보여줌
@@ -490,3 +490,39 @@ $ vi ~/.bashrc
 ```python
 음악재생 코드인 v.py 코드를 라즈베리파이 부팅시 자동 시작되도록 ~/.config/autostart dir을 만들어서 거기서 v.desktop 이란 파일에 설정해놨다.
 ```
+
+# 코드 형상 관리
+
+## Cppcheck
+
+✅ 정적 분석   
+Cppcheck 를 통해 misra2012 를 적용했다. 추가 자료는 게시글 'SW testing' 에 있다.   
+   
+✅ 작동 방식   
+```c
+1. Analyze > 디렉토리 > 분석하고 싶은 전체 프로젝트파일 선택
+1-1. 만약 프로젝트가 열려있으니 닫으라는 오류가 뜬다면: 파일 > 프로젝트 파일 닫기 를 누르고 다시 시도하면된다.
+
+2. 파일 > 새 프로젝트 파일 > C 밑의 test_workspace 밑의 curl-master 에 들어가서 파일 이름에 curl_cppcheck1 라고 하나 만들자.
+
+3. 660 개 중 ~개 검사중 이런식으로 뜰 것이다. 에러나 경고가 뜨면 고쳐주자. 경고도 에러처럼 대처해야한다.
+
+4. 정적 분석이 끝나면 결과가 curl_cppcheck1-cppcheck-build-dir 파일에 저장될 것이다.
+
+5. curl_cppcheck1, curl_cppcheck1-cppcheck-build-dir 를 프로젝트 제출에 포함하자.
+```
+
+## Doxyfile
+
+✅ 코드 형상 관리(callgraph 가시화)   
+<img src="https://github.com/user-attachments/assets/1d966dd0-f88b-4bb6-85c9-16bfb594ed6e" width="800" height="400">   
+   
+✅ 작동 방식   
+<img src="https://github.com/user-attachments/assets/2798dfc4-4119-4b52-a481-c4c036276949" width="800" height="700">   
+```c
+1. 맨 위에는 doxygen 파일이 저장될 위치를 정한다.
+2. Source code directory 엔 전체 프로젝트파일을 포함하는 폴더를 선택하면된다. 나머지는 SW testing 게시물에서...
+```
+
+# 프로젝트 물품 제작
+
