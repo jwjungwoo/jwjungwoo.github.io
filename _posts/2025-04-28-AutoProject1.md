@@ -469,9 +469,9 @@ uint8_t GetNewChar(void)
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
 ```
 
-# 진단기
+# 라즈베리파이 
 
-## 라즈베리파이 명령어
+## 진단기
 
 ```python
 이전에 VNC 연결, 설치해야하는 라이브러리들은 설치해야한다.
@@ -481,6 +481,12 @@ $cd embedded3
 $vi cluster.py
 
 진단기는 터미널을 누르면 나오도록했다.
+$ vi ~/.bashrc
 
-또한 음악재생 코드인 v.py 코드를 라즈베리파이 부팅시 자동 시작되도록 ~/.config/autostart dir을 만들어서 거기서 v.desktop 이란 파일에 설정해놨다.
+```
+
+## 네이게이션 명령어
+
+```python
+음악재생 코드인 v.py 코드를 라즈베리파이 부팅시 자동 시작되도록 ~/.config/autostart dir을 만들어서 거기서 v.desktop 이란 파일에 설정해놨다.
 ```
