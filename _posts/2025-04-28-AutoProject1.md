@@ -523,6 +523,3 @@ Cppcheck 를 통해 misra2012 를 적용했다. 추가 자료는 게시글 'SW t
 1. 맨 위에는 doxygen 파일이 저장될 위치를 정한다.
 2. Source code directory 엔 전체 프로젝트파일을 포함하는 폴더를 선택하면된다. 나머지는 SW testing 게시물에서...
 ```
-
-# 프로젝트 물품 제작
-
