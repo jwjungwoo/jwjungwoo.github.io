@@ -9,7 +9,7 @@ sidebar:
 #search: false
 ---
 
-# DFplayer mini
+# DFPlayer mini
 
 ## 128GB sd카드 포멧
 
