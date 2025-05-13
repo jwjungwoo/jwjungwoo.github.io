@@ -9,6 +9,18 @@ sidebar:
 #search: false
 ---
 
+# 결과
+
+## 발표자료 일부 발췌
+
+<img src="https://github.com/user-attachments/assets/c174eb3a-6efe-438d-afcf-d6402e4b78fb" width="600" height="350">   
+<img src="https://github.com/user-attachments/assets/70b5c60b-ae4a-4f43-aa9b-d578bf512465" width="600" height="350">   
+<img src="https://github.com/user-attachments/assets/54ec2435-9989-432e-9ad3-e0e5402d0d3d" width="600" height="350">   
+
+## 하드웨어
+
+<img src="https://github.com/user-attachments/assets/f0da58f4-29fc-4ee3-88b8-a4318b598731" width="600" height="320">   
+
 # DFPlayer mini
 
 ## 128GB sd카드 포멧
