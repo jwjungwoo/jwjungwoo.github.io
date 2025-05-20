@@ -84,6 +84,11 @@ Watchdog Timer (WDT)는 마이크로컨트롤러가 제대로 동작하지 않�
 오용시 문제	해당 코어만 리셋          	           전체 시스템 리셋 유발 가능 (위험!)
 ```
 
+## SMU enum
+
+![watchdog_enum](https://github.com/user-attachments/assets/aa8bb315-5ab4-4a34-8997-d65e241dd01b)
+
+
 # HARA
 
 ## HARA 단계
