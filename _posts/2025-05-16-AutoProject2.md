@@ -114,6 +114,7 @@ core0 를 제외한 다른 CPU들의 Watchdog Timer는 기본 설정상, 타임�
 
 The Safety Alarm(s) which can trigger an Emergency Stop are configured and enabled within the Safety Management Unit (SMU). All SMU triggered Emergency Stop cases are in Synchronous Mode, regardless of the state of EMSR.MODE. The safety emergency stop flag (EMSR.SEMSF)(이때 EMSR는 SCU의 register 이다.) is set(1로 설정) when a configured and enabled SMU Safety Alarm occurs. The setting of (EMSR.SEMSF) activates the emergency stop. An SMU triggered emergency state can only be terminated by clearing the EMSR.SEMSF via software (Write EMSR.SEMSFM with 10B).   
 SCU는 SMU에서 온 PES 신호를 감지하여 EMSR.SEMSF 비트를 자동으로 Set하여 긴급정지한다. 난 긴급정지 안 하고 싶음.   
+그림은 SCU의 EMSR   
 <img src="https://github.com/user-attachments/assets/5a52f707-8637-4244-a25b-f891a869de87" width="800" height="300">   
    
 <img src="https://github.com/user-attachments/assets/7c4d7e0b-5232-4f8b-8b73-550b13060b1f" width="800" height="690">   
@@ -122,6 +123,14 @@ SCU는 SMU에서 온 PES 신호를 감지하여 EMSR.SEMSF 비트를 자동으�
 
 ![watchdog_enum](https://github.com/user-attachments/assets/aa8bb315-5ab4-4a34-8997-d65e241dd01b)   
 
+# SCU
+
+## NMI Trap
+
+NMI 트랩은 소프트웨어나 하드웨어 트리거를 통해 발생할 수 있으며, TRAPSET 레지스터에 해당 비트를 set 하면 트랩 발생 가능하다.   
+시스템 내 모든 코어에 동일한 NMI 트랩이 동시에 발생하다.   
+트랩 플래그는 TRAPCLR 레지스터를 통해 소프트웨어로 클리어 가능하다.   
+트랩 소스가 disable되어 있으면 NMI는 발생하지 않는다.	단순히 플래그만 설정되고, 실제로 NMI 인터럽트는 생성되지 않는다.   
 
 # HARA
 
