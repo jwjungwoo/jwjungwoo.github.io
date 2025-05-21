@@ -100,9 +100,18 @@ Watchdog Timer (WDT)는 마이크로컨트롤러가 제대로 동작하지 않�
 오용시 문제	해당 코어만 리셋          	           전체 시스템 리셋 유발 가능 (위험!)
 ```
 
+# SMU
+
+## SMU Event Triggered Emergency Stop
+
+The Safety Alarm(s) which can trigger an Emergency Stop are configured and enabled within the Safety Management Unit (SMU). All SMU triggered Emergency Stop cases are in Synchronous Mode, regardless of the state of EMSR.MODE. The safety emergency stop flag EMSR.SEMSF is set(1로 설정) when a configured and enabled SMU Safety Alarm occurs. The setting of EMSR.SEMSF activates the emergency stop. An SMU triggered emergency state can only be terminated by clearing the EMSR.SEMSF via software (Write EMSR.SEMSFM with 10B).   
+<img src="https://github.com/user-attachments/assets/5a52f707-8637-4244-a25b-f891a869de87" width="800" height="300">   
+   
+<img src="https://github.com/user-attachments/assets/7c4d7e0b-5232-4f8b-8b73-550b13060b1f" width="800" height="690">   
+
 ## SMU enum
 
-![watchdog_enum](https://github.com/user-attachments/assets/aa8bb315-5ab4-4a34-8997-d65e241dd01b)
+![watchdog_enum](https://github.com/user-attachments/assets/aa8bb315-5ab4-4a34-8997-d65e241dd01b)   
 
 
 # HARA
