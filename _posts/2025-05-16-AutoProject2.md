@@ -52,6 +52,8 @@ User(우리)가 마음대로 작성할 수 있다. 단 조심해야한다. 말 �
 
 ![스크린샷 2025-05-21 103403](https://github.com/user-attachments/assets/17f02503-c2c7-4b67-811a-ee4f01fee3c3)
 
+# lockstep
+
 ## lockstep vs non-lockstep
 
 ✅ TC275   
@@ -74,19 +76,19 @@ TC3XX 시리즈는 코어가 4개다. 락스탭은 그 중 2개만 지원된다!
 
 The lockstep control function is enabled by the LSEN(lockstep enable) bitfield in a control register in the SCU. Each core capable of lockstep has its own instance of the control register. In this product, both the CPU0 and CPU1 instances of the Tricore can be lockstepped so there are two registers, LCLCON0 for CPU0 and LCLCON1 for CPU1. 
 These registers are only initialised by a cold power-on reset. In this initialisation state, all lockstepped processors in the system will have lockstep enabled. The lockstep function 
-can only be disabled by the system initialisation software writing a 0B to the LSEN bitfield. Application software cannot enable or disable the lockstep function. The current mode of the lockstep logic can be monitored by reading the lockstep status bit, LS(lockstep status), in the associated LCLCON register. Writes to the control registers will be subject to the protection mechanisms of the SCU. 즉 app 에선 lockstep을 해제 또는 실행할 수 없다. 락스탭이 작동하는지는 LS bit 를 보고 판단한다.
+can only be disabled by the system initialisation software writing a 0B to the LSEN bitfield. Application software cannot enable or disable the lockstep function. The current mode of the lockstep logic can be monitored by reading the lockstep status bit, LS(lockstep status), in the associated LCLCON register. Writes to the control registers will be subject to the protection mechanisms of the SCU. 즉 app 에선 lockstep을 해제 또는 실행할 수 없다. 락스탭이 작동하는지는 LS bit 를 보고 판단한다.   
+<img src="https://github.com/user-attachments/assets/8188c1c3-a6bb-4bc8-aa1a-3118113dd516" width="800" height="270">   
 
 ## lockstep monitoring
 
 The lockstep monitoring function will compare the outputs from the master and checker cores and report that a failure has occurred to the Safety Management Unit (SMU) for appropriate action. 
 두 코어는 완전히 동기화된 클럭으로 실행되지만, 하드웨어는 비교를 위해 일시적인 지연(synchronization delay) 을 삽입한다. 체커 코어의 입력과 마스터 코어의 출력은 비교기(comparator)로 전달되기 전에 각각 2 클럭 사이클 동안 지연된다. 이 지연을 통해, 두 코어의 신호를 정확히 정렬하여 비교할 수 있도록 보장한다.
 
-
-## watchdog
+# watchdog
 
 ✅ watchdog   
 Watchdog Timer (WDT)는 마이크로컨트롤러가 제대로 동작하지 않고 멈췄을 때, 시스템을 자동으로 재시작(Reset)시키기 위한 하드웨어 보호 장치이다. 
-즉, 시스템이 정상이면 주기적으로 Watchdog을 “살아있다”는 신호로 갱신해야 하고, 그걸 못 하면 "죽었다"고 판단해서 Watchdog이 MCU를 리셋(재부팅) 시킨다. core 마다의 Watchdog 이 존재한다. 
+즉, 시스템이 정상이면 주기적으로 Watchdog을 “살아있다”는 신호로 갱신해야 하고, 그걸 못 하면 "죽었다"고 판단해서 MCU를 리셋(재부팅) 시킨다. core 마다의 Watchdog 이 존재한다. 
 
 ## CPU watchdog vs Safety watchdog
 
