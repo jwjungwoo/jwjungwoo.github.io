@@ -88,7 +88,13 @@ The lockstep monitoring function will compare the outputs from the master and ch
 
 ✅ watchdog   
 Watchdog Timer (WDT)는 마이크로컨트롤러가 제대로 동작하지 않고 멈췄을 때, 시스템을 자동으로 재시작(Reset)시키기 위한 하드웨어 보호 장치이다. 
-즉, 시스템이 정상이면 주기적으로 Watchdog을 “살아있다”는 신호로 갱신해야 하고, 그걸 못 하면 "죽었다"고 판단해서 MCU를 리셋(재부팅) 시킨다. core 마다의 Watchdog 이 존재한다. 
+즉, 시스템이 정상이면 주기적으로 Watchdog을 “살아있다”는 신호로 갱신해야 하고, 그걸 못 하면 "죽었다"고 판단해서 MCU를 리셋(재부팅) 시킨다. core0 watchdog, core1 watchdog, core2 watchdog 이 존재한다. 반면 safety watchdog 은 tc275에 1개만 존재한다.   
+   
+✅ 특징   
+기본적인 "감시(Watchdog)" 기능 외에도, 각 WDT에는 End-of-Initialization(ENDINIT) 기능이 포함되어 있어서 critical registers 를 실수로 덮어쓰는 것을 방지한다. So, use a password and guard bits during accesses to the WDT control registers. 주기적으로 유효한 접근(Password Access + Modify Access)을 통해 ENDINIT 비트를 클리어하여 중요 레지스터에 접근해야한다. 주기내에 못 오면 SMU 에게 알린다. SMU는 알람 발생 시, 곧바로 리셋시키는 대신, 먼저 인터럽트 또는 NMI(Non-Maskable Interrupt)를 통해 회복 또는 상태 저장 시간을 줄 수 있도록 설정할 수 있다.   
+마스킹(masking) 할 수 없는 고정 우선순위의 인터럽트임으로 일반적인 인터럽트처럼 비활성화(disable)하거나 무시할 수 없다.   
+   
+core0 를 제외한 다른 CPU들의 Watchdog Timer는 기본 설정상, 타임아웃 발생 시 리셋을 유발하도록 설정되어 있지 않다. (근데 우리는 multi-core 쓰기로 해놔서 되려나?) 하지만 이는 SMU 설정을 통해 활성화할 수 있다 (자세한 내용은 SMU 섹션 참조). 그리고 각 CPU의 Watchdog은 오직 해당 CPU만이 설정, 활성화 또는 비활성화할 수 있다.
 
 ## CPU watchdog vs Safety watchdog
 
@@ -106,7 +112,8 @@ Watchdog Timer (WDT)는 마이크로컨트롤러가 제대로 동작하지 않�
 
 ## SMU Event Triggered Emergency Stop
 
-The Safety Alarm(s) which can trigger an Emergency Stop are configured and enabled within the Safety Management Unit (SMU). All SMU triggered Emergency Stop cases are in Synchronous Mode, regardless of the state of EMSR.MODE. The safety emergency stop flag EMSR.SEMSF is set(1로 설정) when a configured and enabled SMU Safety Alarm occurs. The setting of EMSR.SEMSF activates the emergency stop. An SMU triggered emergency state can only be terminated by clearing the EMSR.SEMSF via software (Write EMSR.SEMSFM with 10B).   
+The Safety Alarm(s) which can trigger an Emergency Stop are configured and enabled within the Safety Management Unit (SMU). All SMU triggered Emergency Stop cases are in Synchronous Mode, regardless of the state of EMSR.MODE. The safety emergency stop flag (EMSR.SEMSF)(이때 EMSR는 SCU의 register 이다.) is set(1로 설정) when a configured and enabled SMU Safety Alarm occurs. The setting of (EMSR.SEMSF) activates the emergency stop. An SMU triggered emergency state can only be terminated by clearing the EMSR.SEMSF via software (Write EMSR.SEMSFM with 10B).   
+SCU는 SMU에서 온 PES 신호를 감지하여 EMSR.SEMSF 비트를 자동으로 Set하여 긴급정지한다. 난 긴급정지 안 하고 싶음.   
 <img src="https://github.com/user-attachments/assets/5a52f707-8637-4244-a25b-f891a869de87" width="800" height="300">   
    
 <img src="https://github.com/user-attachments/assets/7c4d7e0b-5232-4f8b-8b73-550b13060b1f" width="800" height="690">   
