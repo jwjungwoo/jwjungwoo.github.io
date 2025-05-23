@@ -52,6 +52,10 @@ User(우리)가 마음대로 작성할 수 있다. 단 조심해야한다. 말 �
 
 ![스크린샷 2025-05-21 103403](https://github.com/user-attachments/assets/17f02503-c2c7-4b67-811a-ee4f01fee3c3)
 
+## 공유자원 mutex
+
+하드웨어적으로 지원해주는 것 같다.
+
 # lockstep
 
 ## lockstep vs non-lockstep
@@ -144,6 +148,5 @@ HARA가 HARA는대로 하자. 가 아니라 ㅎ
 HARA 는 ISO 26262 Part 3에 정의된 프로세스로 일반적으로 아래와 같은 흐름으로 구성된다.   
    
 ![hara](https://github.com/user-attachments/assets/fea36920-352a-44e9-917a-d34daf27bf35)   
-
 
 ## ASIL QM
