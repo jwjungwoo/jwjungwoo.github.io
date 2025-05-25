@@ -135,6 +135,10 @@ NMI 트랩은 소프트웨어나 하드웨어 트리거를 통해 발생할 수 
 시스템 내 모든 코어에 동일한 NMI 트랩이 동시에 발생하다.   
 트랩 플래그는 TRAPCLR 레지스터를 통해 소프트웨어로 클리어 가능하다.   
 트랩 소스가 disable되어 있으면 NMI는 발생하지 않는다.	단순히 플래그만 설정되고, 실제로 NMI 인터럽트는 생성되지 않는다.   
+   
+✅ 잘 안된다.   
+SMU 로 watchdog 알람이 오면 nmi trap 으로 watchdog 을 늦추고 싶었다. 그래서 함수를 타고타고 들어가기도하고 데이터시트도 읽어봤는데 어려워서 프로젝트 기간 내에 할 수 없다 판단했다. ㅠㅠ   
+![nmi](https://github.com/user-attachments/assets/c7881425-aada-4b1e-aacb-f519ac0e75af)
 
 # HARA
 
