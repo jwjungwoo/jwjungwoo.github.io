@@ -142,7 +142,7 @@ NMI 트랩은 소프트웨어나 하드웨어 트리거를 통해 발생할 수 
 트랩 소스가 disable되어 있으면 NMI는 발생하지 않는다.	단순히 플래그만 설정되고, 실제로 NMI 인터럽트는 생성되지 않는다.   
    
 ✅ 잘 안된다.   
-SMU 로 watchdog 알람이 오면 nmi trap 으로 watchdog 을 늦추고 싶었다. 그래서 함수를 타고타고 들어가기도하고 데이터시트도 읽어봤는데 어려워서 프로젝트 기간 내에 할 수 없다 판단했다. ㅠㅠ   
+SMU 로 watchdog 알람이 오면 nmi trap 으로 watchdog 을 늦추고 싶었다. 그래서 함수를 타고타고 들어가기도하고 데이터시트도 읽어봤는데 어려워서 프로젝트 기간 내에 할 수 없다 판단했다. 자율주행 플젝 2주는 좀 빠듯했다.ㅋㅋㅋ   
 ![nmi](https://github.com/user-attachments/assets/c7881425-aada-4b1e-aacb-f519ac0e75af)
 
 # HARA
@@ -159,3 +159,8 @@ HARA 는 ISO 26262 Part 3에 정의된 프로세스로 일반적으로 아래와
 ![hara](https://github.com/user-attachments/assets/fea36920-352a-44e9-917a-d34daf27bf35)   
 
 ## ASIL QM
+
+✅ (S=3, E=1, C=2)​   
+우리는 우리가 개발하는 모듈을 심각성, 가능성, 제어성을 3,1,2로 정하였다. 이는 ASIL-QM 등급의 모듈임으로 가장 낮은 ASIL 등급이라 크게 까다로운 프로세스를 적용할 필요가 없었다. 하지만 re-test, regression test 에 되도록 신경쓰며 프로젝트 개발을 진했했다. 또한 Watchdog, SMU 기능을 도입하려 시도했다.   
+![embitel (a Volkswagen group company)](https://github.com/user-attachments/assets/3f4e203f-c031-435d-906e-d79e34ae9bcb)   
+
