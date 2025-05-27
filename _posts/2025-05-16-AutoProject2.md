@@ -164,3 +164,9 @@ HARA 는 ISO 26262 Part 3에 정의된 프로세스로 일반적으로 아래와
 우리는 우리가 개발하는 모듈을 심각성, 가능성, 제어성을 3,1,2로 정하였다. 이는 ASIL-QM 등급의 모듈임으로 가장 낮은 ASIL 등급이라 크게 까다로운 프로세스를 적용할 필요가 없었다. 하지만 re-test, regression test 에 되도록 신경쓰며 프로젝트 개발을 진했했다. 또한 Watchdog, SMU 기능을 도입하려 시도했다.   
 ![embitel (a Volkswagen group company)](https://github.com/user-attachments/assets/3f4e203f-c031-435d-906e-d79e34ae9bcb)   
 
+# 정적테스트
+
+## 의존성분석
+
+![스크린샷 2025-05-27 111131](https://github.com/user-attachments/assets/ff9c2f75-37f4-493a-9233-1ab0a2ca5a75)
+
