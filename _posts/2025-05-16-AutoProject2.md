@@ -168,5 +168,10 @@ HARA 는 ISO 26262 Part 3에 정의된 프로세스로 일반적으로 아래와
 
 ## 의존성분석
 
-![스크린샷 2025-05-27 111131](https://github.com/user-attachments/assets/ff9c2f75-37f4-493a-9233-1ab0a2ca5a75)
+✅ 의존성 경고(빨간색)   
+![스크린샷 2025-05-27 110937](https://github.com/user-attachments/assets/d82fd533-08a2-4d7e-b70b-ca32d3663463)   
+   
+✅ 사이클 확인   
+우리 코드에서 서로 의존하는 파일들이 발견됐다. 따라서 이 파일들은 관리 대상이다.   
+![스크린샷 2025-05-27 111131](https://github.com/user-attachments/assets/ff9c2f75-37f4-493a-9233-1ab0a2ca5a75)   
 
