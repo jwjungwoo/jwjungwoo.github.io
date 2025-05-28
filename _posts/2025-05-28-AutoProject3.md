@@ -33,4 +33,17 @@ Functional Safety. “시스템이 고장 나더라도 사람이나 환경에 �
 이것 덕분에 전선량이 66퍼센트 줄었다.   
    
 ✅ HPC   
+High Performence Computer_ 그렇게 해야 SW Defined할 수 있다. 몰빵해서 해야 제어기 숫자도 줄고 업데이트도 좋다.   
+
 High Performence Computer_ 그렇게 해야 SW Defined할 수 있다. 데이터를 몰빵해서 해야 제어기 숫자도 줄고 업데이트도 좋다.   
+
+## 프로젝트의 목표
+
+✅ 통신   
+ECU 간에 필요한 정볼르 주고 받으며 제어 및 안전한 주행, 효율적인 동작을 달성함   
+통신시스템에서 사용하는 메시지와 Communication Matrix는 DB에 정의되어 있음   
+   
+✅ 목표   
+차량 환경을 시뮬레이션으로 구성하고, 차량 시스템 개발 프로세스를 적용하여 차량 기능을 구현해 보는 것이 본 프로젝트의 목적   
+
+# CANoe
