@@ -46,6 +46,29 @@ User(우리)가 마음대로 작성할 수 있다. 단 조심해야한다. 말 �
 6. 코어에서 우선순위가 꽤 높은 ISR 작동
 ```
 
+# 결과
+
+
+## 발표자료 발췌
+
+![스크린샷 2025-05-28 135745](https://github.com/user-attachments/assets/8ffb1da4-62b3-435a-b1d6-ecc2595f4f92)   
+   
+![스크린샷 2025-05-28 135957](https://github.com/user-attachments/assets/2515af78-c7e5-4097-bde8-d52a22379573)   
+   
+![스크린샷 2025-05-28 140023](https://github.com/user-attachments/assets/47e31ea2-3c83-4faf-a1e8-cdf57f802baa)   
+   
+![스크린샷 2025-05-28 120352](https://github.com/user-attachments/assets/2f6cf064-5f2f-45d2-8ea4-00448285a314)   
+
+## 하드웨어
+
+![스크린샷 2025-05-28 141446](https://github.com/user-attachments/assets/734fdfeb-bcab-4f5b-a4ab-82070602c51e)   
+   
+![KakaoTalk_20250528_141643505](https://github.com/user-attachments/assets/0d51bc75-9c1e-4724-b01f-d5dfb423fee7)   
+   
+
+
+
+
 # TC275 기능안전
 
 ## safety architecture
