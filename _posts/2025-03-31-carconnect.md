@@ -160,10 +160,7 @@ CANalyzer 는 V 모델의 오른쪽 가장 끝자락에서만 사용한다. 따�
 메시지 단위: frame   
 값 단위: signal   
 네트워크 단위: bus   
-
-## CAN network description
-
-
+CAN 메시지는 데이터 패킷이고, 그 안에 들어 있는 Signal은 실제 의미 있는 값(예: 속도, RPM 등)이다.
 
 # 실습
 
