@@ -33,9 +33,7 @@ Functional Safety. “시스템이 고장 나더라도 사람이나 환경에 �
 이것 덕분에 전선량이 66퍼센트 줄었다.   
    
 ✅ HPC   
-High Performence Computer_ 그렇게 해야 SW Defined할 수 있다. 몰빵해서 해야 제어기 숫자도 줄고 업데이트도 좋다.   
-
-High Performence Computer_ 그렇게 해야 SW Defined할 수 있다. 데이터를 몰빵해서 해야 제어기 숫자도 줄고 업데이트도 좋다.   
+High Performence Computer_ 그렇게 해야 SW Defined할 수 있다. 몰빵해서 해야 제어기 숫자도 줄고 업데이트도 좋다. 또한 데이터를 몰빵해서 해야 제어기 숫자도 줄고 업데이트도 좋다.   
 
 ## 프로젝트의 목표
 
@@ -180,5 +178,5 @@ if __name__ == "__main__":
 4. partition a로 다운
 서버에서 코드 실행된 상태에서 hpc 실행하면 a partition 에 코드 저장됨.
 
-
+5. 
 ```
